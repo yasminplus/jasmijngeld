@@ -1,6 +1,3 @@
-# untrack wsgi because it could be different across servers
-artspedia_be/wsgi.py
-
 # Byte-compiled / optimized / DLL files
 *.py[cod]
 *$py.class
