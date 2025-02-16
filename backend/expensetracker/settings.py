@@ -61,7 +61,7 @@ ROOT_URLCONF = 'expensetracker.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates'), os.path.join(BASE_DIR, 'templates', 'email_templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -186,3 +186,10 @@ SIMPLE_JWT = {
 
 # Use custom User model
 AUTH_USER_MODEL = "users.User"
+
+# For user auth, in hours
+VERIFY_EMAIL_TIMEOUT = 12
+PASSWORD_RESET_TIMEOUT = 1
+
+EMAIL_VERIFY_EMAIL_SUBJECT = 'Verify your email'
+EMAIL_RESET_PASSWORD_SUBJECT = 'You have requested to reset your password'
