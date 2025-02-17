@@ -1,0 +1,14 @@
+Welcome to JasmijnGeld!
+
+You're receiving this email because you've recently signed up with us. To start using JasmijnGeld, please confirm your email address.
+
+Click or copy paste this link into your browser:
+
+{{ url }}
+
+This link is valid for only {{ expiration }}.
+
+If you did not make this request, please ignore this email.
+
+Sincerely,
+The JasmijnGeld Team

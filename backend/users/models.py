@@ -21,6 +21,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
     EMAIL_FIELD = "email"
 
+    @property
+    def full_name(self):
+        "Returns the person's full name."
+        return f"{self.first_name} {self.last_name}"
+
     class Meta:
         verbose_name = _('user')
         verbose_name_plural = _('users')
@@ -30,5 +35,5 @@ class User(AbstractBaseUser, PermissionsMixin):
         self.email = self.__class__.objects.normalize_email(self.email)
 
     def __str__(self):
-        rep = self.email + (" (" + self.fullname + ")" if self.fullname else "")
+        rep = self.email + (" (" + self.full_name + ")" if self.full_name else "")
         return rep

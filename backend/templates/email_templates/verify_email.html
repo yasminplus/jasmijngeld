@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+    <title>Confirm your email</title>
+    <style>
+        :root{
+            box-sizing: border-box;
+        }
+        .font-brand {
+            font-family: 'Lexend', sans-serif;
+            padding-bottom: 0.6em;
+        }
+        body {
+            font-size: 0.9em;
+            line-height: 1.3em;
+            font-family: 'Inter', serif;
+        }
+        button > a, #a_button {
+            text-decoration: none;
+            color: ghostwhite;
+        }
+        button > a:hover {
+            color: ghostwhite;
+        }
+        button > a:active, button a:focus {
+            outline: none;
+            border: none;
+        }
+        button {
+            border: none;
+            cursor: pointer;
+            background: #2E8B57;
+            color: ghostwhite;
+            letter-spacing: 0.05em;
+            border-radius: 0.4em;
+            font-size: 1.2em;
+            padding: 0.6em 2em;
+        }
+        button:hover {
+            background: #4EAB77
+        }
+        button:active, button:focus {
+            background-color: #123823;
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="font-brand">JasmijnGeld</h1>
+    <p>
+        Welcome to JasmijnGeld!
+    </p>
+    <p>
+        You're receiving this email because you've recently signed up with us. To start using JasmijnGeld, please confirm your email address.
+    </p>
+    <button>
+        <a href="{{ url }}" id="a_button">Confirm email</a>
+    </button>
+    <p>
+        If you're having trouble, you can copy and paste this URL into your browser:
+    </p>
+    <p>
+        <a href="{{ url }}">{{ url }}</a>
+    </p>
+    <p>
+        This link is valid for only {{ expiration }}.
+    </p>
+    <p>
+        If you did not make this request, please ignore this email.
+    </p>
+    <p>
+        Sincerely,<br/>
+        The JasmijnGeld Team
+    </p>
+</body>
+</html>

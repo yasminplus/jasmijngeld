@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework_simplejwt',
+    'anymail',
     'users'
 ]
 
@@ -187,9 +188,23 @@ SIMPLE_JWT = {
 # Use custom User model
 AUTH_USER_MODEL = "users.User"
 
-# For user auth, in hours
-VERIFY_EMAIL_TIMEOUT = 12
-PASSWORD_RESET_TIMEOUT = 1
+# For user auth, in seconds
+VERIFY_EMAIL_TIMEOUT = 43200
+PASSWORD_RESET_TIMEOUT = 3600
 
 EMAIL_VERIFY_EMAIL_SUBJECT = 'Verify your email'
 EMAIL_RESET_PASSWORD_SUBJECT = 'You have requested to reset your password'
+
+# Anymail configuration
+ANYMAIL = {
+    "MAILGUN_API_KEY": os.getenv("MAILGUN_API_KEY"),
+    "REQUESTS_TIMEOUT": 30,  # Default is 30s
+    "MAILGUN_API_URL": os.getenv("MAILGUN_API_URL"),
+    "MAILGUN_SENDER_DOMAIN": os.getenv("MAILGUN_SENDER_DOMAIN"),
+}
+
+EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
+SERVER_EMAIL = os.getenv("SERVER_EMAIL")
+
+FRONTEND_URL = os.getenv("FRONTEND_URL")

@@ -23,9 +23,15 @@ class TokenGenerator(PasswordResetTokenGenerator):
             return False
 
         # Check that the timestamp/uid has not been tampered with
-        if not constant_time_compare(self._make_token_with_timestamp(user, ts), token):
+        for secret in [self.secret, *self.secret_fallbacks]:
+            if constant_time_compare(
+                self._make_token_with_timestamp(user, ts, secret),
+                token,
+            ):
+                break
+        else:
             return False
-        
+
         if type == 'EMAIL':
             timeout = settings.VERIFY_EMAIL_TIMEOUT
         else:
