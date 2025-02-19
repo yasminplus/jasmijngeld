@@ -10,11 +10,12 @@ from django.utils.translation import gettext_lazy
 from rest_framework import status
 from rest_framework.generics import CreateAPIView, GenericAPIView
 from rest_framework.response import Response
+from rest_framework_simplejwt.views import TokenObtainPairView
 from .token import default_token_generator
 from .models import User
-from .serializers import UserSerializer
+from .serializers import UserSerializer, JGTokenObtainPairSerializer
 
-# Create your views here.
+
 class RegistrationView(CreateAPIView):
     serializer_class = UserSerializer
 
@@ -35,7 +36,6 @@ class RegistrationView(CreateAPIView):
     #     data.pop('description')
     #     return Response(data=data, status=status.HTTP_200_OK)
 
-# create token
 def send_verification_email(user):
     send_email(user, 'EMAIL')
 
@@ -83,6 +83,9 @@ def send_email(user, type):
     except Exception as e:
         print(e)
 
+class JGTokenObtainPairView(TokenObtainPairView):
+    serializer_class = JGTokenObtainPairSerializer
+
 class RequestVerifyView(GenericAPIView):
     def get(self, request, *args, **kwargs):
         pass
@@ -96,11 +99,9 @@ class VerifyAccountView(GenericAPIView):
 
         self.validlink = False
         user = self.get_user(kwargs["uidb64"])
-        print(user)
 
         if user is not None:
             token = kwargs['token']
-            print(token)
             if default_token_generator.check_token(user, token, 'EMAIL'):
                 user.is_verified = True
                 user.save()
@@ -109,8 +110,6 @@ class VerifyAccountView(GenericAPIView):
                 # expired or invalid
                 return Response({"message": gettext_lazy("Expired token")}, status=status.HTTP_410_GONE)
 
-        print(self.kwargs)
-        print(request.query_params)
     
     # copied from django.contrib.auth.PasswordResetConfirmView
     def get_user(self, uidb64):
