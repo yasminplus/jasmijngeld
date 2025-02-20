@@ -3,6 +3,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.core.exceptions import ValidationError
+from django.urls import reverse_lazy
 
 from .models import User
 
@@ -11,12 +12,12 @@ class UserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
     fields, plus a repeated password."""
 
-    # password1 = forms.CharField(label="Password", widget=forms.PasswordInput)
-    # password2 = forms.CharField(label="Password confirmation", widget=forms.PasswordInput)
+    password1 = forms.CharField(label="Password", widget=forms.PasswordInput)
+    password2 = forms.CharField(label="Password confirmation", widget=forms.PasswordInput)
 
     class Meta:
         model = User
-        fields = ["email", "password"]
+        fields = ["email"]
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -37,15 +38,22 @@ class UserCreationForm(forms.ModelForm):
 
 class UserChangeForm(forms.ModelForm):
     """A form for updating users. Includes all the fields on
-    the user, but replaces the password field with admin's
-    disabled password hash display field.
+    the user. Use read only field for the password with a link
+    to change the password.
     """
 
     password = ReadOnlyPasswordHashField()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['password'].help_text = (
+            "Raw passwords are not stored, so there is no way to see "
+            "this user's password, but you can  "
+            "change the password using <a href=\"%s\">this form</a>."
+        ) % reverse_lazy('admin:auth_user_password_change', args=[self.instance.id])
 
     class Meta:
         model = User
-        fields = ["email", "password"]
+        fields = ["email"]
 
 
 class UserAdmin(BaseUserAdmin):
@@ -54,25 +62,28 @@ class UserAdmin(BaseUserAdmin):
     form = UserChangeForm
     model = User
 
-    # The fields to be used in displaying the User model.
-    # These override the definitions on the base UserAdmin
+    # The fields to be used in displaying the User model table
+    # Override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ('email', 'first_name', 'last_name', 'is_superuser')
+    list_display = ('email', 'first_name', 'last_name', "is_verified", 'is_superuser')
     list_filter = ('is_superuser',)
+
+    # fieldsets is used for editing the user
     fieldsets = (
         (None, {"fields": ("email", "password")}),
         ("Personal info", {"fields": ("first_name", "last_name")}),
-        ('Permissions', {'fields': ('is_superuser',)}),
+        ('Permissions', {'fields': ('is_verified', 'is_superuser',)}),
     )
-    # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
-    # overrides get_fieldsets to use this attribute when creating a user.
+    
+    # add_fieldsets is used when creating a user
     add_fieldsets = (
         (
             None,
             {
                 "classes": ("wide"),
                 "fields": ("email", "password1", "password2", 
-                           "first_name", "last_name", "is_superuser"),
+                           "first_name", "last_name", 
+                           "is_verified", "is_superuser"),
             },
         ),
     )
