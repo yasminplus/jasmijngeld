@@ -6,7 +6,6 @@ from django.utils.translation import gettext_lazy as _
 
 class UserManager(BaseUserManager):
     def _create_user(self, email, password, is_superuser):
-        print("in _create_user")
         if not email:
             raise ValueError('Supply an email address')
         if not password:
@@ -38,7 +37,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         error_messages={
             'unique': _("A user with that email already exists."),
         },
-        blank=True, 
         unique=True
     )
     creation_date = models.DateTimeField(auto_now_add=True)
