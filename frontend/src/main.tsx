@@ -15,7 +15,7 @@ createRoot(document.getElementById('root')!).render(
         <Route index element={<App />} />
         <Route element={<AuthLayout />}>
           <Route path="login" element={<LoginForm />} />
-          <Route path="register" element={<RegisterForm />} />
+          <Route path="signup" element={<RegisterForm />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -42,7 +42,8 @@ export function RegisterForm() {
 
   return (
     <>
-      <h1>Sign Up</h1>
+    {/* think about using something like vue slots for the title */}
+      <h1 className="text-3xl text-left mb-5">Sign Up</h1>
       <Form {...form}>
         
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
