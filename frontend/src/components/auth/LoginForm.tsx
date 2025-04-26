@@ -16,17 +16,12 @@ import { Input } from "@/components/ui/input"
 import { Link } from "react-router"
 import { jwtDecode } from "jwt-decode";
 
+import { login } from "@/services/users"
+
 const formSchema = z.object({
   email: z.string().email(),
   password: z.string().trim().min(8),
 })
-
-interface Token {
-  access: string;
-  refresh: string;
-}
-
-const BE_BASE_URL = 'http://localhost:8000'
 
 export function LoginForm() {
 
@@ -40,36 +35,14 @@ export function LoginForm() {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     login(values)
-  }
+    .then(token => {
+      const data = jwtDecode(token.access)
+      console.log(data)
 
-  async function login(credentials: z.infer<typeof formSchema>) {
-    console.log(credentials)
-    return fetch(BE_BASE_URL + "/api/auth/token/", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(credentials)
-    })
-    .then(response => {
-      if (response.status == 401) {
-        // throw error here
-        throw new Error(`Response status: ${response.status}`);
-      } else {
-        return response.json()
-      }
-    })
-    .then(data => {
-      const token: Token = {
-        access: data.access,
-        refresh: data.refresh
-      }
-      const decoded = jwtDecode(token.access)
-      console.log(decoded)
+      // use context/session.ts here to store data
     })
     .catch(error => {
       console.log(error)
-      console.log("User not found")
     })
   }
 
