@@ -13,7 +13,6 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Link } from "react-router"
 
 const formSchema = z
   .object({
@@ -100,7 +99,7 @@ export function RegisterForm() {
           <Button type="submit" className="w-full">Sign Up</Button>
         </form>
       </Form>
-      <p className="text-sm pt-2 text-center">Already have an account? <Link to="/login">Log In</Link></p>
+      <p className="text-sm pt-2 text-center">Already have an account? <a href="/login">Log In</a></p>
 
     </>
   )

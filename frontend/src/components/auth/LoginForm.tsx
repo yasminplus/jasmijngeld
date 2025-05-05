@@ -15,7 +15,6 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Link, useNavigate } from "react-router"
 
 import { jwtDecode, JwtPayload } from "jwt-decode";
 
@@ -36,7 +35,6 @@ type UserPayload = JwtPayload & {
 export function LoginForm() {
 
   const session = useContext(SessionContext)
-  const navigate = useNavigate()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -57,7 +55,6 @@ export function LoginForm() {
       session.refresh = token.refresh
 
       // route to new page
-      navigate("/home")
     })
     .catch(error => {
       console.log(error)
@@ -98,7 +95,7 @@ export function LoginForm() {
           <Button type="submit" className="w-full">Log in</Button>
         </form>
       </Form>
-      <p className="text-sm pt-2 text-center">Don't have an account? <Link to="/signup">Sign Up</Link></p>
+      <p className="text-sm pt-2 text-center">Don't have an account? <a href="/signup">Sign Up</a></p>
     </>
   )
 
