@@ -1,5 +1,7 @@
 "use client"    // TODO: what is this?
 
+import { useContext } from 'react';
+
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -13,17 +15,28 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Link } from "react-router"
-import { jwtDecode } from "jwt-decode";
+import { Link, useNavigate } from "react-router"
+
+import { jwtDecode, JwtPayload } from "jwt-decode";
 
 import { login } from "@/services/users"
+import { SessionContext } from "@/context/session"
+
 
 const formSchema = z.object({
   email: z.string().email(),
   password: z.string().trim().min(8),
 })
 
+type UserPayload = JwtPayload & {
+  first_name: string,
+  last_name: string
+}
+
 export function LoginForm() {
+
+  const session = useContext(SessionContext)
+  const navigate = useNavigate()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -36,10 +49,15 @@ export function LoginForm() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     login(values)
     .then(token => {
-      const data = jwtDecode(token.access)
+      const data = jwtDecode<UserPayload>(token.access)
       console.log(data)
+      session.first_name = data.first_name
+      session.last_name = data.last_name
+      session.access = token.access
+      session.refresh = token.refresh
 
-      // use context/session.ts here to store data
+      // route to new page
+      navigate("/home")
     })
     .catch(error => {
       console.log(error)
