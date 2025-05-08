@@ -1,7 +1,15 @@
 import * as React from 'react'
-import { Outlet, createRootRoute } from '@tanstack/react-router'
+import {   createRootRouteWithContext,
+  Outlet,
+ } from '@tanstack/react-router'
+import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
+import { AuthContextI } from '@/context/auth'
 
-export const Route = createRootRoute({
+interface MyRouterContext {
+  authContext: AuthContextI
+}
+
+export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: RootComponent,
 })
 
@@ -9,6 +17,7 @@ function RootComponent() {
   return (
     <React.Fragment>
       <Outlet />
+      <TanStackRouterDevtools />
     </React.Fragment>
   )
 }

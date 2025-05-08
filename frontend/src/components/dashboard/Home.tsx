@@ -1,5 +1,4 @@
 import { useContext } from 'react';
-import { SessionContext } from '@/context/session';
 
 export default function Home() {
   const session = useContext(SessionContext)
