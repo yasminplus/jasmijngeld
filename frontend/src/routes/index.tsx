@@ -1,9 +1,26 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { 
+  createFileRoute,
+  redirect
+ } from '@tanstack/react-router'
 import { Brand } from '@/components/Brand'
 import { buttonVariants } from "@/components/ui/button"
 import '@/App.css'
 
 export const Route = createFileRoute('/')({
+  beforeLoad: ({ context, location }) => {
+    if (!context.authContext.isAuthenticated) {
+      throw redirect({
+        to: '/login',
+        search: {
+          redirect: location.href,
+        },
+      })
+    } else {
+      throw redirect({
+        to: '/dashboard'
+      })
+    }
+  },
   component: RouteComponent,
 })
 

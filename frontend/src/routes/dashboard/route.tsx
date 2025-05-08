@@ -2,7 +2,8 @@ import {
   createFileRoute, 
   redirect,
   useNavigate,
-  useRouter
+  useRouter,
+  Outlet
 } from '@tanstack/react-router'
 
 import { useAuthContext } from '@/context/auth'
@@ -33,6 +34,7 @@ function DashboardLayout() {
       <h1>Dashboard</h1>
       <p>This route's content is only visible to authenticated users.</p>
       <p>Hello, { authContext.user?.first_name } </p>
+      <Outlet />
     </div>
   )
 }
