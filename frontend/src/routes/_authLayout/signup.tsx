@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 
-export const Route = createFileRoute('/_authLayout/SignUp')({
+export const Route = createFileRoute('/_authLayout/signup')({
   component: SignUpForm,
 })
 

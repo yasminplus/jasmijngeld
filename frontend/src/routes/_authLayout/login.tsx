@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input"
 
 import { useAuthContext } from "@/context/auth"
 
-export const Route = createFileRoute('/_authLayout/Login')({
+export const Route = createFileRoute('/_authLayout/login')({
   component: LoginForm,
   beforeLoad: ({ context }) => {
     if (context.authContext.isAuthenticated) {
