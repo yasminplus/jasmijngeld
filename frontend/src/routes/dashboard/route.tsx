@@ -7,6 +7,8 @@ import {
 } from '@tanstack/react-router'
 
 import { useAuthContext } from '@/context/auth'
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { AppSidebar } from "@/components/app-sidebar"
 
 export const Route = createFileRoute('/dashboard')({
   beforeLoad: ({ context, location }) => {
@@ -30,11 +32,17 @@ function DashboardLayout() {
   console.log(authContext)
 
   return (
-    <div>
-      <h1>Dashboard</h1>
-      <p>This route's content is only visible to authenticated users.</p>
-      <p>Hello, { authContext.user?.first_name } </p>
-      <Outlet />
-    </div>
+    <SidebarProvider>
+      <AppSidebar />
+      <div>
+        <h1>Dashboard</h1>
+        <p>This route's content is only visible to authenticated users.</p>
+        <p>Hello, { authContext.user?.first_name } </p>
+        <Outlet>
+          <SidebarTrigger />
+        </Outlet>
+      </div>     
+    </SidebarProvider>
+    
   )
 }

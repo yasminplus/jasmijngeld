@@ -1,5 +1,6 @@
 import * as React from 'react'
-import {   createRootRouteWithContext,
+import {
+  createRootRouteWithContext,
   Outlet,
  } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
@@ -17,7 +18,7 @@ function RootComponent() {
   return (
     <React.Fragment>
       <Outlet />
-      <TanStackRouterDevtools />
+      <TanStackRouterDevtools position="bottom-right" />
     </React.Fragment>
   )
 }

@@ -1,9 +1,10 @@
-export function Brand() {
+export function Brand({ size = 'text-5xl', pb = 'pb-8'}) {
+  
   return (
     <>
-      <h1 className="font-display pb-10">
+      <p className={size + " " + pb + " font-display text-center"}>
         JasmijnGeld
-      </h1>
+      </p>
     </>
   )
 }
