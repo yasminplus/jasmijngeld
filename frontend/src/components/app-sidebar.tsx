@@ -13,6 +13,10 @@ import {
 } from "@/components/ui/sidebar"
 import { Button } from "./ui/button"
 import { Brand } from "./Brand"
+import { 
+  Link, 
+  useRouterState 
+} from "@tanstack/react-router"
 
 
 // Menu items.
@@ -24,22 +28,28 @@ const items = [
   },
   {
     title: "Expenses",
-    url: "/#",
+    url: "#",
     icon: Inbox,
   },
   {
     title: "Accounts & Cards",
-    url: "/#",
+    url: "#",
     icon: Calendar,
   },
   {
     title: "Settings",
-    url: "/#",
+    url: "#",
     icon: Settings,
   },
 ]
 
 export function AppSidebar() {
+  const routerState = useRouterState()
+
+  const isLinkActive = (url: string) => {
+    return routerState.location.href == url
+  }
+
   return (
     <Sidebar>
       <SidebarHeader>
@@ -51,11 +61,16 @@ export function AppSidebar() {
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.url}>
+                  <SidebarMenuButton asChild isActive={isLinkActive(item.url)}>
+                    <Link 
+                      to={item.url} 
+                      className="sidebar-link" 
+                      activeProps={{color: "hsl(38.8, 100%, 50%)"}}
+                      activeOptions={{ exact: true }}
+                    >
                       <item.icon />
                       <span>{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
