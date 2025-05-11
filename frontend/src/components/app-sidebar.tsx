@@ -51,9 +51,9 @@ export function AppSidebar() {
   }
 
   return (
-    <Sidebar>
-      <SidebarHeader>
-        <Brand pb={"pb-0"} size={"text-4xl"} />
+    <Sidebar style={{borderRight: '0px'}}>
+      <SidebarHeader >
+        <Brand pb={"pb-1"} size={"text-4xl"} />
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
