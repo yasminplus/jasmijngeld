@@ -31,8 +31,6 @@ function DashboardLayout() {
   const navigate = useNavigate()
   const authContext = useAuthContext()
 
-  console.log(authContext)
-
   return (
     <SidebarProvider style={{
       "--sidebar-width": "16rem",
