@@ -7,10 +7,17 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Button } from "../ui/button"
 import { useAuthContext } from '@/context/auth'
+import { useNavigate } from "@tanstack/react-router"
 
 
 export function Header() {
   const authContext = useAuthContext()
+  const navigate = useNavigate()
+
+  function logout() {
+    authContext.logout_i()
+    navigate({to: '/'})
+  }
 
   return (
     <header className=" w-full bg-gray-500 p-4 shadow-md" >
@@ -25,7 +32,7 @@ export function Header() {
           Profile / Account
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={logout}>
           Log out
         </DropdownMenuItem>
       </DropdownMenuContent>
