@@ -9,7 +9,7 @@ export const Route = createFileRoute('/_authLayout')({
 function AuthLayout() {
   return (
     <div style={{maxWidth: '320px', margin: '0 auto', padding: '2rem', textAlign: 'center'}}>
-      <Brand />
+      <Brand pb="pb-14"/>
       <Outlet />
     </div>
   )

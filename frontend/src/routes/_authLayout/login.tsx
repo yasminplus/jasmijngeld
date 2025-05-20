@@ -4,7 +4,9 @@ import { useRouter } from '@tanstack/react-router';
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import {
   Form,
   FormControl,
@@ -13,9 +15,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
 
 import { useAuthContext } from "@/context/auth"
+import { useState } from 'react';
 
 export const Route = createFileRoute('/_authLayout/login')({
   component: LoginForm,
@@ -25,7 +27,6 @@ export const Route = createFileRoute('/_authLayout/login')({
     }
   },
   loader: ({ context }) => {
-    console.log(context)
     // TODO may not need this, keep this for reference for now
   },
 })
@@ -39,6 +40,7 @@ function LoginForm() {
   const authContext = useAuthContext()
   const router = useRouter()
   const navigate = useNavigate({ from: '/login' })
+  const [loginError, setLoginError] = useState('')
   
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -49,21 +51,27 @@ function LoginForm() {
   })
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    await authContext.login_i(values)
-    await router.invalidate()
-    await navigate({to: '/dashboard'})
+    setLoginError('')
+    authContext.login_i(values)
+    .then(() => {
+      router.invalidate()
+      navigate({to: '/dashboard'})
+    })
+    .catch(error => {
+      setLoginError(error.message)
+    })
   }
 
   return (
     <>
-      <h1 className="text-3xl text-left mb-5">Log In</h1>
+      <h1 className="text-2xl mb-7">Log In</h1>
       <Form {...form} >
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
             control={form.control}
             name="email"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className='text-left'>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
                   <Input placeholder="Enter your email" {...field} />
@@ -76,7 +84,7 @@ function LoginForm() {
             control={form.control}
             name="password"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className='text-left'>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
                   <Input placeholder="Enter your password" {...field} type="password" />
@@ -87,8 +95,16 @@ function LoginForm() {
           />
           <Button type="submit" className="w-full">Log in</Button>
         </form>
+        {loginError && (
+          <Alert className='mt-4'>
+            <AlertDescription>
+              { loginError }
+            </AlertDescription>
+          </Alert>
+        ) }
       </Form>
-      <p className="text-sm pt-2 text-center">Don't have an account? <Link to="/signup">Sign Up</Link></p>
+      {/* remove link to signup for now */}
+      {/* <p className="text-sm pt-2 text-center">Don't have an account? <Link to="/signup">Sign Up</Link></p> */}
     </>
   )
 }

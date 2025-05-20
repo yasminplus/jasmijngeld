@@ -27,7 +27,7 @@ export interface User {
 
 // export interface AuthContextI extends Partial<User> {
 export interface AuthContextI {
-  login_i: (credentials: z.infer<typeof formSchema>) => Promise<Token>
+  login_i: (credentials: z.infer<typeof formSchema>) => Promise<void>
   logout_i: () => Promise<void>
   isAuthenticated: boolean
   isAuthenticated_i: () => Promise<boolean>
@@ -82,37 +82,22 @@ export function AuthProvider({ children}: {children: React.ReactNode}) {
   const [user, setUser] = React.useState<User | null>(getStoredUser());
   const isAuthenticated = !!user;
 
-  const login_i = async function(credentials: z.infer<typeof formSchema>): Promise<Token> {
-    console.log(credentials)
-    // TODO: replace fetch with axios and add Bearer token for the default header 
-    return fetch(BE_BASE_URL + "/api/auth/token/", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(credentials)
-    })
-    .then(response => {
-      if (response.status == 401) {
-        // throw error here
-        throw new Error(`${response.status}`);
-      } else {
-        return response.json()
-      }
-    })
-    .then(data => {
-      const token: Token = {
-        access: data.access,
-        refresh: data.refresh
-      }
-      setStoredUser(token)
+  const login_i = async function(credentials: z.infer<typeof formSchema>): Promise<void> {
+    try {
+      const response = await axios.post(`${BE_BASE_URL}/api/auth/token/`, credentials)
+      setStoredUser(response.data)
       const cur_user = getStoredUser()
       setUser(cur_user)
-    })
-    .catch(error => {
-      console.log(error)
-      throw error
-    })
+      axios.defaults.headers.common["Authorization"] = `Bearer ${response.data.token}`
+
+    } catch (error) {
+      // TODO: handle type error here
+      if (error.response.status == 401) {
+        throw new Error('Wrong email or password. Please try again.')
+      } else {
+        throw new Error('A problem is occurred when logging in')
+      }
+    }
   }
 
   const logout_i = async function() {
