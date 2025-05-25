@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'anymail',
     'users',
+    'expenses',
+    'sources',
     'corsheaders'
 ]
 
