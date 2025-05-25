@@ -1,5 +1,6 @@
 from django.db import models
 from users.models import User
+from sources.models import PaymentSource
 
 # Create your models here.
 class ExpenseCategory(models.Model):
@@ -7,7 +8,7 @@ class ExpenseCategory(models.Model):
 
 class Currency(models.Model):
     name = models.CharField(max_length=30)
-    code = models.CharField(length=3)
+    code = models.CharField(max_length=3)
 
 class Store(models.Model):
     name = models.CharField(max_length=30)
@@ -23,4 +24,4 @@ class Expense(models.Model):
     date = models.DateField()
     description = models.TextField(blank=True, max_length=100)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    # source = ..
+    source = models.ForeignKey(PaymentSource, on_delete=models.PROTECT) # protect or cascade?
