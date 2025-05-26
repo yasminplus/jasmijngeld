@@ -2,19 +2,19 @@ from django.db import models
 from users.models import User
 
 # Create your models here.
-class SourceType(models.Model):
-    name = models.CharField(max_length=30)
-    # Consider if we really need this,
-    # or just use an enum on the PaymentSource class
-    """
-    bank account, credit card, prepaid card, digital wallet, cash
-    """
-
-    def __str__(self):
-        return self.name
-
 class PaymentSource(models.Model):
-    source_type = models.ForeignKey(SourceType, on_delete=models.PROTECT)
+    SOURCE_TYPE_CHOICES = [
+        ("BA", "Bank account"),
+        ("CC", "Credit card"),
+        ("DW", "Digital wallet"),
+        ("PC", "Prepaid card"),
+        ("CA", "Cash"),
+    ]
+    source_type = models.CharField(
+        max_length=3,
+        choices=SOURCE_TYPE_CHOICES,
+        default="BA",
+    )
     name = models.CharField(max_length=30)
     acc_identifier = models.TextField(max_length=20, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
