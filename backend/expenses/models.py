@@ -6,15 +6,24 @@ from sources.models import PaymentSource
 class ExpenseCategory(models.Model):
     name = models.CharField(max_length=30)
 
+    def __str__(self):
+        return self.name
+
 class Currency(models.Model):
     name = models.CharField(max_length=30)
     code = models.CharField(max_length=3)
+
+    def __str__(self):
+        return f'{self.name} ({self.code})'
 
 class Store(models.Model):
     name = models.CharField(max_length=30)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     # maybe consider to couple store with currency, 
     # e.g. shopee with IDR or amazon.de with EUR
+
+    def __str__(self):
+        return self.name
 
 class Expense(models.Model):
     category = models.ForeignKey(ExpenseCategory, on_delete=models.PROTECT)
@@ -25,3 +34,6 @@ class Expense(models.Model):
     description = models.TextField(blank=True, max_length=100)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     source = models.ForeignKey(PaymentSource, on_delete=models.PROTECT) # protect or cascade?
+
+    def __str__(self):
+        return f'{self.amount} spent on {self.date}'

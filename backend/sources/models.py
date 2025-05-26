@@ -10,6 +10,9 @@ class SourceType(models.Model):
     bank account, credit card, prepaid card, digital wallet, cash
     """
 
+    def __str__(self):
+        return self.name
+
 class PaymentSource(models.Model):
     source_type = models.ForeignKey(SourceType, on_delete=models.PROTECT)
     name = models.CharField(max_length=30)
@@ -20,3 +23,6 @@ class PaymentSource(models.Model):
     We'll create it automatically when creating a new user/during registration.
     For existing users, add this source using migrations.
     """
+
+    def __str__(self):
+        return f'{self.name} ({self.acc_identifier}) belongs to {self.user}'
