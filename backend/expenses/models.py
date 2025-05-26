@@ -1,6 +1,7 @@
 from django.db import models
 from users.models import User
 from sources.models import PaymentSource
+from django.conf import settings
 
 # Create your models here.
 class ExpenseCategory(models.Model):
@@ -9,13 +10,6 @@ class ExpenseCategory(models.Model):
     def __str__(self):
         return self.name
 
-class Currency(models.Model):
-    name = models.CharField(max_length=30)
-    code = models.CharField(max_length=3)
-
-    def __str__(self):
-        return f'{self.name} ({self.code})'
-
 class Store(models.Model):
     name = models.CharField(max_length=30)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -23,11 +17,11 @@ class Store(models.Model):
     # e.g. shopee with IDR or amazon.de with EUR
 
     def __str__(self):
-        return self.name
+        return f'{self.name}'
 
 class Expense(models.Model):
     category = models.ForeignKey(ExpenseCategory, on_delete=models.PROTECT)
-    currency = models.ForeignKey(Currency, on_delete=models.PROTECT)
+    currency = models.CharField(max_length=3, choices=settings.CURRENCIES)
     store = models.ForeignKey(Store, on_delete=models.PROTECT)
     amount = models.FloatField()
     date = models.DateField()
