@@ -11,7 +11,7 @@ class PaymentSource(models.Model):
         ("CA", "Cash"),
     ]
     source_type = models.CharField(
-        max_length=3,
+        max_length=2,
         choices=SOURCE_TYPE_CHOICES,
         default="BA",
     )
@@ -21,7 +21,10 @@ class PaymentSource(models.Model):
     """
     each user has to have ONE payment source of type cash. 
     We'll create it automatically when creating a new user/during registration.
-    For existing users, add this source using migrations.
+    For existing users, add this source using migrations or via shell.
+    
+    TODO: restrict the creation payment source to only have
+    ONE Cash type for each user
     """
 
     def __str__(self):
