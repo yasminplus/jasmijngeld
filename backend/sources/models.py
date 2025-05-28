@@ -15,7 +15,8 @@ class PaymentSource(models.Model):
         choices=SOURCE_TYPE_CHOICES,
         default="BA",
     )
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=30)  
+    """TODO: name should be unique among one user"""
     acc_identifier = models.TextField(max_length=20, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     """
