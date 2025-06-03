@@ -1,10 +1,60 @@
-import secrets
+from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+import json
+import secrets
+
 EMAIL = 'is@mail.com'
+
+class JGTokenObtainPairSerializer(APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.url = reverse('users:token_obtain_pair')
+        cls.data = {
+            'email': EMAIL,
+            'password': secrets.token_hex(16),
+            'first_name': 'Dewi',
+            'last_name': 'Pertiwi',
+        }
+
+    def test_correct_login_data_should_return_200(self):
+        user = get_user_model().objects.create_user(
+            email=self.data['email'], password=self.data['password'])
+        user.save()
+        response = self.client.post(self.url, self.data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_correct_login_data_should_return_token(self):
+        user = get_user_model().objects.create_user(
+            email=self.data['email'], password=self.data['password'])
+        user.save()
+        response = self.client.post(self.url, self.data, format='json')
+        token = json.loads(response.content) if 'access' in json.loads(
+            response.content) else None
+        self.assertTrue(token is not None)
+    
+    def test_incorrect_login_data_should_not_return_token(self):
+        user = get_user_model().objects.create_user(
+            email=self.data['email'], password=self.data['password'])
+        user.save()
+        login_data = {'email': self.data['email'], 'password': secrets.token_hex(16)}
+        response = self.client.post(self.url, login_data, format='json')
+        token = json.loads(response.content) if 'access' in json.loads(
+            response.content) else None
+        self.assertEqual(token, None)
+
+    def test_incorrect_login_data_should_return_401(self):
+        user = get_user_model().objects.create_user(
+            email=self.data['email'], password=self.data['password'])
+        user.save()
+        login_data = {'email': 'test@mail.com', 'password': secrets.token_hex(16)}
+        response = self.client.post(self.url, login_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
 
 class RegistrationViewTest(APITestCase):
     @classmethod
