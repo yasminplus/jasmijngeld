@@ -3,12 +3,20 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
-from rest_framework.test import APITestCase
+from rest_framework.test import APIClient, APITestCase
 
 import json
+import jwt
 import secrets
 
 EMAIL = 'is@mail.com'
+
+class ForceVerifyEmailAPIClient(APIClient):
+    def force_authenticate(self, user=None, token=None):
+        super().force_authenticate(user, token)
+        if user:
+            user.is_verified = True
+            token.save()
 
 class JGTokenObtainPairSerializer(APITestCase):
     @classmethod
@@ -36,6 +44,17 @@ class JGTokenObtainPairSerializer(APITestCase):
         token = json.loads(response.content) if 'access' in json.loads(
             response.content) else None
         self.assertTrue(token is not None)
+    
+    def test_user_first_name_should_be_in_token_claims(self):
+        user = get_user_model().objects.create_user(
+            email=self.data['email'], 
+            password=self.data['password'],
+            first_name=self.data['first_name'])
+        user.save()
+        response = self.client.post(self.url, self.data, format='json')
+        payload = jwt.decode(jwt=json.loads(response.content)[
+                             'access'], key=settings.SECRET_KEY, algorithms=['HS256'])
+        self.assertEqual(payload['first_name'], self.data['first_name'])
     
     def test_incorrect_login_data_should_not_return_token(self):
         user = get_user_model().objects.create_user(
