@@ -149,7 +149,7 @@ class PaymentSourceViewTest(PaymentSourceSetupMixin, APITestCase):
         self.client.force_authenticate(user=self.user)
 
 
-class CreatePaymentSourceViewTest(PaymentSourceViewTest):
+class PaymentSourceCreateViewTest(PaymentSourceViewTest):
     url = reverse('sources:source-create')
 
     def test_create_source_success(self):
@@ -158,30 +158,95 @@ class CreatePaymentSourceViewTest(PaymentSourceViewTest):
         self.assertEqual(response.status_code, 201)
         self.assertEqual(count + 1, PaymentSource.objects.all().count())
 
-    def test_create_source_without_source_type_should_fail(self):
+    def test_create_source_no_source_type_fail(self):
         del self.data['source_type']
         count = PaymentSource.objects.all().count()
         response = self.client.post(self.url, self.data)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(count, PaymentSource.objects.all().count())
 
-    def test_create_source_without_name_should_fail(self):
+    def test_create_source_no_name_fail(self):
         del self.data['name']
         count = PaymentSource.objects.all().count()
         response = self.client.post(self.url, self.data)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(count, PaymentSource.objects.all().count())
 
-    def test_create_source_without_acc_identifier_success(self):
+    def test_create_source_no_acc_identifier_success(self):
         del self.data['acc_identifier']
         count = PaymentSource.objects.all().count()
         response = self.client.post(self.url, self.data)
         self.assertEqual(response.status_code, 201)
         self.assertEqual(count + 1, PaymentSource.objects.all().count())
 
-    def test_create_source_no_user_should_fail(self):
+    def test_create_source_no_user_fail(self):
         self.client.force_authenticate(user=None)
         count = PaymentSource.objects.all().count()
         response = self.client.post(self.url, self.data)
         self.assertEqual(response.status_code, 401)
         self.assertEqual(count, PaymentSource.objects.all().count())
+
+
+class PaymentSourceUpdateViewTest(PaymentSourceViewTest):
+
+    def setUp(self):
+        self.source = PaymentSource.objects.create(
+            source_type=self.data['source_type'],
+            name=self.data['name'],
+            acc_identifier=self.data['acc_identifier'],
+            user=self.user
+        )
+        self.url = reverse(
+                    'sources:source-retrieveupdatedelete',
+                    args=[self.source.id])
+        self.client.force_authenticate(user=self.user)
+
+    def test_update_source_success(self):
+        update_data = {
+            'source_type': 'Credit card',
+            'name': 'CC BCA',
+            'acc_identifier': '5678'
+        }
+        response = self.client.put(self.url, data=update_data)
+        updated = PaymentSource.objects.get(id=self.source.id)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(updated.source_type, 'CC')
+        self.assertEqual(updated.name, update_data['name'])
+        self.assertEqual(updated.acc_identifier, update_data['acc_identifier'])
+
+    def test_update_source_no_source_type_fail(self):
+        update_data = {
+            'name': 'CC BCA',
+            'acc_identifier': '5678'
+        }
+        response = self.client.put(self.url, data=update_data)
+        self.assertEqual(response.status_code, 400)
+    
+    def test_update_source_no_name_fail(self):
+        update_data = {
+            'source_type': 'Credit card',
+            'acc_identifier': '5678'
+        }
+        response = self.client.put(self.url, data=update_data)
+        self.assertEqual(response.status_code, 400)
+
+    def test_update_source_no_acc_identifier_success(self):
+        update_data = {
+            'source_type': 'Credit card',
+            'name': 'CC BCA'
+        }
+        response = self.client.put(self.url, data=update_data)
+        updated = PaymentSource.objects.get(id=self.source.id)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(updated.acc_identifier, self.data['acc_identifier'])
+
+    def test_update_source_no_user_fail(self):
+        self.client.force_authenticate(user=None)
+        update_data = {
+            'source_type': 'Credit card',
+            'name': 'CC BCA',
+            'acc_identifier': '5678'
+        }
+        response = self.client.put(self.url, data=update_data)
+        self.assertEqual(response.status_code, 401)
+
