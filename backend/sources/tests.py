@@ -1,4 +1,4 @@
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
@@ -8,7 +8,8 @@ from rest_framework.test import APITestCase
 from .models import PaymentSource
 from users.tests import ForceVerifyEmailAPIClient
 
-# Create your tests here.
+rud_url = 'sources:source-retrieveupdatedelete'
+
 class PaymentSourceSetupMixin:
     @classmethod
     def setUpTestData(cls):
@@ -196,9 +197,7 @@ class PaymentSourceUpdateViewTest(PaymentSourceViewTest):
             acc_identifier=self.data['acc_identifier'],
             user=self.user
         )
-        self.url = reverse(
-                    'sources:source-retrieveupdatedelete',
-                    args=[self.source.id])
+        self.url = reverse(rud_url, args=[self.source.id])
         self.client.force_authenticate(user=self.user)
 
     def test_update_source_success(self):
@@ -249,4 +248,41 @@ class PaymentSourceUpdateViewTest(PaymentSourceViewTest):
         }
         response = self.client.put(self.url, data=update_data)
         self.assertEqual(response.status_code, 401)
+
+    def test_update_source_fail_unknown_request(self):
+        update_data = {
+            'unknown': 'unknown'
+        }
+        response = self.client.put(self.url, data=update_data)
+        self.assertEqual(response.status_code, 400)
+
+
+class PaymentSourceDeleteViewTest(PaymentSourceViewTest):
+    def setUp(self):
+        self.source = PaymentSource.objects.create(
+            source_type=self.data['source_type'],
+            name=self.data['name'],
+            acc_identifier=self.data['acc_identifier'],
+            user=self.user
+        )
+        self.url = reverse(rud_url, args=[self.source.id])
+        self.client.force_authenticate(user=self.user)
+    
+    def test_delete_success(self):
+        response = self.client.delete(self.url)
+        try:
+            source = PaymentSource.objects.get(id=self.source.id)
+        except ObjectDoesNotExist:
+            source = None
+        self.assertEqual(response.status_code, 204)
+        self.assertIsNone(source)
+
+    def test_delete_fail(self):
+        response = self.client.delete(reverse(rud_url, args=[self.source.id + 1]))
+        self.assertEqual(response.status_code, 404)
+
+    """
+    do we need to test for cases when a payment source is used and thus we cannot delete it?
+    or is it testing the Django implementation and thus not useful?
+    """
 
