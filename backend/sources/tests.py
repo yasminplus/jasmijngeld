@@ -1,10 +1,15 @@
-from django.test import TestCase
-from .models import PaymentSource
 from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
+from django.test import TestCase
+from django.urls import reverse
+
+from rest_framework.test import APITestCase
+
+from .models import PaymentSource
+from users.tests import ForceVerifyEmailAPIClient
 
 # Create your tests here.
-class PaymentSourceModelTest(TestCase):
+class PaymentSourceSetupMixin:
     @classmethod
     def setUpTestData(cls):
         cls.data = {
@@ -19,6 +24,9 @@ class PaymentSourceModelTest(TestCase):
             email="kogyeom@test.com",
             password="ko-gyeom123"
         )
+
+
+class PaymentSourceModelTest(PaymentSourceSetupMixin, TestCase):
 
     def test_add_new_source(self):
         PaymentSource.objects.create(
@@ -127,3 +135,53 @@ class PaymentSourceModelTest(TestCase):
         self.assertEqual(PaymentSource.objects.count(), 2)
         source = PaymentSource.objects.filter(user=self.user).first()
         self.assertEqual(source.name, self.data['name'])
+
+
+class PaymentSourceViewTest(PaymentSourceSetupMixin, APITestCase):
+    client_class = ForceVerifyEmailAPIClient
+
+    def setUp(self):
+        self.data = {
+            "source_type": "Bank account",
+            "name": "BCA",
+            "acc_identifier": "1234"
+        }
+        self.client.force_authenticate(user=self.user)
+
+
+class CreatePaymentSourceViewTest(PaymentSourceViewTest):
+    url = reverse('sources:source-create')
+
+    def test_create_source_success(self):
+        count = PaymentSource.objects.all().count()
+        response = self.client.post(self.url, self.data)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(count + 1, PaymentSource.objects.all().count())
+
+    def test_create_source_without_source_type_should_fail(self):
+        del self.data['source_type']
+        count = PaymentSource.objects.all().count()
+        response = self.client.post(self.url, self.data)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(count, PaymentSource.objects.all().count())
+
+    def test_create_source_without_name_should_fail(self):
+        del self.data['name']
+        count = PaymentSource.objects.all().count()
+        response = self.client.post(self.url, self.data)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(count, PaymentSource.objects.all().count())
+
+    def test_create_source_without_acc_identifier_success(self):
+        del self.data['acc_identifier']
+        count = PaymentSource.objects.all().count()
+        response = self.client.post(self.url, self.data)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(count + 1, PaymentSource.objects.all().count())
+
+    def test_create_source_no_user_should_fail(self):
+        self.client.force_authenticate(user=None)
+        count = PaymentSource.objects.all().count()
+        response = self.client.post(self.url, self.data)
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(count, PaymentSource.objects.all().count())
