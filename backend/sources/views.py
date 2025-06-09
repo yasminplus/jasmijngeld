@@ -1,13 +1,14 @@
 from rest_framework.generics import CreateAPIView, GenericAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 
+from users.permissions import IsEmailVerified
 from .models import PaymentSource
 from .serializers import PaymentSourceSerializer
 
 
 # Create your views here.
 class PaymentSourceView(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, IsEmailVerified)
     serializer_class = PaymentSourceSerializer
     lookup_field = "id"
 

@@ -16,7 +16,7 @@ class ForceVerifyEmailAPIClient(APIClient):
         super().force_authenticate(user, token)
         if user:
             user.is_verified = True
-            token.save()
+            user.save()
 
 class JGTokenObtainPairSerializer(APITestCase):
     @classmethod
