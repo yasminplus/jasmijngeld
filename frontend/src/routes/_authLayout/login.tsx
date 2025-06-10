@@ -55,7 +55,7 @@ function LoginForm() {
     authContext.login_i(values)
     .then(() => {
       router.invalidate()
-      navigate({to: '/accounts-cards'})
+      navigate({to: '/dashboard'})
     })
     .catch(error => {
       setLoginError(error.message)

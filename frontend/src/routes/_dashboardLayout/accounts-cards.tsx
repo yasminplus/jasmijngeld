@@ -1,6 +1,18 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { AccountsCards, getAccountsCardsList } from '@/services/accounts-cards' 
 import { useEffect, useState } from 'react'
+import { createFileRoute } from '@tanstack/react-router'
+import { Button } from "@/components/ui/button"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+
+import { Plus } from "lucide-react"
+import { Link } from "@tanstack/react-router"
+import { AccountsCards, getAccountsCardsList } from '@/services/accounts-cards' 
 
 
 export const Route = createFileRoute('/_dashboardLayout/accounts-cards')({
@@ -18,27 +30,35 @@ function ListAccounts() {
   }, []);
 
   const accTable = accounts.map(acc => 
-    <tr key={acc.id}>
-      <td> {acc.name} </td>
-      <td> {acc.source_type} </td>
-      <td> {acc.acc_identifier == ""? "-" : acc.acc_identifier} </td>
-    </tr>
+    <TableRow key={acc.id}>
+      <TableCell> {acc.name} </TableCell>
+      <TableCell> {acc.source_type} </TableCell>
+      <TableCell> {acc.acc_identifier == ""? "-" : acc.acc_identifier} </TableCell>
+    </TableRow>
   )
 
   return (
     <div>
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Source type</th>
-            <th>Account identifier</th>
-          </tr>
-        </thead>
-        <tbody>
+      <Link to={'/dashboard'}>
+        <Button>
+          <Plus />Add new account/card
+        </Button>
+      </Link>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Name</TableHead>
+            <TableHead>Source type</TableHead>
+            <TableHead>Account identifier</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
           {accTable}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
+
+      <h1>Add new payment source</h1>
+      {/* decide if we want to use datatable or a form to add new payment source*/}
     </div>
   )
 }
