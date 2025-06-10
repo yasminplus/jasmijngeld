@@ -12,7 +12,7 @@ import { AppSidebar } from "@/components/app-sidebar"
 import { useAuthContext } from '@/context/auth'
 import { Header } from '@/components/dashboard/Header'
 
-export const Route = createFileRoute('/dashboard')({
+export const Route = createFileRoute('/_dashboardLayout')({
   beforeLoad: ({ context, location }) => {
     if (!context.authContext.isAuthenticated) {
       throw redirect({

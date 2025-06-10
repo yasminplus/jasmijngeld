@@ -3,7 +3,7 @@ import { AccountsCards, getAccountsCardsList } from '@/services/accounts-cards'
 import { useEffect, useState } from 'react'
 
 
-export const Route = createFileRoute('/dashboard/accounts-cards')({
+export const Route = createFileRoute('/_dashboardLayout/accounts-cards')({
   component: ListAccounts,
 })
 

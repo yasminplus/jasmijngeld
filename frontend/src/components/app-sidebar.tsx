@@ -23,7 +23,7 @@ import {
 const items = [
   {
     title: "Dashboard",
-    url: "/dashboard/home",
+    url: "/dashboard",
     icon: Home,
   },
   {
@@ -33,7 +33,7 @@ const items = [
   },
   {
     title: "Accounts & Cards",
-    url: "/dashboard/accounts-cards",
+    url: "/accounts-cards",
     icon: Calendar,
   },
   {
