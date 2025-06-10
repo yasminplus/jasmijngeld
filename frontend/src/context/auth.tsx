@@ -36,7 +36,7 @@ export interface AuthContextI {
 
 const AuthContext = React.createContext<AuthContextI | null>(null)
 
-export const base_key = 'jasminegeld.auth.user'
+export const base_key = 'jasmijngeld.auth.user'
 
 function getStoredUser(): User | null {
   const first_name = localStorage.getItem(base_key + '.first_name')

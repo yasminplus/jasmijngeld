@@ -27,11 +27,10 @@ axios.interceptors.response.use(
       }
 
       await axios
-      .post(`${BE_BASE_URL}/api/auth/token/`, data)
+      .post(`${BE_BASE_URL}/api/auth/token/refresh/`, data)
       .then((res) => {
-        console.log(res) // res.data should be of type Token
         setStoredUser(res.data)
-        axios.defaults.headers.common["Authorization"] = `Bearer ${res.data.token}`
+        axios.defaults.headers.common["Authorization"] = `Bearer ${res.data.access}`
       })
       
       error.config.headers.Authorization = "Bearer " + getToken('access')
