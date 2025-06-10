@@ -25,7 +25,12 @@ class PaymentSourceSetupMixin:
             email="kogyeom@test.com",
             password="ko-gyeom123"
         )
-
+        cls.user2 = get_user_model().objects.create_user(
+            first_name="Mubee",
+            last_name="Kim",
+            email="kimmubee@test.com",
+            password="kim-mubee123"
+        )
 
 class PaymentSourceModelTest(PaymentSourceSetupMixin, TestCase):
 
@@ -93,17 +98,12 @@ class PaymentSourceModelTest(PaymentSourceSetupMixin, TestCase):
         source = PaymentSource.objects.filter(user=self.user).first()
         self.assertEqual(source.source_type, 'CA')
 
-        user2 = get_user_model().objects.create_user(
-            first_name="Mubee",
-            last_name="Kim",
-            email="kimmubee@test.com",
-            password="kim-mubee123"
-        )
+        
         PaymentSource.objects.create(
             source_type='CA',
             name='Cash',
             acc_identifier='',
-            user=user2
+            user=self.user2
         )
         self.assertEqual(PaymentSource.objects.count(), 2)
         source = PaymentSource.objects.filter(user=self.user).first()
@@ -120,17 +120,11 @@ class PaymentSourceModelTest(PaymentSourceSetupMixin, TestCase):
         source = PaymentSource.objects.filter(user=self.user).first()
         self.assertEqual(source.name, self.data['name'])
 
-        user2 = get_user_model().objects.create_user(
-            first_name="Mubee",
-            last_name="Kim",
-            email="kimmubee@test.com",
-            password="kim-mubee123"
-        )
         PaymentSource.objects.create(
             source_type=self.data['source_type'],
             name=self.data['name'],
             acc_identifier=self.data['acc_identifier'],
-            user=user2
+            user=self.user2
         )
 
         self.assertEqual(PaymentSource.objects.count(), 2)
@@ -331,3 +325,35 @@ class PaymentSourceListViewTest(PaymentSourceViewTest):
     do we need to test that the List view only returns data for this user?
     """
 
+
+class PaymentSourceReadViewTest(PaymentSourceViewTest):
+    def setUp(self):
+        self.source = PaymentSource.objects.create(
+            source_type=self.data['source_type'],
+            name=self.data['name'],
+            acc_identifier=self.data['acc_identifier'],
+            user=self.user
+        )
+        self.url = reverse(rud_url, args=[self.source.id])
+        self.client.force_authenticate(user=self.user)
+    
+    def test_read_success(self):
+        response = self.client.get(self.url)
+        json_data = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json_data['id'], self.source.id)
+    
+    def test_read_source_fail_no_user(self):
+        self.client.force_authenticate(user=None)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 401)
+    
+    def test_read_other_user_fail(self):
+        source2 = PaymentSource.objects.create(
+            source_type='CC',
+            name='CC Mandiri',
+            user=self.user2
+        )
+        url2 = reverse(rud_url, args=[source2.id])
+        response = self.client.get(url2)
+        self.assertEqual(response.status_code, 404)
