@@ -151,7 +151,7 @@ class PaymentSourceViewTest(PaymentSourceSetupMixin, APITestCase):
 
 
 class PaymentSourceCreateViewTest(PaymentSourceViewTest):
-    url = reverse('sources:source-create')
+    url = reverse('sources:source-listcreate')
 
     def test_create_source_success(self):
         count = PaymentSource.objects.all().count()
@@ -281,8 +281,53 @@ class PaymentSourceDeleteViewTest(PaymentSourceViewTest):
         response = self.client.delete(reverse(rud_url, args=[self.source.id + 1]))
         self.assertEqual(response.status_code, 404)
 
+    def test_delete_no_user_fail(self):
+        self.client.force_authenticate(user=None)
+        response = self.client.delete(reverse(rud_url, args=[self.source.id]))
+        self.assertEqual(response.status_code, 401)
+
     """
     do we need to test for cases when a payment source is used and thus we cannot delete it?
     or is it testing the Django implementation and thus not useful?
+    """
+
+
+class PaymentSourceListViewTest(PaymentSourceViewTest):
+    url = reverse('sources:source-listcreate')
+    
+    def setUp(self):
+        self.source1 = PaymentSource.objects.create(
+            source_type=self.data['source_type'],
+            name=self.data['name'],
+            acc_identifier=self.data['acc_identifier'],
+            user=self.user
+        )
+        self.data2 = {
+            "source_type": "CC",
+            "name": "CC BCA",
+            "acc_identifier": "5678"
+        }
+        self.source2 = PaymentSource.objects.create(
+            source_type=self.data2['source_type'],
+            name=self.data2['name'],
+            acc_identifier=self.data2['acc_identifier'],
+            user=self.user
+        )
+        self.client.force_authenticate(user=self.user)
+
+    def test_list_source_success(self):
+        response = self.client.get(self.url)
+        source_count = PaymentSource.objects.all().count()
+        json_data = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json_data['count'], source_count)
+
+    def test_list_source_fail_no_user(self):
+        self.client.force_authenticate(user=None)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 401)
+
+    """
+    do we need to test that the List view only returns data for this user?
     """
 
