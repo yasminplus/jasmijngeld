@@ -40,10 +40,6 @@ function DashboardLayout() {
       <div id="content" className='flex flex-col flex-grow w-screen' >
         <Header />
         <main className='p-4'>
-
-          <h1>Dashboard</h1>
-          <p>This route's content is only visible to authenticated users.</p>
-          <p>Hello, { authContext.user?.first_name } </p>
           <Outlet>
             <SidebarTrigger />
           </Outlet>

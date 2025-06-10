@@ -23,7 +23,7 @@ export const Route = createFileRoute('/_authLayout/login')({
   component: LoginForm,
   beforeLoad: ({ context }) => {
     if (context.authContext.isAuthenticated) {
-      throw redirect({ to: '/dashboard' })
+      throw redirect({ to: '/dashboard/home' })
     }
   },
   loader: ({ context }) => {
@@ -55,7 +55,7 @@ function LoginForm() {
     authContext.login_i(values)
     .then(() => {
       router.invalidate()
-      navigate({to: '/dashboard'})
+      navigate({to: '/dashboard/accounts-cards'})
     })
     .catch(error => {
       setLoginError(error.message)
