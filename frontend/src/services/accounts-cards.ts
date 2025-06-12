@@ -3,7 +3,7 @@ import axios from "axios";
 export interface AccountsCards {
   id: number;
   name: string;
-  source_type: string;
+  source_type: 'Bank account' | 'Credit card' | 'Digital wallet' | 'Prepaid card' | 'Cash';
   acc_identifier: string | null;
 }
 
