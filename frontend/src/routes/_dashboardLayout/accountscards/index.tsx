@@ -8,7 +8,7 @@ import { AccountsCards, getAccountsCardsList } from '@/services/accounts-cards'
 import { DataTable } from '@/components/sources/data-table'
 import { sourcesColumns } from '@/components/sources/columns'
 
-export const Route = createFileRoute('/_dashboardLayout/accounts-cards')({
+export const Route = createFileRoute('/_dashboardLayout/accountscards/')({
   component: ListAccounts,
 })
 

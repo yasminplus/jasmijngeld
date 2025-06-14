@@ -33,7 +33,7 @@ const items = [
   },
   {
     title: "Accounts & Cards",
-    url: "/accounts-cards",
+    url: "/accountscards",
     icon: Calendar,
   },
   {

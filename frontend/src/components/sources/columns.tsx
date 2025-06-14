@@ -50,7 +50,7 @@ export const sourcesColumns: ColumnDef<AccountsCards>[] = [
       const source = row.original
  
       return (
-        <Link to="/accounts-cards/$sourceId/edit" params={{ sourceId: source.id}}>
+        <Link to="/accountscards/$sourceId/edit" params={{ sourceId: source.id}}>
           <Button className='p-0 w-8 h-8'>
             <Pencil />
           </Button>

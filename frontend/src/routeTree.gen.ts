@@ -15,9 +15,10 @@ import { Route as DashboardLayoutRouteImport } from './routes/_dashboardLayout/r
 import { Route as AuthLayoutRouteImport } from './routes/_authLayout/route'
 import { Route as IndexImport } from './routes/index'
 import { Route as DashboardLayoutDashboardImport } from './routes/_dashboardLayout/dashboard'
-import { Route as DashboardLayoutAccountsCardsImport } from './routes/_dashboardLayout/accounts-cards'
 import { Route as AuthLayoutSignupImport } from './routes/_authLayout/signup'
 import { Route as AuthLayoutLoginImport } from './routes/_authLayout/login'
+import { Route as DashboardLayoutAccountscardsIndexImport } from './routes/_dashboardLayout/accountscards/index'
+import { Route as DashboardLayoutAccountscardsSourceIdEditImport } from './routes/_dashboardLayout/accountscards/$sourceId.edit'
 
 // Create/Update Routes
 
@@ -43,13 +44,6 @@ const DashboardLayoutDashboardRoute = DashboardLayoutDashboardImport.update({
   getParentRoute: () => DashboardLayoutRouteRoute,
 } as any)
 
-const DashboardLayoutAccountsCardsRoute =
-  DashboardLayoutAccountsCardsImport.update({
-    id: '/accounts-cards',
-    path: '/accounts-cards',
-    getParentRoute: () => DashboardLayoutRouteRoute,
-  } as any)
-
 const AuthLayoutSignupRoute = AuthLayoutSignupImport.update({
   id: '/signup',
   path: '/signup',
@@ -61,6 +55,20 @@ const AuthLayoutLoginRoute = AuthLayoutLoginImport.update({
   path: '/login',
   getParentRoute: () => AuthLayoutRouteRoute,
 } as any)
+
+const DashboardLayoutAccountscardsIndexRoute =
+  DashboardLayoutAccountscardsIndexImport.update({
+    id: '/accountscards/',
+    path: '/accountscards/',
+    getParentRoute: () => DashboardLayoutRouteRoute,
+  } as any)
+
+const DashboardLayoutAccountscardsSourceIdEditRoute =
+  DashboardLayoutAccountscardsSourceIdEditImport.update({
+    id: '/accountscards/$sourceId/edit',
+    path: '/accountscards/$sourceId/edit',
+    getParentRoute: () => DashboardLayoutRouteRoute,
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -101,18 +109,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLayoutSignupImport
       parentRoute: typeof AuthLayoutRouteImport
     }
-    '/_dashboardLayout/accounts-cards': {
-      id: '/_dashboardLayout/accounts-cards'
-      path: '/accounts-cards'
-      fullPath: '/accounts-cards'
-      preLoaderRoute: typeof DashboardLayoutAccountsCardsImport
-      parentRoute: typeof DashboardLayoutRouteImport
-    }
     '/_dashboardLayout/dashboard': {
       id: '/_dashboardLayout/dashboard'
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardLayoutDashboardImport
+      parentRoute: typeof DashboardLayoutRouteImport
+    }
+    '/_dashboardLayout/accountscards/': {
+      id: '/_dashboardLayout/accountscards/'
+      path: '/accountscards'
+      fullPath: '/accountscards'
+      preLoaderRoute: typeof DashboardLayoutAccountscardsIndexImport
+      parentRoute: typeof DashboardLayoutRouteImport
+    }
+    '/_dashboardLayout/accountscards/$sourceId/edit': {
+      id: '/_dashboardLayout/accountscards/$sourceId/edit'
+      path: '/accountscards/$sourceId/edit'
+      fullPath: '/accountscards/$sourceId/edit'
+      preLoaderRoute: typeof DashboardLayoutAccountscardsSourceIdEditImport
       parentRoute: typeof DashboardLayoutRouteImport
     }
   }
@@ -135,13 +150,17 @@ const AuthLayoutRouteRouteWithChildren = AuthLayoutRouteRoute._addFileChildren(
 )
 
 interface DashboardLayoutRouteRouteChildren {
-  DashboardLayoutAccountsCardsRoute: typeof DashboardLayoutAccountsCardsRoute
   DashboardLayoutDashboardRoute: typeof DashboardLayoutDashboardRoute
+  DashboardLayoutAccountscardsIndexRoute: typeof DashboardLayoutAccountscardsIndexRoute
+  DashboardLayoutAccountscardsSourceIdEditRoute: typeof DashboardLayoutAccountscardsSourceIdEditRoute
 }
 
 const DashboardLayoutRouteRouteChildren: DashboardLayoutRouteRouteChildren = {
-  DashboardLayoutAccountsCardsRoute: DashboardLayoutAccountsCardsRoute,
   DashboardLayoutDashboardRoute: DashboardLayoutDashboardRoute,
+  DashboardLayoutAccountscardsIndexRoute:
+    DashboardLayoutAccountscardsIndexRoute,
+  DashboardLayoutAccountscardsSourceIdEditRoute:
+    DashboardLayoutAccountscardsSourceIdEditRoute,
 }
 
 const DashboardLayoutRouteRouteWithChildren =
@@ -152,8 +171,9 @@ export interface FileRoutesByFullPath {
   '': typeof DashboardLayoutRouteRouteWithChildren
   '/login': typeof AuthLayoutLoginRoute
   '/signup': typeof AuthLayoutSignupRoute
-  '/accounts-cards': typeof DashboardLayoutAccountsCardsRoute
   '/dashboard': typeof DashboardLayoutDashboardRoute
+  '/accountscards': typeof DashboardLayoutAccountscardsIndexRoute
+  '/accountscards/$sourceId/edit': typeof DashboardLayoutAccountscardsSourceIdEditRoute
 }
 
 export interface FileRoutesByTo {
@@ -161,8 +181,9 @@ export interface FileRoutesByTo {
   '': typeof DashboardLayoutRouteRouteWithChildren
   '/login': typeof AuthLayoutLoginRoute
   '/signup': typeof AuthLayoutSignupRoute
-  '/accounts-cards': typeof DashboardLayoutAccountsCardsRoute
   '/dashboard': typeof DashboardLayoutDashboardRoute
+  '/accountscards': typeof DashboardLayoutAccountscardsIndexRoute
+  '/accountscards/$sourceId/edit': typeof DashboardLayoutAccountscardsSourceIdEditRoute
 }
 
 export interface FileRoutesById {
@@ -172,15 +193,30 @@ export interface FileRoutesById {
   '/_dashboardLayout': typeof DashboardLayoutRouteRouteWithChildren
   '/_authLayout/login': typeof AuthLayoutLoginRoute
   '/_authLayout/signup': typeof AuthLayoutSignupRoute
-  '/_dashboardLayout/accounts-cards': typeof DashboardLayoutAccountsCardsRoute
   '/_dashboardLayout/dashboard': typeof DashboardLayoutDashboardRoute
+  '/_dashboardLayout/accountscards/': typeof DashboardLayoutAccountscardsIndexRoute
+  '/_dashboardLayout/accountscards/$sourceId/edit': typeof DashboardLayoutAccountscardsSourceIdEditRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '' | '/login' | '/signup' | '/accounts-cards' | '/dashboard'
+  fullPaths:
+    | '/'
+    | ''
+    | '/login'
+    | '/signup'
+    | '/dashboard'
+    | '/accountscards'
+    | '/accountscards/$sourceId/edit'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '' | '/login' | '/signup' | '/accounts-cards' | '/dashboard'
+  to:
+    | '/'
+    | ''
+    | '/login'
+    | '/signup'
+    | '/dashboard'
+    | '/accountscards'
+    | '/accountscards/$sourceId/edit'
   id:
     | '__root__'
     | '/'
@@ -188,8 +224,9 @@ export interface FileRouteTypes {
     | '/_dashboardLayout'
     | '/_authLayout/login'
     | '/_authLayout/signup'
-    | '/_dashboardLayout/accounts-cards'
     | '/_dashboardLayout/dashboard'
+    | '/_dashboardLayout/accountscards/'
+    | '/_dashboardLayout/accountscards/$sourceId/edit'
   fileRoutesById: FileRoutesById
 }
 
@@ -233,8 +270,9 @@ export const routeTree = rootRoute
     "/_dashboardLayout": {
       "filePath": "_dashboardLayout/route.tsx",
       "children": [
-        "/_dashboardLayout/accounts-cards",
-        "/_dashboardLayout/dashboard"
+        "/_dashboardLayout/dashboard",
+        "/_dashboardLayout/accountscards/",
+        "/_dashboardLayout/accountscards/$sourceId/edit"
       ]
     },
     "/_authLayout/login": {
@@ -245,12 +283,16 @@ export const routeTree = rootRoute
       "filePath": "_authLayout/signup.tsx",
       "parent": "/_authLayout"
     },
-    "/_dashboardLayout/accounts-cards": {
-      "filePath": "_dashboardLayout/accounts-cards.tsx",
-      "parent": "/_dashboardLayout"
-    },
     "/_dashboardLayout/dashboard": {
       "filePath": "_dashboardLayout/dashboard.tsx",
+      "parent": "/_dashboardLayout"
+    },
+    "/_dashboardLayout/accountscards/": {
+      "filePath": "_dashboardLayout/accountscards/index.tsx",
+      "parent": "/_dashboardLayout"
+    },
+    "/_dashboardLayout/accountscards/$sourceId/edit": {
+      "filePath": "_dashboardLayout/accountscards/$sourceId.edit.tsx",
       "parent": "/_dashboardLayout"
     }
   }
