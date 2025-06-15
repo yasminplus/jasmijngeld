@@ -45,7 +45,7 @@ class PaymentSource(models.Model):
     name should be unique among one user
     """
     def _validate_name(self):
-        qs = PaymentSource.objects.filter(user=self.user).filter(name=self.name)
+        qs = PaymentSource.objects.filter(user=self.user).filter(name=self.name).exclude(id=self.id)
         if qs:
             raise ValidationError({
                     "name": _("Payment source name for this user already exists.")
