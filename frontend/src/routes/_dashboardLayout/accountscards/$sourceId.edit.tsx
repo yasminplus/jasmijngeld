@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
 
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+import { SubmitHandler, useForm } from "react-hook-form"
 import { z } from "zod"
 
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -23,7 +22,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { AccountsCards, SOURCE_TYPE_CHOICES, getAccountCard } from '@/services/accounts-cards';
+import { 
+  SOURCE_TYPE_CHOICES, 
+  PaymentSource, 
+  PaymentSourceForm,
+  getPaymentSource,
+  sourceSchema,
+  updatePaymentSource 
+} from '@/services/accounts-cards';
 
 export const Route = createFileRoute(
   '/_dashboardLayout/accountscards/$sourceId/edit',
@@ -31,34 +37,46 @@ export const Route = createFileRoute(
   component: EditAccount
 })
 
-const accountSchema = z.object({
-  name: z.string(),
-  source_type: z.enum(['Bank account', 'Credit card', 'Digital wallet', 'Prepaid card', 'Cash']),
-  acc_identifier: z.string().optional().or(z.literal('')),
-})
 
 function EditAccount() {
   const { sourceId } = Route.useParams()
-  const [account, setAccount] = useState<AccountsCards>({
+  const navigate = useNavigate()
+  const [account, setAccount] = useState<PaymentSource>({
     id: 0,
     name: '',
     source_type: 'Bank account',
     acc_identifier: ''
   })
-  
 
-  function onSubmit(values: z.infer < typeof accountSchema > ) {
+  // const onSubmit: SubmitHandler<PaymentSource> = (data: z.infer < typeof sourceSchema >) => {
+  const onSubmit: SubmitHandler<PaymentSourceForm> =  async (data: PaymentSourceForm) => {
+    console.log("in onSubmit")
+    console.log(data)
     try {
-      console.log(values);
-    } catch (error) {
-      console.error("Form submission error", error);
+      await updatePaymentSource(account.id, data)
+      navigate({
+        to: '/accountscards'
+      })
+    }
+    catch (err) {
+      console.error(err)
     }
   }
 
-  // const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data)
+  const form = useForm<z.infer<typeof sourceSchema>>({
+    resolver: zodResolver(sourceSchema),
+    defaultValues: {
+      name: account.name,
+      source_type: account.source_type,
+      acc_identifier: account.acc_identifier
+    },
+    values: account
+  })
+
+  const { isSubmitting } = form.formState;
 
   useEffect(() => {
-    getAccountCard(sourceId)
+    getPaymentSource(sourceId)
     .then(data => {
       setAccount(data)
       form.reset(account)
@@ -71,16 +89,6 @@ function EditAccount() {
     })
   }, [sourceId]) 
   // TODO: fix the useEffect warning 
-
-  const form = useForm<z.infer<typeof accountSchema>>({
-    resolver: zodResolver(accountSchema),
-    defaultValues: {
-      name: account.name,
-      source_type: account.source_type,
-      acc_identifier: account.acc_identifier
-    },
-    values: account
-  })
 
   return (
     <>
@@ -151,7 +159,13 @@ function EditAccount() {
             )}
           />
           
-          <Button type="submit" className="w-full mt-10">Save</Button>
+          <Button 
+            type="submit" 
+            className="w-full mt-10"
+            disabled={isSubmitting}
+          >
+            Save
+          </Button>
         </form>
       </Form>
       </div>

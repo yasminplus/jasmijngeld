@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 
 import { Plus } from "lucide-react"
 import { Link } from "@tanstack/react-router"
-import { AccountsCards, getAccountsCardsList } from '@/services/accounts-cards' 
+import { PaymentSource, getPaymentSourceList } from '@/services/accounts-cards' 
 import { DataTable } from '@/components/sources/data-table'
 import { sourcesColumns } from '@/components/sources/columns'
 
@@ -13,9 +13,9 @@ export const Route = createFileRoute('/_dashboardLayout/accountscards/')({
 })
 
 function ListAccounts() {
-  const [ accounts, setAccounts ] = useState<AccountsCards[]>([])
+  const [ accounts, setAccounts ] = useState<PaymentSource[]>([])
   useEffect(() => {
-    getAccountsCardsList()
+    getPaymentSourceList()
     .then(data => setAccounts(data))
     .catch(err => {
       throw err

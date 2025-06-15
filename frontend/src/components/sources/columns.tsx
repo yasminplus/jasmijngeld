@@ -6,9 +6,9 @@ import { ArrowUpDown, Pencil } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 
-import { AccountsCards } from '@/services/accounts-cards' 
+import { PaymentSource } from '@/services/accounts-cards' 
 
-export const sourcesColumns: ColumnDef<AccountsCards>[] = [
+export const sourcesColumns: ColumnDef<PaymentSource>[] = [
   {
     accessorKey: "name",
     header: ({ column }) => {
