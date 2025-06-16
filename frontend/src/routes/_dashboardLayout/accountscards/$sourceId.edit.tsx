@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -25,7 +25,6 @@ import {
 import { 
   SOURCE_TYPE_CHOICES, 
   PaymentSource, 
-  PaymentSourceForm,
   getPaymentSource,
   sourceSchema,
   updatePaymentSource 
@@ -34,24 +33,17 @@ import {
 export const Route = createFileRoute(
   '/_dashboardLayout/accountscards/$sourceId/edit',
 )({
-  component: EditAccount
+  component: EditAccount,
+  loader: async ({ params }) => await getPaymentSource(params.sourceId),
 })
 
 
 function EditAccount() {
-  const { sourceId } = Route.useParams()
+  const loaderData = Route.useLoaderData()
   const navigate = useNavigate()
-  const [account, setAccount] = useState<PaymentSource>({
-    id: 0,
-    name: '',
-    source_type: 'Bank account',
-    acc_identifier: ''
-  })
+  const [account] = useState<PaymentSource>(loaderData)
 
-  // const onSubmit: SubmitHandler<PaymentSource> = (data: z.infer < typeof sourceSchema >) => {
-  const onSubmit: SubmitHandler<PaymentSourceForm> =  async (data: PaymentSourceForm) => {
-    console.log("in onSubmit")
-    console.log(data)
+  const onSubmit: SubmitHandler<z.infer<typeof sourceSchema>> =  async (data) => {
     try {
       await updatePaymentSource(account.id, data)
       navigate({
@@ -65,30 +57,10 @@ function EditAccount() {
 
   const form = useForm<z.infer<typeof sourceSchema>>({
     resolver: zodResolver(sourceSchema),
-    defaultValues: {
-      name: account.name,
-      source_type: account.source_type,
-      acc_identifier: account.acc_identifier
-    },
     values: account
   })
 
   const { isSubmitting } = form.formState;
-
-  useEffect(() => {
-    getPaymentSource(sourceId)
-    .then(data => {
-      setAccount(data)
-      form.reset(account)
-      // form.setValue("name", account.name )
-      // form.setValue("source_type", account.source_type)
-      // form.setValue("acc_identifier", account.acc_identifier)
-    })
-    .catch(err => {
-      throw err
-    })
-  }, [sourceId]) 
-  // TODO: fix the useEffect warning 
 
   return (
     <>
@@ -118,7 +90,6 @@ function EditAccount() {
           <FormField
             control={form.control}
             name="source_type"
-            // defaultValue={account.source_type }
             render={({ field }) => (
               <FormItem className='text-left'>
                 <FormLabel>Source type</FormLabel>

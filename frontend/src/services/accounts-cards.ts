@@ -50,7 +50,7 @@ export function getPaymentSource(sourceId: string): Promise<PaymentSource> {
     });
 }
 
-export function updatePaymentSource(id:number, data: PaymentSourceForm): Promise<PaymentSource> {
+export function updatePaymentSource(id:number, data: z.infer<typeof sourceSchema>): Promise<PaymentSource> {
   return axios.put(`${BE_BASE_URL}/api/sources/${id}`, data)
     .then(response => {
       const res = response['data'];
