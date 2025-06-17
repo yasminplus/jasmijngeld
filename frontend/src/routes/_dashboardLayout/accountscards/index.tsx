@@ -1,19 +1,53 @@
 import { useEffect, useState } from 'react'
-import { createFileRoute } from '@tanstack/react-router'
+import { Plus } from "lucide-react"
+import { SearchSchemaInput, createFileRoute, Link } from '@tanstack/react-router'
+import { z } from "zod"
+import { toast } from "sonner"
+
 import { Button } from "@/components/ui/button"
 
-import { Plus } from "lucide-react"
-import { Link } from "@tanstack/react-router"
 import { PaymentSource, getPaymentSourceList } from '@/services/accounts-cards' 
 import { DataTable } from '@/components/sources/data-table'
 import { sourcesColumns } from '@/components/sources/columns'
 
+type OperationsType = 'create' | 'update' | 'delete'
+
 export const Route = createFileRoute('/_dashboardLayout/accountscards/')({
   component: ListAccounts,
+  validateSearch: (
+    input: {
+      op_type: OperationsType
+      id: number
+    } & SearchSchemaInput,
+  ) => {
+      return z
+        .object({
+          id: z.number().catch(0),
+          op_type: z.enum(['create', 'update', 'delete', 'none']).catch('create'),
+        })
+        .parse(input)
+    },
+  
+  loaderDeps: ({ search: {  id, op_type  } }) => ({  id, op_type  }),
+  loader: ({ deps: { id, op_type } }) => {
+    // TODO: use id to get the name of the object
+    if (id > 0) {
+      if (op_type === 'update') {
+        toast.success(`Payment source has been updated`)
+      } else if (op_type === 'create') {
+        toast.success(`A new payment source has been created`)
+      } else if (op_type === 'delete') {
+        toast.success(`Payment source has been deleted`)
+      }
+    }
+
+  }
 })
 
 function ListAccounts() {
   const [ accounts, setAccounts ] = useState<PaymentSource[]>([])
+  // const { id, op_type } = Route.useSearch()
+
   useEffect(() => {
     getPaymentSourceList()
     .then(data => setAccounts(data))

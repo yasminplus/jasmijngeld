@@ -39,6 +39,7 @@ export const Route = createFileRoute(
 
 
 function EditAccount() {
+  const params = Route.useParams()  // TODO: type it
   const loaderData = Route.useLoaderData()
   const navigate = useNavigate()
   const [account] = useState<PaymentSource>(loaderData)
@@ -47,7 +48,8 @@ function EditAccount() {
     try {
       await updatePaymentSource(account.id, data)
       navigate({
-        to: '/accountscards'
+        to: '/accountscards',
+        search: { id: Number(params['sourceId']), op_type: 'update' }
       })
     }
     catch (err) {
