@@ -5,6 +5,8 @@ import {
  } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { AuthContextI } from '@/context/auth'
+import { Toaster } from "@/components/ui/sonner"
+
 
 interface MyRouterContext {
   authContext: AuthContextI
@@ -18,6 +20,7 @@ function RootComponent() {
   return (
     <React.Fragment>
       <Outlet />
+      <Toaster position="top-center"/>
       <TanStackRouterDevtools position="bottom-right" />
     </React.Fragment>
   )
