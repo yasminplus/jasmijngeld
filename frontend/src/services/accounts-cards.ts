@@ -61,3 +61,20 @@ export function updatePaymentSource(id:number, data: z.infer<typeof sourceSchema
       throw error;
     });
 }
+
+export function deletePaymentSource(id:number): Promise<boolean> {
+  return axios.delete(`${BE_BASE_URL}/api/sources/${id}`)
+    .then(response => {
+      console.log(response)
+      if (response['status'] == 204) {
+        return true;
+      } else {
+        return false;
+      }
+    })
+    .catch(error => {
+      console.error(error);
+      // throw error;
+      return false
+    });
+}

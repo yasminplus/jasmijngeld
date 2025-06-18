@@ -45,12 +45,12 @@ export const sourcesColumns: ColumnDef<PaymentSource>[] = [
     ),
   },
   {
-    id: "actions",
+    id: "edit_action",
     cell: ({ row }) => {
       const source = row.original
  
       return (
-        <Link to="/accountscards/$sourceId/edit" params={{ sourceId: source.id}}>
+        <Link to="/accountscards/$sourceId/edit" params={{ sourceId: String(source.id)}}>
           <Button className='p-0 w-8 h-8'>
             <Pencil />
           </Button>

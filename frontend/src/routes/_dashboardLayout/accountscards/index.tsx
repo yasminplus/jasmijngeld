@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
-import { Plus } from "lucide-react"
+import { Plus, Trash } from "lucide-react"
 import { SearchSchemaInput, createFileRoute, Link } from '@tanstack/react-router'
 import { z } from "zod"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 
-import { PaymentSource, getPaymentSourceList } from '@/services/accounts-cards' 
+import { PaymentSource, deletePaymentSource, getPaymentSourceList } from '@/services/accounts-cards' 
 import { DataTable } from '@/components/sources/data-table'
 import { sourcesColumns } from '@/components/sources/columns'
 
@@ -46,7 +46,37 @@ export const Route = createFileRoute('/_dashboardLayout/accountscards/')({
 
 function ListAccounts() {
   const [ accounts, setAccounts ] = useState<PaymentSource[]>([])
+  const [ cols, setCols ] = useState(sourcesColumns)
   // const { id, op_type } = Route.useSearch()
+
+  const handleDelete = async(id: number) => {
+    try {
+      const res = await deletePaymentSource(id)
+      console.log(res)
+      // TODO: refresh table
+    }
+    catch (err) {
+      console.error(err)
+    }
+  }
+
+  useEffect(() => {
+    if (cols.length == 4) {
+      setCols(prev => [
+        ...prev,
+        {
+          id: "delete_action",
+          cell: ({ row }) => {
+            const source = row.original
+          return (
+            <Button className='p-0 w-8 h-8' onClick={() => handleDelete(source.id)}>
+              <Trash />
+            </Button>
+          )},
+        }
+      ])
+    }
+  } , [cols])
 
   useEffect(() => {
     getPaymentSourceList()
@@ -64,7 +94,7 @@ function ListAccounts() {
         </Button>
       </Link>
 
-      <DataTable columns={sourcesColumns} data={accounts} />
+      <DataTable columns={cols} data={accounts}  />
     </div>
   )
 }
