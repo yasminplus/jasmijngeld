@@ -35,7 +35,7 @@ class PaymentSource(models.Model):
     """
     def _validate_type(self):
         if self.source_type == 'CA':
-            qs = PaymentSource.objects.filter(user=self.user).filter(source_type='CA')
+            qs = PaymentSource.objects.filter(user=self.user).filter(source_type='CA').exclude(id=self.id)
             if len(qs) > 0:
                 raise ValidationError({
                     "source_type": _("This user already has a source of type Cash")
