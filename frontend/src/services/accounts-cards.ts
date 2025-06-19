@@ -50,6 +50,18 @@ export function getPaymentSource(sourceId: string): Promise<PaymentSource> {
     });
 }
 
+export function createPaymentSource(data: z.infer<typeof sourceSchema>): Promise<PaymentSource> {
+  return axios.post(`${BE_BASE_URL}/api/sources/`, data)
+    .then(response => {
+      const res = response['data'];
+      return res;
+    })
+    .catch(error => {
+      console.error(error);
+      throw error;
+    });
+}
+
 export function updatePaymentSource(id:number, data: z.infer<typeof sourceSchema>): Promise<PaymentSource> {
   return axios.put(`${BE_BASE_URL}/api/sources/${id}`, data)
     .then(response => {

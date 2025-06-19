@@ -95,7 +95,7 @@ function ListAccounts() {
 
   return (
     <div>
-      <Link to={'/dashboard'} >
+      <Link to={'/accountscards/new'} >
         <Button className='mb-4'>
           <Plus />Add new account/card
         </Button>
