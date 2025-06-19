@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Plus, Trash } from "lucide-react"
 import { SearchSchemaInput, createFileRoute, Link } from '@tanstack/react-router'
 import { z } from "zod"
@@ -10,7 +10,7 @@ import { PaymentSource, deletePaymentSource, getPaymentSourceList } from '@/serv
 import { DataTable } from '@/components/sources/data-table'
 import { sourcesColumns } from '@/components/sources/columns'
 
-type OperationsType = 'create' | 'update' | 'delete'
+type OperationsType = 'create' | 'update' | 'none'
 
 export const Route = createFileRoute('/_dashboardLayout/accountscards/')({
   component: ListAccounts,
@@ -23,7 +23,7 @@ export const Route = createFileRoute('/_dashboardLayout/accountscards/')({
       return z
         .object({
           id: z.number().catch(0),
-          op_type: z.enum(['create', 'update', 'delete', 'none']).catch('create'),
+          op_type: z.enum(['create', 'update', 'none']).catch('none'),
         })
         .parse(input)
     },
@@ -36,11 +36,8 @@ export const Route = createFileRoute('/_dashboardLayout/accountscards/')({
         toast.success(`Payment source has been updated`)
       } else if (op_type === 'create') {
         toast.success(`A new payment source has been created`)
-      } else if (op_type === 'delete') {
-        toast.success(`Payment source has been deleted`)
       }
     }
-
   }
 })
 
@@ -49,16 +46,30 @@ function ListAccounts() {
   const [ cols, setCols ] = useState(sourcesColumns)
   // const { id, op_type } = Route.useSearch()
 
-  const handleDelete = async(id: number) => {
+  const handleDelete = async(source: PaymentSource) => {
+    const name = source.name
     try {
-      const res = await deletePaymentSource(id)
-      console.log(res)
-      // TODO: refresh table
+      const success = await deletePaymentSource(source.id)
+      if (success) {
+        fetchTableData()
+        toast.success(`Payment source ${name} has been deleted`)
+      } else {
+        throw new Error('API return false')
+      }
     }
     catch (err) {
+      toast.error(`Unable to delete payment source ${name}, perhaps this is linked to some expenses.`)
       console.error(err)
     }
   }
+
+  const fetchTableData = useCallback(() => {
+    getPaymentSourceList()
+    .then(data => setAccounts(data))
+    .catch(err => {
+      throw err
+    })
+  }, [])
 
   useEffect(() => {
     if (cols.length == 4) {
@@ -69,7 +80,7 @@ function ListAccounts() {
           cell: ({ row }) => {
             const source = row.original
           return (
-            <Button className='p-0 w-8 h-8' onClick={() => handleDelete(source.id)}>
+            <Button className='p-0 w-8 h-8' onClick={() => handleDelete(source)}>
               <Trash />
             </Button>
           )},
@@ -79,12 +90,8 @@ function ListAccounts() {
   } , [cols])
 
   useEffect(() => {
-    getPaymentSourceList()
-    .then(data => setAccounts(data))
-    .catch(err => {
-      throw err
-    })
-  }, []);
+    fetchTableData()
+  }, [fetchTableData]);
 
   return (
     <div>

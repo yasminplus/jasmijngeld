@@ -65,7 +65,6 @@ export function updatePaymentSource(id:number, data: z.infer<typeof sourceSchema
 export function deletePaymentSource(id:number): Promise<boolean> {
   return axios.delete(`${BE_BASE_URL}/api/sources/${id}`)
     .then(response => {
-      console.log(response)
       if (response['status'] == 204) {
         return true;
       } else {
@@ -74,7 +73,6 @@ export function deletePaymentSource(id:number): Promise<boolean> {
     })
     .catch(error => {
       console.error(error);
-      // throw error;
-      return false
+      throw error;
     });
 }
