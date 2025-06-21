@@ -5,6 +5,17 @@ import { z } from "zod"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 import { PaymentSource, deletePaymentSource, getPaymentSourceList } from '@/services/accounts-cards' 
 import { DataTable } from '@/components/sources/data-table'
@@ -80,9 +91,26 @@ function ListAccounts() {
           cell: ({ row }) => {
             const source = row.original
           return (
-            <Button className='p-0 w-8 h-8' onClick={() => handleDelete(source)}>
-              <Trash />
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button className='p-0 w-8 h-8'>
+                  <Trash />
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you sure you want to delete this payment source?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete your
+                    account and remove your data from our servers.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>No</AlertDialogCancel>
+                  <AlertDialogAction onClick={() => handleDelete(source)}>Yes</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           )},
         }
       ])
