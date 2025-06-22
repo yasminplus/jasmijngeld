@@ -1,7 +1,10 @@
-from django.db import models
-from users.models import User
-from sources.models import PaymentSource
 from django.conf import settings
+from django.core.exceptions import ValidationError
+from django.db import models
+from django.utils.translation import gettext_lazy as _
+
+from sources.models import PaymentSource
+from users.models import User
 
 # Create your models here.
 class ExpenseCategory(models.Model):
@@ -18,6 +21,16 @@ class Store(models.Model):
 
     def __str__(self):
         return f'{self.name}'
+    
+    """
+    store name should be unique among one user
+    """
+    def _validate_name(self):
+        qs = Store.objects.filter(user=self.user).filter(name=self.name).exclude(id=self.id)
+        if qs:
+            raise ValidationError({
+                    "name": _("Store name for this user already exists.")
+                })
 
 class Expense(models.Model):
     category = models.ForeignKey(ExpenseCategory, on_delete=models.PROTECT)
