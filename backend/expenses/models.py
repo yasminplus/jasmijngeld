@@ -13,24 +13,16 @@ class ExpenseCategory(models.Model):
     def __str__(self):
         return self.name
 
+
 class Store(models.Model):
-    name = models.CharField(max_length=30)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=30, unique=True)
+    # decided not to couple Store to a user, as store name can be shareable among different users
     # maybe consider to couple store with currency, 
     # e.g. shopee with IDR or amazon.de with EUR
 
     def __str__(self):
         return f'{self.name}'
-    
-    """
-    store name should be unique among one user
-    """
-    def _validate_name(self):
-        qs = Store.objects.filter(user=self.user).filter(name=self.name).exclude(id=self.id)
-        if qs:
-            raise ValidationError({
-                    "name": _("Store name for this user already exists.")
-                })
+
 
 class Expense(models.Model):
     category = models.ForeignKey(ExpenseCategory, on_delete=models.PROTECT)
