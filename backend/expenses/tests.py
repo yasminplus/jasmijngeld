@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.test import TestCase
@@ -5,11 +7,11 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from users.tests import ForceVerifyEmailAPIClient
+from sources.models import PaymentSource
 
 from .models import Store, Expense, ExpenseCategory
 
 
-# Create your tests here.
 class StoreSetupMixin:
     @classmethod
     def setUpTestData(cls):
@@ -95,3 +97,48 @@ class StoreListViewTest(StoreViewTest):
         self.client.force_authenticate(user=None)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 401)
+
+
+"""
+Expenses
+"""
+class ExpenseSetupMixin:
+    @classmethod
+    def setUpTestData(cls):
+        cls.exp_data = {
+            'amount': 150_000,
+            'date': date(2025, 5, 25),
+            'description': 'Moisturizer COS'
+        }
+        cls.cat1 = ExpenseCategory.objects.create(name='Recurring bills')
+        cls.cat2 = ExpenseCategory.objects.create(name='Skincare & Makeup')
+        cls.store = Store.objects.create(
+            name='Syopee'
+        )
+        # set up a user
+        cls.user = get_user_model().objects.create_user(
+            first_name="Gyeom",
+            last_name="Ko",
+            email="kogyeom@test.com",
+            password="ko-gyeom123"
+        )
+        cls.source = PaymentSource.objects.create(
+            source_type="BA",
+            name="BCA",
+            acc_identifier="1234",
+            user=cls.user
+        )
+
+class ExpenseModelTest(ExpenseSetupMixin, TestCase):
+
+    def test_create_expense(self):
+        Expense.objects.create(
+            category=self.cat2,
+            currency='IDR',
+            store=self.store,
+            amount=self.exp_data['amount'],
+            date=self.exp_data['date'],
+            description=self.exp_data['description'],
+            user=self.user,
+            source=self.source
+        )
