@@ -105,11 +105,6 @@ Expenses
 class ExpenseSetupMixin:
     @classmethod
     def setUpTestData(cls):
-        cls.exp_data = {
-            'amount': 150_000,
-            'date': date(2025, 5, 25),
-            'description': 'Moisturizer COS'
-        }
         cls.cat1 = ExpenseCategory.objects.create(name='Recurring bills')
         cls.cat2 = ExpenseCategory.objects.create(name='Skincare & Makeup')
         cls.store = Store.objects.create(
@@ -128,6 +123,16 @@ class ExpenseSetupMixin:
             acc_identifier="1234",
             user=cls.user
         )
+        cls.exp_data = {
+            'amount': 150_000,
+            'date': date(2025, 5, 25),
+            'description': 'Moisturizer COS',
+            'category': cls.cat1,
+            'currency': 'IDR',
+            'store': cls.store,
+            'source': cls.source,
+            'user': cls.user
+        }
 
 class ExpenseModelTest(ExpenseSetupMixin, TestCase):
 
@@ -142,3 +147,48 @@ class ExpenseModelTest(ExpenseSetupMixin, TestCase):
             user=self.user,
             source=self.source
         )
+        self.assertEqual(Expense.objects.count(), 1)
+        exp = Expense.objects.first()
+        self.assertEqual(exp.amount, self.exp_data['amount'])
+        self.assertEqual(exp.date, self.exp_data['date'])
+        self.assertEqual(exp.description, self.exp_data['description'])
+
+    def test_create_expense_no_desc_success(self):
+        Expense.objects.create(
+            category=self.cat2,
+            currency='IDR',
+            store=self.store,
+            amount=self.exp_data['amount'],
+            date=self.exp_data['date'],
+            user=self.user,
+            source=self.source
+        )
+        self.assertEqual(Expense.objects.count(), 1)
+        exp = Expense.objects.first()
+        self.assertEqual(exp.amount, self.exp_data['amount'])
+        self.assertEqual(exp.date, self.exp_data['date'])
+
+
+class ExpenseViewTest(ExpenseSetupMixin, APITestCase):
+    client_class = ForceVerifyEmailAPIClient
+    
+    def setUp(self):
+        self.post_data = {
+            'amount': '150_000',
+            'date': '2025-05-25',
+            'description': 'Moisturizer COS',
+            'category': 'Skincare & Makeup',
+            'currency': 'IDR',
+            'store': 'Syopee',
+            'source': 'BCA'
+        }
+        self.client.force_authenticate(user=self.user)
+
+# class ExpenseCreateViewTest(ExpenseViewTest):
+#     url = reverse('expenses:expenses-listcreate')
+
+#     def test_create_expense_success(self):
+#         count = Expense.objects.all().count()
+#         response = self.client.post(self.url, self.post_data)
+#         self.assertEqual(response.status_code, 201)
+#         self.assertEqual(count + 1, Expense.objects.all().count())
