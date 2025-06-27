@@ -1,10 +1,11 @@
-from rest_framework.generics import GenericAPIView, ListCreateAPIView
+from rest_framework.generics import GenericAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 
 from users.permissions import IsEmailVerified
 
-from .models import Store
-from .serializers import StoreSerializer
+from .models import Expense, Store
+from .serializers import ExpenseSerializer, StoreSerializer
 
 
 class StoreView(GenericAPIView):
@@ -22,3 +23,24 @@ class StoreListCreateView(StoreView, ListCreateAPIView):
     # do we need this?
     def perform_create(self, serializer):
         serializer.save()
+
+
+class ExpenseView(GenericAPIView):
+    permission_classes = (IsAuthenticated, IsEmailVerified)
+    serializer_class = ExpenseSerializer
+    lookup_field = "id"
+
+    def get_queryset(self):
+        return Expense.objects.filter(user=self.request.user).order_by('id')
+
+
+class ExpenseListCreateView(ExpenseView, ListCreateAPIView):
+    ordering = ['date']
+    pagination_class = PageNumberPagination
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class ExpenseRetrieveUpdateDeleteView(ExpenseView, RetrieveUpdateDestroyAPIView):
+    pass
