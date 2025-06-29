@@ -13,7 +13,7 @@ export interface Store {
   name: string;
 }
 
-export interface ExpenseForm {
+export interface ExpenseFormType {
   amount: number;
   currency: 'IDR' | 'EUR' | 'USD';
   date: Date;
@@ -23,9 +23,13 @@ export interface ExpenseForm {
   source: PaymentSource;
 }
 
-export interface Expense extends ExpenseForm {
+export interface Expense extends ExpenseFormType {
   id: number;
 }
+
+export const CURRENCY_CHOICES = [
+  'IDR', 'EUR', 'USD'
+]
 
 // TODO: do we use zod or the interfaces?
 // export const expenseSchema = z.object({
@@ -73,3 +77,41 @@ export function getExpenseList(): Promise<Expense[]> {
     })
 }
 
+export function createExpense(data: ExpenseForm): Promise<Expense> {
+  return axios.post(`${BE_BASE_URL}/api/expenses/`, data)
+    .then(response => {
+      const res = response['data'];
+      return res;
+    })
+    .catch(error => {
+      console.error(error);
+      throw error;
+    });
+}
+
+export function updateExpense(id:number, data: ExpenseForm): Promise<Expense> {
+  return axios.put(`${BE_BASE_URL}/api/expenses/${id}`, data)
+    .then(response => {
+      const res = response['data'];
+      return res;
+    })
+    .catch(error => {
+      console.error(error);
+      throw error;
+    });
+}
+
+export function deleteExpense(id:number): Promise<boolean> {
+  return axios.delete(`${BE_BASE_URL}/api/expenses/${id}`)
+    .then(response => {
+      if (response['status'] == 204) {
+        return true;
+      } else {
+        return false;
+      }
+    })
+    .catch(error => {
+      console.error(error);
+      throw error;
+    });
+}
