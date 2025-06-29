@@ -17,6 +17,7 @@ import { Route as IndexImport } from './routes/index'
 import { Route as DashboardLayoutDashboardImport } from './routes/_dashboardLayout/dashboard'
 import { Route as AuthLayoutSignupImport } from './routes/_authLayout/signup'
 import { Route as AuthLayoutLoginImport } from './routes/_authLayout/login'
+import { Route as DashboardLayoutExpensesIndexImport } from './routes/_dashboardLayout/expenses/index'
 import { Route as DashboardLayoutAccountscardsIndexImport } from './routes/_dashboardLayout/accountscards/index'
 import { Route as DashboardLayoutAccountscardsNewImport } from './routes/_dashboardLayout/accountscards/new'
 import { Route as DashboardLayoutAccountscardsSourceIdEditImport } from './routes/_dashboardLayout/accountscards/$sourceId.edit'
@@ -56,6 +57,13 @@ const AuthLayoutLoginRoute = AuthLayoutLoginImport.update({
   path: '/login',
   getParentRoute: () => AuthLayoutRouteRoute,
 } as any)
+
+const DashboardLayoutExpensesIndexRoute =
+  DashboardLayoutExpensesIndexImport.update({
+    id: '/expenses/',
+    path: '/expenses/',
+    getParentRoute: () => DashboardLayoutRouteRoute,
+  } as any)
 
 const DashboardLayoutAccountscardsIndexRoute =
   DashboardLayoutAccountscardsIndexImport.update({
@@ -138,6 +146,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardLayoutAccountscardsIndexImport
       parentRoute: typeof DashboardLayoutRouteImport
     }
+    '/_dashboardLayout/expenses/': {
+      id: '/_dashboardLayout/expenses/'
+      path: '/expenses'
+      fullPath: '/expenses'
+      preLoaderRoute: typeof DashboardLayoutExpensesIndexImport
+      parentRoute: typeof DashboardLayoutRouteImport
+    }
     '/_dashboardLayout/accountscards/$sourceId/edit': {
       id: '/_dashboardLayout/accountscards/$sourceId/edit'
       path: '/accountscards/$sourceId/edit'
@@ -168,6 +183,7 @@ interface DashboardLayoutRouteRouteChildren {
   DashboardLayoutDashboardRoute: typeof DashboardLayoutDashboardRoute
   DashboardLayoutAccountscardsNewRoute: typeof DashboardLayoutAccountscardsNewRoute
   DashboardLayoutAccountscardsIndexRoute: typeof DashboardLayoutAccountscardsIndexRoute
+  DashboardLayoutExpensesIndexRoute: typeof DashboardLayoutExpensesIndexRoute
   DashboardLayoutAccountscardsSourceIdEditRoute: typeof DashboardLayoutAccountscardsSourceIdEditRoute
 }
 
@@ -176,6 +192,7 @@ const DashboardLayoutRouteRouteChildren: DashboardLayoutRouteRouteChildren = {
   DashboardLayoutAccountscardsNewRoute: DashboardLayoutAccountscardsNewRoute,
   DashboardLayoutAccountscardsIndexRoute:
     DashboardLayoutAccountscardsIndexRoute,
+  DashboardLayoutExpensesIndexRoute: DashboardLayoutExpensesIndexRoute,
   DashboardLayoutAccountscardsSourceIdEditRoute:
     DashboardLayoutAccountscardsSourceIdEditRoute,
 }
@@ -191,6 +208,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardLayoutDashboardRoute
   '/accountscards/new': typeof DashboardLayoutAccountscardsNewRoute
   '/accountscards': typeof DashboardLayoutAccountscardsIndexRoute
+  '/expenses': typeof DashboardLayoutExpensesIndexRoute
   '/accountscards/$sourceId/edit': typeof DashboardLayoutAccountscardsSourceIdEditRoute
 }
 
@@ -202,6 +220,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardLayoutDashboardRoute
   '/accountscards/new': typeof DashboardLayoutAccountscardsNewRoute
   '/accountscards': typeof DashboardLayoutAccountscardsIndexRoute
+  '/expenses': typeof DashboardLayoutExpensesIndexRoute
   '/accountscards/$sourceId/edit': typeof DashboardLayoutAccountscardsSourceIdEditRoute
 }
 
@@ -215,6 +234,7 @@ export interface FileRoutesById {
   '/_dashboardLayout/dashboard': typeof DashboardLayoutDashboardRoute
   '/_dashboardLayout/accountscards/new': typeof DashboardLayoutAccountscardsNewRoute
   '/_dashboardLayout/accountscards/': typeof DashboardLayoutAccountscardsIndexRoute
+  '/_dashboardLayout/expenses/': typeof DashboardLayoutExpensesIndexRoute
   '/_dashboardLayout/accountscards/$sourceId/edit': typeof DashboardLayoutAccountscardsSourceIdEditRoute
 }
 
@@ -228,6 +248,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/accountscards/new'
     | '/accountscards'
+    | '/expenses'
     | '/accountscards/$sourceId/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -238,6 +259,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/accountscards/new'
     | '/accountscards'
+    | '/expenses'
     | '/accountscards/$sourceId/edit'
   id:
     | '__root__'
@@ -249,6 +271,7 @@ export interface FileRouteTypes {
     | '/_dashboardLayout/dashboard'
     | '/_dashboardLayout/accountscards/new'
     | '/_dashboardLayout/accountscards/'
+    | '/_dashboardLayout/expenses/'
     | '/_dashboardLayout/accountscards/$sourceId/edit'
   fileRoutesById: FileRoutesById
 }
@@ -296,6 +319,7 @@ export const routeTree = rootRoute
         "/_dashboardLayout/dashboard",
         "/_dashboardLayout/accountscards/new",
         "/_dashboardLayout/accountscards/",
+        "/_dashboardLayout/expenses/",
         "/_dashboardLayout/accountscards/$sourceId/edit"
       ]
     },
@@ -317,6 +341,10 @@ export const routeTree = rootRoute
     },
     "/_dashboardLayout/accountscards/": {
       "filePath": "_dashboardLayout/accountscards/index.tsx",
+      "parent": "/_dashboardLayout"
+    },
+    "/_dashboardLayout/expenses/": {
+      "filePath": "_dashboardLayout/expenses/index.tsx",
       "parent": "/_dashboardLayout"
     },
     "/_dashboardLayout/accountscards/$sourceId/edit": {
