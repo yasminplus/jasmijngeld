@@ -47,5 +47,29 @@ export function getStoreList(): Promise<Store[]> {
       console.error(error)
       throw error;
     })
-
 }
+
+export function getExpenseCategories(): Promise<ExpenseCategory[]> {
+  return axios.get(`${BE_BASE_URL}/api/expenses/categories`)
+    .then(response => {
+      const res = response['data']
+      return res.results;
+    })
+    .catch(error => {
+      console.error(error)
+      throw error;
+    })
+}
+
+export function getExpenseList(): Promise<Expense[]> {
+  return axios.get(`${BE_BASE_URL}/api/expenses`)
+    .then(response => {
+      const res = response['data']
+      return res.results;
+    })
+    .catch(error => {
+      console.error(error)
+      throw error;
+    })
+}
+
