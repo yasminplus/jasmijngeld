@@ -3,43 +3,12 @@ import ReactDOM from 'react-dom/client'
 
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { routeTree } from './routeTree.gen'
-import axios from "axios"
 
 import './index.css'
 import { 
   AuthProvider, 
   useAuthContext,
-  BE_BASE_URL,
-  getToken,
-  setStoredUser
 } from './context/auth'
-
-let isRefreshing = false
-axios.interceptors.response.use( 
-  response => response, 
-  async error => {
-    const refreshToken = getToken('refresh')
-    if (error.response.status === 401 && refreshToken && !isRefreshing) {
-      isRefreshing = true
-
-      const data = {
-        refresh: refreshToken
-      }
-
-      await axios
-      .post(`${BE_BASE_URL}/api/auth/token/refresh/`, data)
-      .then((res) => {
-        setStoredUser(res.data)
-        axios.defaults.headers.common["Authorization"] = `Bearer ${res.data.access}`
-      })
-      
-      error.config.headers.Authorization = "Bearer " + getToken('access')
-      return axios(error.config)
-    }
-    isRefreshing = false
-    return Promise.reject(error)
-  }
-)
 
 const router = createRouter({ 
   routeTree,

@@ -1,4 +1,5 @@
-import axios from "axios";
+import login_service from "@/services/login";
+import { Token } from "@/services/login";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 import * as React from 'react'
 import { z } from "zod"
@@ -7,11 +8,6 @@ const formSchema = z.object({
   email: z.string().email(),
   password: z.string().trim().min(8),
 })
-
-interface Token {
-  access: string;
-  refresh: string;
-}
 
 type UserPayload = JwtPayload & {
   first_name: string,
@@ -30,7 +26,6 @@ export interface AuthContextI {
   login_i: (credentials: z.infer<typeof formSchema>) => Promise<void>
   logout_i: () => Promise<void>
   isAuthenticated: boolean
-  isAuthenticated_i: () => Promise<boolean>
   user: User | null
 }
 
@@ -84,12 +79,10 @@ export function AuthProvider({ children}: {children: React.ReactNode}) {
 
   const login_i = async function(credentials: z.infer<typeof formSchema>): Promise<void> {
     try {
-      const response = await axios.post(`${BE_BASE_URL}/api/auth/token/`, credentials)
-      setStoredUser(response.data)
+      const response = await login_service(credentials)
+      setStoredUser(response)
       const cur_user = getStoredUser()
       setUser(cur_user)
-      axios.defaults.headers.common["Authorization"] = `Bearer ${response.data.token}`
-
     } catch (error) {
       // TODO: handle type error here
       if (error.response.status == 401) {
@@ -103,12 +96,8 @@ export function AuthProvider({ children}: {children: React.ReactNode}) {
   const logout_i = async function() {
     setStoredUser(null)
     setUser(null)
-    // TODO: something with isAuthenticated
+    // TODO: something with isAuthenticated - do we still need to?
     // isAuthenticated = false
-  }
-
-  const isAuthenticated_i = () => {
-    // TODO: to replace the const isAuthenticated
   }
 
   React.useEffect(() => {

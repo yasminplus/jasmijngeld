@@ -1,4 +1,4 @@
-import axios from "axios";
+import axiosInstance from "@/services/axios";
 import { z } from "zod"
 
 
@@ -23,10 +23,8 @@ export const SOURCE_TYPE_CHOICES = [
   'Bank account', 'Credit card', 'Digital wallet', 'Prepaid card', 'Cash'
 ]
 
-const BE_BASE_URL = 'http://localhost:8007'
-
 export function getPaymentSourceList(): Promise<PaymentSource[]> {
-  return axios.get(`${BE_BASE_URL}/api/sources/`)
+  return axiosInstance.get(`/api/sources/`)
     .then(response => {
       // we may need to return the whole object wrapped with the pagination
       const res = response['data'];
@@ -39,7 +37,7 @@ export function getPaymentSourceList(): Promise<PaymentSource[]> {
 }
 
 export function getPaymentSource(sourceId: string): Promise<PaymentSource> {
-  return axios.get(`${BE_BASE_URL}/api/sources/${sourceId}`)
+  return axiosInstance.get(`/api/sources/${sourceId}`)
     .then(response => {
       const res = response['data'];
       return res;
@@ -51,7 +49,7 @@ export function getPaymentSource(sourceId: string): Promise<PaymentSource> {
 }
 
 export function createPaymentSource(data: z.infer<typeof sourceSchema>): Promise<PaymentSource> {
-  return axios.post(`${BE_BASE_URL}/api/sources/`, data)
+  return axiosInstance.post(`/api/sources/`, data)
     .then(response => {
       const res = response['data'];
       return res;
@@ -63,7 +61,7 @@ export function createPaymentSource(data: z.infer<typeof sourceSchema>): Promise
 }
 
 export function updatePaymentSource(id:number, data: z.infer<typeof sourceSchema>): Promise<PaymentSource> {
-  return axios.put(`${BE_BASE_URL}/api/sources/${id}`, data)
+  return axiosInstance.put(`/api/sources/${id}`, data)
     .then(response => {
       const res = response['data'];
       return res;
@@ -75,7 +73,7 @@ export function updatePaymentSource(id:number, data: z.infer<typeof sourceSchema
 }
 
 export function deletePaymentSource(id:number): Promise<boolean> {
-  return axios.delete(`${BE_BASE_URL}/api/sources/${id}`)
+  return axiosInstance.delete(`/api/sources/${id}`)
     .then(response => {
       if (response['status'] == 204) {
         return true;
