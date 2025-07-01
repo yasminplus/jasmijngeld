@@ -31,7 +31,7 @@ function ListExpenses() {
 
   return (
     <div>
-      <Link to={''} >
+      <Link to={'/expenses/new'} >
         <Button className='mb-4'>
           <Plus />Add new expense
         </Button>
