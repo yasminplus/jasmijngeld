@@ -1,6 +1,5 @@
 import axiosInstance from "@/services/axios";
 import { z } from "zod"
-import { PaymentSource } from "./accounts-cards";
 
 
 export interface ExpenseCategory {
@@ -16,12 +15,23 @@ export interface Store {
 export interface ExpenseFormType {
   amount: number;
   currency: 'IDR' | 'EUR' | 'USD';
-  date: Date;
-  description: string;
-  store: Store;
-  category: ExpenseCategory;
-  source: PaymentSource;
+  date: string;
+  description?: string;
+  category: string;
+  store: string;
+  source: string;
 }
+
+export const expenseFormSchema = z.object({
+  amount: z.string().transform((val) => Number(val) || 0), 
+  currency: z.enum(['IDR', 'EUR', 'USD']).default("IDR"),
+  date: z.date(),
+  description: z.string().optional().or(z.literal('')),
+  category: z.string(),
+  store: z.string(),
+  source: z.string(),
+})
+
 
 export interface Expense extends ExpenseFormType {
   id: number;
@@ -30,14 +40,6 @@ export interface Expense extends ExpenseFormType {
 export const CURRENCY_CHOICES = [
   'IDR', 'EUR', 'USD'
 ]
-
-// TODO: do we use zod or the interfaces?
-// export const expenseSchema = z.object({
-//   amount: z.number(),
-//   currency: z.enum(['IDR', 'EUR', 'USD']),
-//   date: z.date(),
-//   description: z.string().optional().or(z.literal('')),
-// })
 
 export function getStoreList(): Promise<Store[]> {
   return axiosInstance.get(`/api/expenses/stores`)

@@ -32,6 +32,7 @@ import {
   getStoreList,
   createExpense,
   updateExpense,
+  expenseFormSchema,
 } from '@/services/expenses';
 import { getPaymentSourceList, PaymentSource } from "@/services/accounts-cards"
 import { useCallback, useEffect, useState } from "react"
@@ -42,7 +43,7 @@ type ExpenseFormProps = {
   expense?: Expense
 }
 
-type FormValues = ExpenseFormType;
+type ExpenseFormValues =  z.infer<typeof expenseFormSchema>;
 
 export default function ExpenseForm({ expense }: ExpenseFormProps) {
   const navigate = useNavigate()
@@ -50,37 +51,46 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
   const [storeList, setStoreList] = useState<Store[]>([])
   const [sourceList, setSourceList] = useState<PaymentSource[]>([])
   const [open, setOpen] = useState(false)
-  // const [date, setDate] = useState<Date | undefined>(new Date())
-
-  const form = useForm<FormValues>({
+  
+  const form = useForm<ExpenseFormValues>({
     defaultValues: expense 
     ? {
       amount: expense.amount,
       currency: expense.currency,
-      date: expense.date,
+      date: new Date(expense.date),
       description: expense.description,
       category: expense.category,
       store: expense.store,
       source: expense.source
     } 
-    : undefined,  // TODO: set default value for currency and date
-    // resolver: zodResolver(FormValues),
+    : {
+      amount: undefined,
+      currency: 'IDR',
+      date: new Date(),
+      description: undefined,
+      category: undefined,
+      store: undefined,
+      source: undefined
+    },
+    resolver: zodResolver(expenseFormSchema),
   })
   const { isSubmitting } = form.formState
 
-  async function onSubmit(data: FormValues) {
+  async function onSubmit(data: ExpenseFormValues) {
     console.log("in onSubmit")
-    console.log(data)
-    data.date = data.date.toISOString().split('T')[0]
+    const payload: ExpenseFormType = {
+      ...data,
+      date: data.date.toISOString().split('T')[0],
+    };
     
     if (expense) {
-      await updateExpense(expense.id, data)
+      await updateExpense(expense.id, payload)
       navigate({
         to: '/expenses',
         search: { id: expense.id, op_type: 'update' }
       })
     } else {
-      const newData = await createExpense(data)
+      const newData = await createExpense(payload)
       navigate({
         to: '/expenses',
         search: { id: newData.id, op_type: 'create' }
@@ -139,8 +149,7 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
                   <FormLabel>Currency</FormLabel>
                   <FormControl>
                     <Select
-                      // try either this or the line below
-                      defaultValue={expense? expense.currency : ''} 
+                      defaultValue={expense? expense.currency : 'IDR'} 
                       onValueChange={field.onChange}
                     >
                       <SelectTrigger className="">
@@ -150,7 +159,6 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
                         {CURRENCY_CHOICES.map( choice => 
                           <SelectItem key={choice} value={choice}>{choice}</SelectItem>
                         )}
-                        
                       </SelectContent>
                     </Select>
                   </FormControl>
@@ -174,7 +182,6 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
                           className="w-48 justify-between font-normal"
                         >
                           {field.value ? field.value.toLocaleDateString() : "Select date"}
-                          {/* <CalendarIcon className="ml-2 h-4 w-4" /> */}
                           <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                         </Button>
                       </PopoverTrigger>
@@ -183,23 +190,13 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
                           mode="single"
                           selected={field.value}
                           captionLayout="dropdown"
-                          onDayClick={(e) => {
+                          onSelect={(e) => {
                             field.onChange(e)
                             setOpen(false)
                           }}
-                          // onSelect={field.onChange}
-                          //  {(date) => {
-                          //   if (expense)
-                          //     expense.date = date
-                          //   setOpen(false)
-                          // }}
                         />
                       </PopoverContent>
                     </Popover>
-                    {/* <Input
-                      value={field.value || ""}
-                      onChange={field.onChange}
-                    /> */}
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -243,7 +240,6 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
                         {categories.map( choice => 
                           <SelectItem key={choice.id} value={choice.name}>{choice.name}</SelectItem>
                         )}
-                        
                       </SelectContent>
                     </Select>
                   </FormControl>
@@ -272,7 +268,6 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
                         {storeList.map( choice => 
                           <SelectItem key={choice.id} value={choice.name}>{choice.name}</SelectItem>
                         )}
-                        
                       </SelectContent>
                     </Select>
                   </FormControl>
@@ -301,7 +296,6 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
                         {sourceList.map( choice => 
                           <SelectItem key={choice.id} value={choice.name}>{choice.name}</SelectItem>
                         )}
-                        
                       </SelectContent>
                     </Select>
                   </FormControl>
