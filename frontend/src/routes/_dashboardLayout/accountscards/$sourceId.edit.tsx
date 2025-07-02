@@ -1,4 +1,3 @@
-
 import { createFileRoute } from '@tanstack/react-router'
 import PaymentSourceForm from '@/components/sources/source-form';
 import { getPaymentSource } from '@/services/accounts-cards';
@@ -9,7 +8,6 @@ export const Route = createFileRoute(
   component: EditAccount,
   loader: async ({ params }) => await getPaymentSource(params.sourceId),
 })
-
 
 function EditAccount() {
   const loaderData = Route.useLoaderData()

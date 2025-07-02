@@ -23,7 +23,13 @@ export interface ExpenseFormType {
 }
 
 export const expenseFormSchema = z.object({
-  amount: z.string().transform((val) => Number(val) || 0), 
+  // amount: z.string().transform((val) => Number(val) || 0), 
+  amount: z.preprocess((val) => {
+    if (typeof val === "string") {
+      return Number(val);
+    }
+    return val;
+  }, z.number()), 
   currency: z.enum(['IDR', 'EUR', 'USD']).default("IDR"),
   date: z.date(),
   description: z.string().optional().or(z.literal('')),
@@ -79,6 +85,18 @@ export function getExpenseList(): Promise<Expense[]> {
 
 export function createExpense(data: ExpenseFormType): Promise<Expense> {
   return axiosInstance.post(`/api/expenses/`, data)
+    .then(response => {
+      const res = response['data'];
+      return res;
+    })
+    .catch(error => {
+      console.error(error);
+      throw error;
+    });
+}
+
+export function getExpense(id:number): Promise<Expense> {
+  return axiosInstance.get(`/api/expenses/${id}`)
     .then(response => {
       const res = response['data'];
       return res;

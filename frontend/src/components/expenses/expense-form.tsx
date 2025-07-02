@@ -77,7 +77,6 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
   const { isSubmitting } = form.formState
 
   async function onSubmit(data: ExpenseFormValues) {
-    console.log("in onSubmit")
     const payload: ExpenseFormType = {
       ...data,
       date: data.date.toISOString().split('T')[0],
@@ -101,7 +100,6 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
   const fetchSelectOptions = useCallback(() => {
     Promise.all([getExpenseCategories(), getStoreList(), getPaymentSourceList()])
     .then(results => {
-      console.log(results)
       setCategories(results[0])
       setStoreList(results[1])
       setSourceList(results[2])

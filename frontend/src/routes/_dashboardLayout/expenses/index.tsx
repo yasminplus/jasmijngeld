@@ -1,17 +1,44 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { Plus } from 'lucide-react'
+import { useCallback, useEffect, useState } from 'react'
+import { SearchSchemaInput, Link, createFileRoute } from '@tanstack/react-router'
+import { toast } from "sonner"
+import { z } from "zod"
+
+import { expensesColumns } from '@/components/expenses/columns-exp'
+import { DataTable } from '@/components/data-table'
+import { Button } from '@/components/ui/button'
+
+import { Expense, getExpenseList } from '@/services/expenses'
+import OperationsType from '@/types/OperationsType'
 
 export const Route = createFileRoute('/_dashboardLayout/expenses/')({
   component: ListExpenses,
+  validateSearch: (
+    input: {
+      op_type: OperationsType
+      id: number
+    } & SearchSchemaInput,
+  ) => {
+      return z
+        .object({
+          id: z.number().catch(0),
+          op_type: z.enum(['create', 'update', 'none']).catch('none'),
+        })
+        .parse(input)
+    },
+  
+  loaderDeps: ({ search: {  id, op_type  } }) => ({  id, op_type  }),
+  loader: ({ deps: { id, op_type } }) => {
+    // TODO: use id to get the name of the object
+    if (id > 0) {
+      if (op_type === 'update') {
+        toast.success(`Expense has been updated`)
+      } else if (op_type === 'create') {
+        toast.success(`A new expense has been created`)
+      }
+    }
+  }
 })
-
-import { DataTable } from '@/components/sources/data-table'
-import { useCallback, useEffect, useState } from 'react'
-import { expensesColumns } from '@/components/expenses/columns-exp'
-import { Expense, getExpenseList } from '@/services/expenses'
-import { Link } from '@tanstack/react-router'
-import { Button } from '@/components/ui/button'
-import { Plus } from 'lucide-react'
-
 
 function ListExpenses() {
   const [expenses, setExpenses] = useState<Expense[]>([])

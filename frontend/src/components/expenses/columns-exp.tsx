@@ -64,9 +64,23 @@ export const expensesColumns: ColumnDef<Expense>[] = [
         <Button variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Payment <source />
+          Payment source <source />
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
+      )
+    },
+  },
+  {
+    id: "edit_action",
+    cell: ({ row }) => {
+      const expense = row.original
+
+      return (
+        <Link to="/expenses/$expId/edit" params={{ expId: String(expense.id) }}>
+          <Button className='p-0 w-8 h-8'>
+            <Pencil />
+          </Button>
+        </Link>
       )
     },
   },
