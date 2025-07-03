@@ -17,7 +17,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 
-import { DataTable } from '@/components/data-table'
+import { DataTable } from '@/components/sources/data-table'
 import { sourcesColumns } from '@/components/sources/columns'
 import { PaymentSource, deletePaymentSource, getPaymentSourceList } from '@/services/accounts-cards' 
 import OperationsType from '@/types/OperationsType'

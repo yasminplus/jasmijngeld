@@ -1,12 +1,23 @@
 "use client"
 
-import { ColumnDef } from "@tanstack/react-table"
+import { 
+  ColumnDef,
+  RowData,
+ } from "@tanstack/react-table"
 import { Link } from "@tanstack/react-router"
 import { ArrowUpDown, Pencil } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 
 import { Expense } from '@/services/expenses' 
+
+declare module '@tanstack/react-table' {
+  //allows us to define custom properties for our columns
+  interface ColumnMeta<TData extends RowData, TValue> {
+    filterVariant?: 'text' | 'range' | 'select'
+    dataType?: string
+  }
+}
 
 
 export const expensesColumns: ColumnDef<Expense>[] = [
@@ -22,6 +33,7 @@ export const expensesColumns: ColumnDef<Expense>[] = [
         </Button>
       )
     },
+    enableColumnFilter: false
   },
   {
     accessorKey: "date",
@@ -35,10 +47,14 @@ export const expensesColumns: ColumnDef<Expense>[] = [
         </Button>
       )
     },
+    enableColumnFilter: false
   },
   {
     accessorKey: "description",
     header: 'Description',
+    meta: {
+      filterVariant: 'text'
+    }
   },
   {
     accessorKey: "store",
@@ -56,6 +72,10 @@ export const expensesColumns: ColumnDef<Expense>[] = [
         </Button>
       )
     },
+    meta: {
+      filterVariant: 'select',
+      dataType: 'ExpenseCategory'
+    }
   },
   {
     accessorKey: "source",
@@ -69,6 +89,10 @@ export const expensesColumns: ColumnDef<Expense>[] = [
         </Button>
       )
     },
+    meta: {
+      filterVariant: 'select',
+      dataType: 'PaymentSource'
+    }
   },
   {
     id: "edit_action",

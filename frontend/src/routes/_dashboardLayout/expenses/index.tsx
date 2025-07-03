@@ -5,7 +5,7 @@ import { toast } from "sonner"
 import { z } from "zod"
 
 import { expensesColumns } from '@/components/expenses/columns-exp'
-import { DataTable } from '@/components/data-table'
+import { DataTable } from '@/components/expenses/data-table'
 import { Button } from '@/components/ui/button'
 
 import { Expense, getExpenseList } from '@/services/expenses'

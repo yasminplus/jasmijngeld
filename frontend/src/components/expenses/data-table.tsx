@@ -1,0 +1,126 @@
+"use client"
+
+import { useState } from "react"
+
+import {
+  ColumnDef,
+  ColumnFiltersState,
+  SortingState,
+  flexRender,
+  getCoreRowModel,
+  getFacetedRowModel,
+  getFacetedUniqueValues,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from "@tanstack/react-table"
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+
+import Filter from "./table-filter"
+
+interface DataTableProps<TData, TValue> {
+  columns: ColumnDef<TData, TValue>[]
+  data: TData[]
+}
+
+export function DataTable<TData, TValue>({
+  columns,
+  data,
+}: DataTableProps<TData, TValue>) {
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]) // can set initial column filter state here
+
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(), // needed for client-side filtering
+    getFacetedRowModel: getFacetedRowModel(), //if you need a list of values for a column (other faceted row models depend on this one)
+    getFacetedUniqueValues: getFacetedUniqueValues(), //if you need a list of unique values
+    state: {
+      columnFilters,
+      sorting,
+    },
+    onColumnFiltersChange: setColumnFilters
+  })
+
+  return (
+    <div className="rounded-md border">
+      <Table>
+        <TableHeader>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) => {
+                return (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder ? null : (
+                      <>
+                        <div
+                        // TODO: decide which sorting UI we want to use
+                          // {...{
+                          //   className: header.column.getCanSort()
+                          //     ? 'cursor-pointer select-none'
+                          //     : '',
+                          //   onClick: header.column.getToggleSortingHandler(),
+                          // }}
+                        >
+                          {flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                          {/* {{
+                            asc: ' 🔼',
+                            desc: ' 🔽',
+                          }[header.column.getIsSorted() as string] ?? null} */}
+                        </div>
+                        {header.column.getCanFilter() ? (
+                          <div>
+                            <Filter column={header.column} />
+                          </div>
+                        ) : null}
+                      </>
+                    )}
+                  </TableHead>
+                )
+              })}
+            </TableRow>
+          ))}
+        </TableHeader>
+        <TableBody>
+          {table.getRowModel().rows?.length ? (
+            table.getRowModel().rows.map((row) => (
+              <TableRow
+                key={row.id}
+                data-state={row.getIsSelected() && "selected"}
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={columns.length} className="h-24 text-center">
+                No results.
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </div>
+  )
+}
