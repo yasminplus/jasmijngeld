@@ -42,7 +42,7 @@ export const Route = createFileRoute('/_dashboardLayout/expenses/')({
 
 function ListExpenses() {
   const [expenses, setExpenses] = useState<Expense[]>([])
-  const [cols, setCols] = useState(expensesColumns)
+  const [cols] = useState(expensesColumns)
 
   const fetchTableData = useCallback(() => {
     getExpenseList()
