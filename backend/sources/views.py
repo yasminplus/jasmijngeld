@@ -1,3 +1,4 @@
+from rest_framework import filters
 from rest_framework.generics import GenericAPIView, ListCreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
@@ -19,6 +20,9 @@ class PaymentSourceView(GenericAPIView):
 class PaymentSourceListCreateView(PaymentSourceView, ListCreateAPIView):
     ordering = ['id']
     pagination_class = PageNumberPagination
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = ['name, source_type']
+    ordering = ['name']
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)

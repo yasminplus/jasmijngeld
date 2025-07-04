@@ -1,3 +1,4 @@
+from rest_framework import filters
 from rest_framework.generics import GenericAPIView, ListAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
@@ -18,7 +19,9 @@ class StoreView(GenericAPIView):
 
 
 class StoreListCreateView(StoreView, ListCreateAPIView):
-    ordering = ['id']
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = '__all__'
+    ordering = ['name']
     
     # do we need this?
     def perform_create(self, serializer):
@@ -31,6 +34,7 @@ class ExpenseCategoryListView(ListAPIView):
     lookup_field = "id"
     queryset = ExpenseCategory.objects.all()
 
+
 class ExpenseView(GenericAPIView):
     permission_classes = (IsAuthenticated, IsEmailVerified)
     serializer_class = ExpenseSerializer
@@ -41,6 +45,7 @@ class ExpenseView(GenericAPIView):
 
 
 class ExpenseListCreateView(ExpenseView, ListCreateAPIView):
+    filter_backends = [filters.OrderingFilter]
     ordering = ['date']
     pagination_class = PageNumberPagination
 
