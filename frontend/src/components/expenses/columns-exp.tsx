@@ -19,7 +19,6 @@ declare module '@tanstack/react-table' {
   }
 }
 
-
 export const expensesColumns: ColumnDef<Expense>[] = [
   {
     accessorKey: "amount",
@@ -33,7 +32,6 @@ export const expensesColumns: ColumnDef<Expense>[] = [
         </Button>
       )
     },
-    enableColumnFilter: false
   },
   {
     accessorKey: "currency",
@@ -47,7 +45,6 @@ export const expensesColumns: ColumnDef<Expense>[] = [
         </Button>
       )
     },
-    enableColumnFilter: false
   },
   {
     accessorKey: "date",
@@ -61,14 +58,10 @@ export const expensesColumns: ColumnDef<Expense>[] = [
         </Button>
       )
     },
-    enableColumnFilter: false
   },
   {
     accessorKey: "description",
     header: 'Description',
-    meta: {
-      filterVariant: 'text'
-    }
   },
   {
     accessorKey: "store",
@@ -86,10 +79,6 @@ export const expensesColumns: ColumnDef<Expense>[] = [
         </Button>
       )
     },
-    meta: {
-      filterVariant: 'select',
-      dataType: 'ExpenseCategory'
-    }
   },
   {
     accessorKey: "source",
@@ -103,10 +92,6 @@ export const expensesColumns: ColumnDef<Expense>[] = [
         </Button>
       )
     },
-    meta: {
-      filterVariant: 'select',
-      dataType: 'PaymentSource'
-    }
   },
   {
     id: "edit_action",

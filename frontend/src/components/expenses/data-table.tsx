@@ -89,11 +89,6 @@ export function DataTable<TData, TValue>({
                               desc: ' 🔽',
                             }[header.column.getIsSorted() as string] ?? null} */}
                           </div>
-                          {header.column.getCanFilter() ? (
-                            <div>
-                              <Filter column={header.column} />
-                            </div>
-                          ) : null}
                         </>
                       )}
                     </TableHead>
