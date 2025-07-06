@@ -60,9 +60,6 @@ export function DataTableToolbar<TData>({
 
   return (
     <span className="flex items-center gap-x-2">
-      {/* TODO: 
-          BUG: for selections, if > 1 filter are selected/applied, nothing is shown
-      */}
       <Input
         placeholder="Filter by description"
         value={(table.getColumn("description")?.getFilterValue() as string) ?? ""}

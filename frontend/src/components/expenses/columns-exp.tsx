@@ -1,8 +1,7 @@
 "use client"
 
 import { 
-  ColumnDef,
-  RowData,
+  ColumnDef
  } from "@tanstack/react-table"
 import { Link } from "@tanstack/react-router"
 import { ArrowUpDown, Pencil } from "lucide-react"
@@ -10,14 +9,6 @@ import { ArrowUpDown, Pencil } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 import { Expense } from '@/services/expenses' 
-
-declare module '@tanstack/react-table' {
-  //allows us to define custom properties for our columns
-  interface ColumnMeta<TData extends RowData, TValue> {
-    filterVariant?: 'text' | 'range' | 'select'
-    dataType?: string
-  }
-}
 
 export const expensesColumns: ColumnDef<Expense>[] = [
   {
@@ -45,6 +36,9 @@ export const expensesColumns: ColumnDef<Expense>[] = [
         </Button>
       )
     },
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id))
+    },
   },
   {
     accessorKey: "date",
@@ -66,6 +60,9 @@ export const expensesColumns: ColumnDef<Expense>[] = [
   {
     accessorKey: "store",
     header: 'Store',
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id))
+    },
   },
   {
     accessorKey: "category",
@@ -79,6 +76,9 @@ export const expensesColumns: ColumnDef<Expense>[] = [
         </Button>
       )
     },
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id))
+    },
   },
   {
     accessorKey: "source",
@@ -91,6 +91,9 @@ export const expensesColumns: ColumnDef<Expense>[] = [
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )
+    },
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id))
     },
   },
   {
