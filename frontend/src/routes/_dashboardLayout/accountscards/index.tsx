@@ -1,25 +1,19 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Plus, Trash } from "lucide-react"
+import { Plus } from "lucide-react"
 import { SearchSchemaInput, createFileRoute, Link } from '@tanstack/react-router'
 import { toast } from "sonner"
 import { z } from "zod"
 
 import { Button } from "@/components/ui/button"
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
 
+import { AlertDelete } from '@/components/alert-delete'
 import { DataTable } from '@/components/sources/data-table'
 import { sourcesColumns } from '@/components/sources/columns'
-import { PaymentSource, deletePaymentSource, getPaymentSourceList } from '@/services/accounts-cards' 
+import { 
+  PaymentSource, 
+  deletePaymentSource, 
+  getPaymentSourceList 
+} from '@/services/accounts-cards' 
 import OperationsType from '@/types/OperationsType'
 
 export const Route = createFileRoute('/_dashboardLayout/accountscards/')({
@@ -54,24 +48,6 @@ export const Route = createFileRoute('/_dashboardLayout/accountscards/')({
 function ListAccounts() {
   const [ accounts, setAccounts ] = useState<PaymentSource[]>([])
   const [ cols, setCols ] = useState(sourcesColumns)
-  // const { id, op_type } = Route.useSearch()
-
-  const handleDelete = async(source: PaymentSource) => {
-    const name = source.name
-    try {
-      const success = await deletePaymentSource(source.id)
-      if (success) {
-        fetchTableData()
-        toast.success(`Payment source ${name} has been deleted`)
-      } else {
-        throw new Error('API return false')
-      }
-    }
-    catch (err) {
-      toast.error(`Unable to delete payment source ${name}, perhaps this is linked to some expenses.`)
-      console.error(err)
-    }
-  }
 
   const fetchTableData = useCallback(() => {
     getPaymentSourceList()
@@ -82,6 +58,23 @@ function ListAccounts() {
   }, [])
 
   useEffect(() => {
+    const handleDelete = async(source: PaymentSource) => {
+      const name = source.name
+      try {
+        const success = await deletePaymentSource(source.id)
+        if (success) {
+          fetchTableData()
+          toast.success(`Payment source ${name} has been deleted`)
+        } else {
+          throw new Error('API return false')
+        }
+      }
+      catch (err) {
+        toast.error(`Unable to delete payment source ${name}, perhaps this is linked to some expenses.`)
+        console.error(err)
+      }
+    }
+  
     if (cols.length == 4) {
       setCols(prev => [
         ...prev,
@@ -90,31 +83,12 @@ function ListAccounts() {
           cell: ({ row }) => {
             const source = row.original
           return (
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button className='p-0 w-8 h-8'>
-                  <Trash />
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Are you sure you want to delete this payment source?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This action cannot be undone. This will permanently delete your
-                    account and remove your data from our servers.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>No</AlertDialogCancel>
-                  <AlertDialogAction onClick={() => handleDelete(source)}>Yes</AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+            <AlertDelete handleDelete={handleDelete} record={source} recordType='payment source' />
           )},
         }
       ])
     }
-  } , [cols])
+  } , [cols, fetchTableData])
 
   useEffect(() => {
     fetchTableData()

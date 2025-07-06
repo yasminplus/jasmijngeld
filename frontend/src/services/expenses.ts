@@ -48,7 +48,7 @@ export const CURRENCY_CHOICES = [
 ]
 
 export function getStoreList(): Promise<Store[]> {
-  return axiosInstance.get(`/api/expenses/stores`)
+  return axiosInstance.get(`/api/expenses/stores/`)
     .then(response => {
       const res = response['data']
       return res.results;
@@ -60,7 +60,7 @@ export function getStoreList(): Promise<Store[]> {
 }
 
 export function getExpenseCategories(): Promise<ExpenseCategory[]> {
-  return axiosInstance.get(`/api/expenses/categories`)
+  return axiosInstance.get(`/api/expenses/categories/`)
     .then(response => {
       const res = response['data']
       return res.results;
@@ -72,7 +72,7 @@ export function getExpenseCategories(): Promise<ExpenseCategory[]> {
 }
 
 export function getExpenseList(): Promise<Expense[]> {
-  return axiosInstance.get(`/api/expenses`)
+  return axiosInstance.get(`/api/expenses/`)
     .then(response => {
       const res = response['data']
       return res.results;
