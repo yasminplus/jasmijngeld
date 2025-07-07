@@ -21,7 +21,7 @@ export function DatePickerInput({ date, onDateChange, stringDate, setStringDate}
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <div className="relative w-[280px]">
+      <div className="relative w-[180px]">
         <Input
           type="string"
           value={stringDate}
