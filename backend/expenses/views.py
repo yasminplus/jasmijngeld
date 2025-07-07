@@ -46,7 +46,7 @@ class ExpenseView(GenericAPIView):
 
 class ExpenseListCreateView(ExpenseView, ListCreateAPIView):
     filter_backends = [filters.OrderingFilter]
-    ordering = ['date']
+    ordering = ['-date']
     pagination_class = PageNumberPagination
 
     def perform_create(self, serializer):
