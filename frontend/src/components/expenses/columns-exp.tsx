@@ -4,6 +4,7 @@ import {
   ColumnDef
  } from "@tanstack/react-table"
 import { Link } from "@tanstack/react-router"
+import { parse } from "date-fns"
 import { ArrowUpDown, Pencil } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -36,8 +37,8 @@ export const expensesColumns: ColumnDef<Expense>[] = [
         </Button>
       )
     },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id))
+    filterFn: (row, columnId, filterValue) => {
+      return filterValue.includes(row.getValue(columnId))
     },
   },
   {
@@ -52,6 +53,14 @@ export const expensesColumns: ColumnDef<Expense>[] = [
         </Button>
       )
     },
+    filterFn: (row, columnId, filterValue) => {
+      const dateDate = parse(row.getValue(columnId), "yyyy-MM-dd", new Date())
+      const startOk = 'start' in filterValue && filterValue['start'] ? 
+        dateDate >= filterValue['start'] : true
+      const endOk = 'end' in filterValue && filterValue['end'] ? 
+        dateDate <= filterValue['end'] : true
+      return startOk && endOk 
+    },
   },
   {
     accessorKey: "description",
@@ -60,8 +69,8 @@ export const expensesColumns: ColumnDef<Expense>[] = [
   {
     accessorKey: "store",
     header: 'Store',
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id))
+    filterFn: (row, columnId, filterValue) => {
+      return filterValue.includes(row.getValue(columnId))
     },
   },
   {
@@ -76,8 +85,8 @@ export const expensesColumns: ColumnDef<Expense>[] = [
         </Button>
       )
     },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id))
+    filterFn: (row, columnId, filterValue) => {
+      return filterValue.includes(row.getValue(columnId))
     },
   },
   {
@@ -92,8 +101,8 @@ export const expensesColumns: ColumnDef<Expense>[] = [
         </Button>
       )
     },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id))
+    filterFn: (row, columnId, filterValue) => {
+      return filterValue.includes(row.getValue(columnId))
     },
   },
   {
