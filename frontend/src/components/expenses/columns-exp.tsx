@@ -9,7 +9,7 @@ import { ArrowUpDown, Pencil } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 
-import { Expense } from '@/services/expenses' 
+import { Expense } from '@/services/expenses'
 
 export const expensesColumns: ColumnDef<Expense>[] = [
   {
@@ -23,6 +23,15 @@ export const expensesColumns: ColumnDef<Expense>[] = [
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )
+    },
+    footer: ({ table }) => {
+      const currencies = table.getColumn("currency")?.getFilterValue() as Array<string>
+      if (currencies && currencies.length == 1) {
+        const sum = table.getFilteredRowModel().rows.reduce((total, row) => total + Number(row.getValue('amount')), 0)
+        return sum.toFixed(2)
+      } else {
+        return '-'
+      }
     },
   },
   {

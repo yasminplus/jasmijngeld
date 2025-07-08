@@ -20,14 +20,13 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
 
 import { DataTableToolbar } from '@/components/expenses/data-table-toolbar'
-
-import Filter from "./table-filter"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -119,6 +118,22 @@ export function DataTable<TData, TValue>({
               </TableRow>
             )}
           </TableBody>
+          <TableFooter>
+            {table.getFooterGroups().map(footerGroup => (
+              <TableRow key={footerGroup.id}>
+                {footerGroup.headers.map(header => (
+                  <TableHead key={header.id} colSpan={header.colSpan}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.footer,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
+          </TableFooter>
         </Table>
       </div>
     </div>
