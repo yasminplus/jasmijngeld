@@ -13,44 +13,6 @@ import { Expense } from '@/services/expenses'
 
 export const expensesColumns: ColumnDef<Expense>[] = [
   {
-    accessorKey: "amount",
-    header: ({ column }) => {
-      return (
-        <Button variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Amount
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      )
-    },
-    footer: ({ table }) => {
-      const currencies = table.getColumn("currency")?.getFilterValue() as Array<string>
-      if (currencies && currencies.length == 1) {
-        const sum = table.getFilteredRowModel().rows.reduce((total, row) => total + Number(row.getValue('amount')), 0)
-        return sum.toFixed(2)
-      } else {
-        return '-'
-      }
-    },
-  },
-  {
-    accessorKey: "currency",
-    header: ({ column }) => {
-      return (
-        <Button variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Currency
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      )
-    },
-    filterFn: (row, columnId, filterValue) => {
-      return filterValue.includes(row.getValue(columnId))
-    },
-  },
-  {
     accessorKey: "date",
     header: ({ column }) => {
       return (
@@ -69,6 +31,61 @@ export const expensesColumns: ColumnDef<Expense>[] = [
       const endOk = 'end' in filterValue && filterValue['end'] ? 
         dateDate <= filterValue['end'] : true
       return startOk && endOk 
+    },
+    footer: ({ table }) => {
+      if (table.getFilteredRowModel().rows.length > 0) {
+        const currencies = table.getColumn("currency")?.getFilterValue() as Array<string>
+        if (currencies && currencies.length == 1) {
+          return 'Total'
+        }
+      }
+    },
+  },
+  {
+    accessorKey: "amount",
+    header: ({ column }) => {
+      return (
+        <Button variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Amount
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
+    footer: ({ table }) => {
+      if (table.getFilteredRowModel().rows.length > 0) {
+        const currencies = table.getColumn("currency")?.getFilterValue() as Array<string>
+        if (currencies && currencies.length == 1) {
+          const sum = table.getFilteredRowModel().rows.reduce((total, row) => total + Number(row.getValue('amount')), 0)
+          const sumStr = sum.toFixed(2).split('.')
+          return sumStr[1] === '00' ? sumStr[0] : sum.toFixed(2)
+        }
+      }
+    },
+  },
+  {
+    accessorKey: "currency",
+    header: ({ column }) => {
+      return (
+        <Button variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Currency
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
+    filterFn: (row, columnId, filterValue) => {
+      return filterValue.includes(row.getValue(columnId))
+    },
+    footer: ({ table }) => {
+      if (table.getFilteredRowModel().rows.length > 0) {
+        const currencies = table.getColumn("currency")?.getFilterValue() as Array<string>
+        if (currencies && currencies.length == 1) {
+          return currencies[0]
+        }
+      }
     },
   },
   {
