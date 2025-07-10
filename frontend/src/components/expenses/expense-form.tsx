@@ -80,6 +80,8 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
     const payload: ExpenseFormType = {
       ...data,
       date: data.date.toISOString().split('T')[0],
+      store: data.store? data.store : "",
+      source: data.source? data.source : ""
     };
     
     if (expense) {
@@ -115,24 +117,27 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
 
   return (
     <>
-      <div className='w-32'> 
+      <div className='w-52'> 
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 max-w-3xl w-48 mx-auto py-10">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 mx-auto py-10">
 
             <FormField
               control={form.control}
               name="date"
               render={ ({ field }) => (
                 <FormItem className='text-left'>
-                  <FormLabel>Date</FormLabel>
+                  <FormLabel>
+                    Date
+                    <span className="text-destructive"> *</span>
+                  </FormLabel>
                   <FormControl>
                     <Popover open={open} onOpenChange={setOpen}>
                       <PopoverTrigger asChild>
                         <Button
                           variant="outline"
                           id="date"
-                          className="w-48 justify-between font-normal"
+                          className="w-52 justify-between font-normal"
                         >
                           {field.value ? field.value.toLocaleDateString() : "Select date"}
                           <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
@@ -161,7 +166,10 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
               name="amount"
               render={ ({ field }) => (
                 <FormItem className='text-left'>
-                  <FormLabel>Amount</FormLabel>
+                  <FormLabel>
+                    Amount
+                    <span className="text-destructive"> *</span>
+                  </FormLabel>
                   <FormControl>
                     <Input
                       name="amount"
@@ -180,14 +188,17 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
               name="currency"
               render={({ field }) => (
                 <FormItem className='text-left'>
-                  <FormLabel>Currency</FormLabel>
+                  <FormLabel>
+                    Currency
+                    <span className="text-destructive"> *</span>
+                  </FormLabel>
                   <FormControl>
                     <Select
                       defaultValue={expense? expense.currency : 'IDR'} 
                       onValueChange={field.onChange}
                     >
                       <SelectTrigger className="">
-                        <SelectValue placeholder="Select type" />
+                        <SelectValue placeholder="Select currency" />
                       </SelectTrigger>
                       <SelectContent>
                         {CURRENCY_CHOICES.map( choice => 
@@ -223,7 +234,10 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
               name="category"
               render={({ field }) => (
                 <FormItem className='text-left'>
-                  <FormLabel>Category</FormLabel>
+                  <FormLabel>
+                    Category
+                    <span className="text-destructive"> *</span>
+                  </FormLabel>
                   <FormControl>
                     <Select
                       // try either this or the line below
@@ -232,7 +246,7 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
                       onValueChange={field.onChange}
                     >
                       <SelectTrigger className="">
-                        <SelectValue placeholder="Select type" />
+                        <SelectValue placeholder="Select category" />
                       </SelectTrigger>
                       <SelectContent>
                         {categories.map( choice => 
@@ -260,7 +274,7 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
                       onValueChange={field.onChange}
                     >
                       <SelectTrigger className="">
-                        <SelectValue placeholder="Select type" />
+                        <SelectValue placeholder="Select store" />
                       </SelectTrigger>
                       <SelectContent>
                         {storeList.map( choice => 
@@ -288,7 +302,7 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
                       onValueChange={field.onChange}
                     >
                       <SelectTrigger className="">
-                        <SelectValue placeholder="Select type" />
+                        <SelectValue placeholder="Select payment source" />
                       </SelectTrigger>
                       <SelectContent>
                         {sourceList.map( choice => 

@@ -18,8 +18,8 @@ export interface ExpenseFormType {
   date: string;
   description?: string;
   category: string;
-  store: string;
-  source: string;
+  store?: string;
+  source?: string;
 }
 
 export const expenseFormSchema = z.object({
@@ -34,8 +34,8 @@ export const expenseFormSchema = z.object({
   date: z.date(),
   description: z.string().optional().or(z.literal('')),
   category: z.string(),
-  store: z.string(),
-  source: z.string(),
+  store: z.string().optional().or(z.literal('')),
+  source: z.string().optional().or(z.literal('')),
 })
 
 
