@@ -23,7 +23,7 @@ class ExpenseCategorySerializer(serializers.ModelSerializer):
 
 
 class ExpenseSerializer(serializers.ModelSerializer):
-    store = serializers.SlugRelatedField(queryset=Store.objects.all(),slug_field='name') 
+    store = serializers.SlugRelatedField(queryset=Store.objects.all(),slug_field='name', allow_null=True) 
     category = serializers.SlugRelatedField(queryset=ExpenseCategory.objects.all(),slug_field='name')
    
     def get_fields(self):
