@@ -8,6 +8,16 @@ from users.permissions import IsEmailVerified
 from .models import ExpenseCategory, Expense, Store
 from .serializers import ExpenseCategorySerializer, ExpenseSerializer, StoreSerializer
 
+class CategoryResultsSetPagination(PageNumberPagination):
+    page_size = 25
+    max_page_size = 25
+
+
+class ExpenseResultsSetPagination(PageNumberPagination):
+    page_size = 50
+    page_size_query_param = 'page_size'
+    max_page_size = 1000
+
 
 class StoreView(GenericAPIView):
     permission_classes = (IsAuthenticated, IsEmailVerified)
@@ -33,6 +43,7 @@ class ExpenseCategoryListView(ListAPIView):
     serializer_class = ExpenseCategorySerializer
     lookup_field = "id"
     queryset = ExpenseCategory.objects.all()
+    pagination_class = CategoryResultsSetPagination
 
 
 class ExpenseView(GenericAPIView):
@@ -47,7 +58,7 @@ class ExpenseView(GenericAPIView):
 class ExpenseListCreateView(ExpenseView, ListCreateAPIView):
     filter_backends = [filters.OrderingFilter]
     ordering = ['-date']
-    pagination_class = PageNumberPagination
+    pagination_class = ExpenseResultsSetPagination
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
