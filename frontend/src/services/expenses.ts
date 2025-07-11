@@ -71,11 +71,15 @@ export function getExpenseCategories(): Promise<ExpenseCategory[]> {
     })
 }
 
-export function getExpenseList(): Promise<Expense[]> {
+// for client-side pagination
+export function getExpenseList(): Promise<{rows: Expense[], total: number}> {
   return axiosInstance.get(`/api/expenses/`)
     .then(response => {
       const res = response['data']
-      return res.results;
+      return {
+        rows: res.results,
+        total: res.count
+      }
     })
     .catch(error => {
       console.error(error)
@@ -83,6 +87,7 @@ export function getExpenseList(): Promise<Expense[]> {
     })
 }
 
+// for server-side pagination, currently not in use
 export function getExpenseListPaginated(pagination: {
   pageIndex: number
   pageSize: number

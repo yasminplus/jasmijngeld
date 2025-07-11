@@ -14,10 +14,8 @@ import {
   Expense, 
   deleteExpense, 
   getExpenseList,
-  getExpenseListPaginated
 } from '@/services/expenses'
 import OperationsType from '@/types/OperationsType'
-import { PaginationState } from "@tanstack/react-table"
 
 export const Route = createFileRoute('/_dashboardLayout/expenses/')({
   component: ListExpenses,
@@ -48,39 +46,25 @@ export const Route = createFileRoute('/_dashboardLayout/expenses/')({
   }
 })
 
-const DEFAULT_PAGE_SIZE = 20
-
 function ListExpenses() {
   const [expenses, setExpenses] = useState<Expense[]>([])
   const [cols, setCols] = useState(expensesColumns)
   const [totalData, setTotalData] = useState(0)
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0, //initial page index
-    pageSize: DEFAULT_PAGE_SIZE, //default page size
-  });
 
   const fetchTableData = useCallback(() => {
     getExpenseList()
-    .then(data => setExpenses(data))
+    .then(results => {
+      setExpenses(results.rows)
+      setTotalData(results.total)
+    })
     .catch(err => {
       throw err
     })
   }, [])
 
-  const fetchDataPaginated = useCallback(async (newPagination: PaginationState) => {
-    getExpenseListPaginated(newPagination)
-      .then(results => {
-        setExpenses(results.rows)
-        setTotalData(results.total)
-      })
-      .catch(err => {
-        throw err
-      })
-  }, [])
-
   useEffect(() => {
-    fetchDataPaginated(pagination)
-  }, [fetchDataPaginated, pagination])
+    fetchTableData()
+  }, [fetchTableData])
 
    useEffect(() => {
     const handleDelete = async(expense: Expense) => {
@@ -88,8 +72,8 @@ function ListExpenses() {
       try {
         const success = await deleteExpense(expense.id)
         if (success) {
-          // fetchTableData()
-          fetchDataPaginated(pagination)
+          fetchTableData()
+          // fetchDataPaginated(pagination)
           toast.success(`Expense with the amount ${amount} has been deleted`)
         } else {
           throw new Error('API return false')
@@ -114,7 +98,7 @@ function ListExpenses() {
         }
       ])
     }
-  } , [cols, fetchDataPaginated, pagination])
+  } , [cols, fetchTableData])
 
   return (
     <div>
@@ -128,8 +112,6 @@ function ListExpenses() {
         columns={cols} 
         data={expenses}
         totalData={totalData}
-        pagination={pagination}
-        setPagination={setPagination}
       />
     </div>
   )

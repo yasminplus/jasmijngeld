@@ -5,7 +5,6 @@ import { useState } from "react"
 import {
   ColumnDef,
   ColumnFiltersState,
-  OnChangeFn,
   PaginationState,
   SortingState,
   flexRender,
@@ -31,24 +30,25 @@ import {
 import { DataTableToolbar } from '@/components/expenses/data-table-toolbar'
 import { DataTablePagination } from "./data-table-pagination"
 
+const DEFAULT_PAGE_SIZE = 20
+
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[],
-  totalData: number,
-  pagination: PaginationState,
-  setPagination: OnChangeFn<PaginationState>
+  totalData: number
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   totalData, 
-  pagination, 
-  setPagination
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]) // can set initial column filter state here
-
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0, //initial page index
+    pageSize: DEFAULT_PAGE_SIZE, //default page size
+  });
 
   const table = useReactTable({
     data,
@@ -67,7 +67,6 @@ export function DataTable<TData, TValue>({
     },
     onColumnFiltersChange: setColumnFilters,
     onPaginationChange: setPagination,
-    manualPagination: true,    //turn off client-side pagination
     rowCount: totalData
   })
 
