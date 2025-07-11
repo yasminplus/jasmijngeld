@@ -13,10 +13,13 @@ class CategoryResultsSetPagination(PageNumberPagination):
     max_page_size = 25
 
 
+# when we have > 1000 records for a user, 
+# we'll have to think again about the pagination
+# as now we use client-side pagination.
 class ExpenseResultsSetPagination(PageNumberPagination):
-    page_size = 50
+    page_size = 1000
     page_size_query_param = 'page_size'
-    max_page_size = 1000
+    max_page_size = 10000
 
 
 class StoreView(GenericAPIView):
