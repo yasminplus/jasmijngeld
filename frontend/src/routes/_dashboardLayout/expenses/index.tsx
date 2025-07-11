@@ -10,8 +10,14 @@ import { expensesColumns } from '@/components/expenses/columns-exp'
 import { DataTable } from '@/components/expenses/data-table'
 import { AlertDelete } from "@/components/alert-delete"
 
-import { deleteExpense, Expense, getExpenseList } from '@/services/expenses'
+import { 
+  Expense, 
+  deleteExpense, 
+  getExpenseList,
+  getExpenseListPaginated
+} from '@/services/expenses'
 import OperationsType from '@/types/OperationsType'
+import { PaginationState } from "@tanstack/react-table"
 
 export const Route = createFileRoute('/_dashboardLayout/expenses/')({
   component: ListExpenses,
@@ -42,9 +48,16 @@ export const Route = createFileRoute('/_dashboardLayout/expenses/')({
   }
 })
 
+const DEFAULT_PAGE_SIZE = 20
+
 function ListExpenses() {
   const [expenses, setExpenses] = useState<Expense[]>([])
   const [cols, setCols] = useState(expensesColumns)
+  const [totalData, setTotalData] = useState(0)
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0, //initial page index
+    pageSize: DEFAULT_PAGE_SIZE, //default page size
+  });
 
   const fetchTableData = useCallback(() => {
     getExpenseList()
@@ -54,17 +67,29 @@ function ListExpenses() {
     })
   }, [])
 
-  useEffect(() => {
-    fetchTableData()
-  }, [fetchTableData])
+  const fetchDataPaginated = useCallback(async (newPagination: PaginationState) => {
+    getExpenseListPaginated(newPagination)
+      .then(results => {
+        setExpenses(results.rows)
+        setTotalData(results.total)
+      })
+      .catch(err => {
+        throw err
+      })
+  }, [])
 
   useEffect(() => {
+    fetchDataPaginated(pagination)
+  }, [fetchDataPaginated, pagination])
+
+   useEffect(() => {
     const handleDelete = async(expense: Expense) => {
       const amount = `${expense.amount} ${expense.currency}`
       try {
         const success = await deleteExpense(expense.id)
         if (success) {
-          fetchTableData()
+          // fetchTableData()
+          fetchDataPaginated(pagination)
           toast.success(`Expense with the amount ${amount} has been deleted`)
         } else {
           throw new Error('API return false')
@@ -89,7 +114,7 @@ function ListExpenses() {
         }
       ])
     }
-  } , [cols, fetchTableData])
+  } , [cols, fetchDataPaginated, pagination])
 
   return (
     <div>
@@ -99,7 +124,13 @@ function ListExpenses() {
         </Button>
       </Link>
 
-      <DataTable columns={cols} data={expenses} />
+      <DataTable 
+        columns={cols} 
+        data={expenses}
+        totalData={totalData}
+        pagination={pagination}
+        setPagination={setPagination}
+      />
     </div>
   )
 }

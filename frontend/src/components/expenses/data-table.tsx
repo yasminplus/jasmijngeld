@@ -5,6 +5,8 @@ import { useState } from "react"
 import {
   ColumnDef,
   ColumnFiltersState,
+  OnChangeFn,
+  PaginationState,
   SortingState,
   flexRender,
   getCoreRowModel,
@@ -27,18 +29,26 @@ import {
 } from "@/components/ui/table"
 
 import { DataTableToolbar } from '@/components/expenses/data-table-toolbar'
+import { DataTablePagination } from "./data-table-pagination"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
-  data: TData[]
+  data: TData[],
+  totalData: number,
+  pagination: PaginationState,
+  setPagination: OnChangeFn<PaginationState>
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  totalData, 
+  pagination, 
+  setPagination
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]) // can set initial column filter state here
+
 
   const table = useReactTable({
     data,
@@ -52,9 +62,13 @@ export function DataTable<TData, TValue>({
     getFacetedUniqueValues: getFacetedUniqueValues(), //if you need a list of unique values
     state: {
       columnFilters,
+      pagination,
       sorting,
     },
-    onColumnFiltersChange: setColumnFilters
+    onColumnFiltersChange: setColumnFilters,
+    onPaginationChange: setPagination,
+    manualPagination: true,    //turn off client-side pagination
+    rowCount: totalData
   })
 
   return (
@@ -136,6 +150,7 @@ export function DataTable<TData, TValue>({
           </TableFooter>
         </Table>
       </div>
+      <DataTablePagination table={table} />
     </div>
   )
 }

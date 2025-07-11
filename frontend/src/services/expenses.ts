@@ -83,6 +83,25 @@ export function getExpenseList(): Promise<Expense[]> {
     })
 }
 
+export function getExpenseListPaginated(pagination: {
+  pageIndex: number
+  pageSize: number
+}): Promise<{ rows: Expense[]; total: number; pageCount: number }> {
+  return axiosInstance.get(`/api/expenses/?page=${pagination.pageIndex + 1}&page_size=${pagination.pageSize}`)
+    .then(response => {
+      const res = response['data']
+      return {
+        rows: res.results,
+        total: res.count,
+        pageCount: Math.ceil(res.count / pagination.pageSize)
+      }
+    })
+    .catch(error => {
+      console.error(error)
+      throw error;
+    })
+}
+
 export function createExpense(data: ExpenseFormType): Promise<Expense> {
   return axiosInstance.post(`/api/expenses/`, data)
     .then(response => {
