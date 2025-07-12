@@ -119,33 +119,42 @@ export function DataTableToolbar<TData>({
     updateRangeType()
   }, [endDate, table, updateRangeType])
 
-  function changeRangeType(rangeType: RangeType) {
-    setRangeType(rangeType)
-    const today = new Date()
-    const cur_mo = today.getMonth()
-    let year = today.getFullYear()
-    let s_start = '', s_end = ''
-    let d_start = new Date(), d_end = new Date()
+  function changeRangeType(newRangeType: RangeType) {
+    if (rangeType == newRangeType) {
+      setRangeType('')
+      setStringStartDate('')
+      setStartDate(undefined)
+      setStringEndDate('')
+      setEndDate(undefined)
+    }
+    else {
+      let s_start = '', s_end = ''
+      let d_start = new Date(), d_end = new Date()
+      setRangeType(newRangeType)
+      const today = new Date()
+      const cur_mo = today.getMonth()
+      let year = today.getFullYear()
 
-    if (rangeType === 'this_month') {
-      s_start = `01/` + `${cur_mo + 1}`.padStart(2, '0') + `/${year}`
-      d_start = parse(s_start, 'dd/MM/yyyy', d_start)
+      if (newRangeType === 'this_month') {
+        s_start = `01/` + `${cur_mo + 1}`.padStart(2, '0') + `/${year}`
+        d_start = parse(s_start, 'dd/MM/yyyy', d_start)
 
-      d_end = lastDayOfMonth(d_start)
-      s_end = format(d_end, 'dd/MM/yyyy')
+        d_end = lastDayOfMonth(d_start)
+        s_end = format(d_end, 'dd/MM/yyyy')
 
-    } else if (rangeType === 'last_month') {
-      year -= cur_mo !== 11? 0 : -1
-      s_start = `01/` + `${cur_mo}`.padStart(2, '0') + `/${year}`
-      d_start = parse(s_start, 'dd/MM/yyyy', d_start)
+      } else if (newRangeType === 'last_month') {
+        year -= cur_mo !== 11? 0 : -1
+        s_start = `01/` + `${cur_mo}`.padStart(2, '0') + `/${year}`
+        d_start = parse(s_start, 'dd/MM/yyyy', d_start)
 
-      d_end = lastDayOfMonth(d_start)
-      s_end = format(d_end, 'dd/MM/yyyy')
-    } 
-    setStringStartDate(s_start)
-    setStartDate(d_start)
-    setStringEndDate(s_end)
-    setEndDate(d_end)
+        d_end = lastDayOfMonth(d_start)
+        s_end = format(d_end, 'dd/MM/yyyy')
+      }
+      setStringStartDate(s_start)
+      setStartDate(d_start)
+      setStringEndDate(s_end)
+      setEndDate(d_end)
+    }
   }
 
   return (
