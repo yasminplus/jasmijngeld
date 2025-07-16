@@ -7,10 +7,15 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Expense, getExpenseListPaginated } from "@/services/expenses"
+import { Link, linkOptions } from "@tanstack/react-router"
 import { useCallback, useEffect, useState } from "react"
 
 export default function RecentExpenses() {
   const [expenses, setExpenses] = useState<Expense[]>([])
+  const dashboardLinkOptions = linkOptions({
+    to: '/expenses',
+    search: { id: 0, op_type: 'none' },
+  })
 
   const fetchTableData = useCallback(() => {
       getExpenseListPaginated({pageIndex: 0, pageSize: 5})
@@ -27,8 +32,13 @@ export default function RecentExpenses() {
     }, [fetchTableData])
 
   return (
-    <div className="w-80 mt-2">
-      <h1 className="text-xl mb-2">Recent 5 expenses</h1>
+    <div className="w-96 mt-2">
+      <div className="flex flex-row justify-between mb-2">
+        <h1 className="text-xl ">Recent expenses</h1>
+        <Link {...dashboardLinkOptions} className="text-sm mt-1" >
+          See all
+        </Link>
+      </div>
       <Table>
         <TableHeader>
           <TableRow>
