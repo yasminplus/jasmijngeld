@@ -1,3 +1,5 @@
+from django.db.models.functions import TruncMonth
+from django.db.models import Sum
 from rest_framework import filters
 from rest_framework.generics import GenericAPIView, ListAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.pagination import PageNumberPagination
@@ -6,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from users.permissions import IsEmailVerified
 
 from .models import ExpenseCategory, Expense, Store
-from .serializers import ExpenseCategorySerializer, ExpenseSerializer, StoreSerializer
+from .serializers import ExpenseCategorySerializer, ExpenseSerializer, ExpenseSummaryYearlySerializer, StoreSerializer
 
 class CategoryResultsSetPagination(PageNumberPagination):
     page_size = 25
@@ -69,3 +71,19 @@ class ExpenseListCreateView(ExpenseView, ListCreateAPIView):
 
 class ExpenseRetrieveUpdateDeleteView(ExpenseView, RetrieveUpdateDestroyAPIView):
     pass
+
+
+class ExpenseSummaryYearly(ListAPIView):
+    serializer_class = ExpenseSummaryYearlySerializer
+    pagination_class = None
+    def get_queryset(self):
+        currency = self.request.query_params.get('currency')
+        qs = Expense.objects\
+                        .filter(user=self.request.user)\
+                        .filter(currency=currency)\
+                        .annotate(month=TruncMonth('date'))\
+                        .values('month')\
+                        # .annotate(sum=Sum('amount'))\
+                        # .values('month', 'sum')
+        print(qs)
+        return qs

@@ -39,3 +39,7 @@ class ExpenseSerializer(serializers.ModelSerializer):
     class Meta:
       model = Expense
       fields = ['id', 'amount', 'date', 'description', 'category', 'currency', 'store', 'source']
+
+class ExpenseSummaryYearlySerializer(serializers.Serializer):
+    amount = serializers.DecimalField(max_digits=None, decimal_places=2)
+    month = serializers.DateField()
