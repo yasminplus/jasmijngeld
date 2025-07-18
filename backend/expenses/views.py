@@ -1,5 +1,7 @@
 from django.db.models.functions import TruncMonth
 from django.db.models import Sum
+from django.utils import timezone
+from datetime import timedelta
 from rest_framework import filters
 from rest_framework.generics import GenericAPIView, ListAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.pagination import PageNumberPagination
@@ -76,14 +78,21 @@ class ExpenseRetrieveUpdateDeleteView(ExpenseView, RetrieveUpdateDestroyAPIView)
 class ExpenseSummaryYearly(ListAPIView):
     serializer_class = ExpenseSummaryYearlySerializer
     pagination_class = None
+    
     def get_queryset(self):
         currency = self.request.query_params.get('currency')
+        first_day_of_this_month = timezone.now().replace(day=1)
+        first_day_of_next_month = (
+            first_day_of_this_month + timedelta(days=32)
+        ).replace(day=1)
+        one_year_ago = first_day_of_next_month - timedelta(days=365)
+
         qs = Expense.objects\
                         .filter(user=self.request.user)\
                         .filter(currency=currency)\
+                        .filter(date__gte=one_year_ago)\
                         .annotate(month=TruncMonth('date'))\
                         .values('month')\
-                        # .annotate(sum=Sum('amount'))\
-                        # .values('month', 'sum')
-        print(qs)
+                        .annotate(total=Sum('amount'))\
+                        .values('month', 'total')
         return qs
