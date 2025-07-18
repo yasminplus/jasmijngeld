@@ -10,7 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 from users.permissions import IsEmailVerified
 
 from .models import ExpenseCategory, Expense, Store
-from .serializers import ExpenseCategorySerializer, ExpenseSerializer, ExpenseSummaryYearlySerializer, StoreSerializer
+from .serializers import ExpenseCategorySerializer, ExpenseSerializer, ExpenseSummaryLast12MonthsSerializer, StoreSerializer
 
 class CategoryResultsSetPagination(PageNumberPagination):
     page_size = 25
@@ -75,10 +75,10 @@ class ExpenseRetrieveUpdateDeleteView(ExpenseView, RetrieveUpdateDestroyAPIView)
     pass
 
 
-class ExpenseSummaryYearly(ListAPIView):
-    serializer_class = ExpenseSummaryYearlySerializer
+class ExpenseSummaryLast12Months(ListAPIView):
+    serializer_class = ExpenseSummaryLast12MonthsSerializer
     pagination_class = None
-    
+
     def get_queryset(self):
         currency = self.request.query_params.get('currency')
         first_day_of_this_month = timezone.now().replace(day=1)
