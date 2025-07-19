@@ -80,7 +80,6 @@ class ExpenseSummaryLast12Months(ListAPIView):
     pagination_class = None
 
     def get_queryset(self):
-        currency = self.request.query_params.get('currency')
         first_day_of_this_month = timezone.now().replace(day=1)
         first_day_of_next_month = (
             first_day_of_this_month + timedelta(days=32)
@@ -88,11 +87,10 @@ class ExpenseSummaryLast12Months(ListAPIView):
         one_year_ago = first_day_of_next_month - timedelta(days=365)
 
         qs = Expense.objects\
-                        .filter(user=self.request.user)\
-                        .filter(currency=currency)\
-                        .filter(date__gte=one_year_ago)\
-                        .annotate(month=TruncMonth('date'))\
-                        .values('month')\
-                        .annotate(total=Sum('amount'))\
-                        .values('month', 'total')
+                    .filter(user=self.request.user)\
+                    .filter(date__gte=one_year_ago)\
+                    .annotate(month=TruncMonth('date'))\
+                    .values('month', 'currency')\
+                    .annotate(total=Sum('amount'))\
+                    .values('month', 'currency', 'total')
         return qs

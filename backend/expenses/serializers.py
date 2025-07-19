@@ -43,3 +43,4 @@ class ExpenseSerializer(serializers.ModelSerializer):
 class ExpenseSummaryLast12MonthsSerializer(serializers.Serializer):
     total = serializers.DecimalField(max_digits=None, decimal_places=2)
     month = serializers.DateField()
+    currency = serializers.CharField()
