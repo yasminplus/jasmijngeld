@@ -1,4 +1,6 @@
 import axiosInstance from "@/services/axios";
+import { Proc12MoSummary, Summary12MonthsType } from "@/types/ExpenseSummaryType";
+import { addMonths, format, parse } from "date-fns";
 import { z } from "zod"
 
 
@@ -156,4 +158,61 @@ export function deleteExpense(id:number): Promise<boolean> {
       console.error(error);
       throw error;
     });
+}
+
+export function getSummary12Months(): Promise<Proc12MoSummary[]> {
+  return axiosInstance.get(`/api/expenses/last12months/`)
+    .then(response => {
+      const res = processSummary12Months(response['data'])
+      return res
+    })
+    .catch(error => {
+      console.error(error)
+      throw error;
+    })
+}
+
+function processSummary12Months(data: Summary12MonthsType[]) {
+  // collect all months
+  const monthsSet = new Set(data.map(item => item.month))
+  const allMonths = [...monthsSet]
+  allMonths.sort()
+
+  // get min max months
+  const months = data.map(item => item.month)
+  months.sort()
+  const minMoStr = months[0]
+  const maxMoStr = months[months.length - 1]
+  const minMo = parse(minMoStr, 'yyyy-MM-dd', new Date())
+  const maxMo = parse(maxMoStr, 'yyyy-MM-dd', new Date())
+
+  const sortedMonths = []
+  let mo = minMo
+  while (mo.getTime() <= maxMo.getTime()) {
+    sortedMonths.push(mo)
+    mo = addMonths(mo, 1)
+  }
+
+  const res: Proc12MoSummary[] = []
+  // for each item in sortedMonths, convert the date to string, 
+  // get the value from the array
+  for (const dt of sortedMonths) {
+    const dtStr = format(dt, 'yyyy-MM-dd')
+    const filtered = data.filter(v => v.month === dtStr)
+    const entry: Proc12MoSummary = {
+      month: '',
+      IDR: 0,
+      EUR: 0,
+      USD: 0
+    }
+    filtered.forEach((el) => {
+      const currency = el['currency']
+      if (currency === 'IDR' || currency === 'EUR' || currency === 'USD') {
+        entry[currency] = el['total']
+      }
+      entry['month'] = format(dt, 'MMM yyyy')
+    })
+    res.push(entry)
+  }
+  return res
 }

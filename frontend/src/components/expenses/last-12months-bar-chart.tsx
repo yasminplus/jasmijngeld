@@ -1,0 +1,72 @@
+import { getSummary12Months } from "@/services/expenses";
+import { Proc12MoSummary } from "@/types/ExpenseSummaryType";
+import { useEffect, useState } from "react";
+
+import { 
+  Bar, 
+  BarChart, 
+  CartesianGrid,
+  XAxis,
+} from "recharts"
+import { 
+  ChartConfig, 
+  ChartContainer,
+  ChartTooltip, 
+  ChartTooltipContent, 
+} from "@/components/ui/chart"
+
+export default function Last12MonthsBarChart() {
+  const [chartData, setChartData] = useState<Proc12MoSummary[]>([])
+  // for testing with example data
+  // because there's too much gap for the EUR and IDR, the EUR won't show
+  // const [chartData, setChartData] = useState<Proc12MoSummary[]>([
+  //   {month: 'Jun 2025', IDR: 300000.00, EUR: 0, USD: 0}, 
+  //   {month: 'Jul 2025', IDR: 275045.00, EUR: 15.51, USD: 0}
+  // ])
+  const chartConfig = {
+    IDR: {
+      label: "IDR",
+      color: "hsl(221.21, 83.19%, 53.33%)",
+    },
+    EUR: {
+      label: "EUR",
+      color: "hsl(221.21, 80.19%, 48.33%)",
+    },
+    USD: {
+      label: "USD",
+      color: "hsl(221.21, 76.19%, 45.33%)",
+    },
+  } satisfies ChartConfig
+
+  useEffect(() => {
+    getSummary12Months()
+    .then(res => {
+      setChartData(res)
+    })
+    .catch(err => {
+      throw err
+    })
+  }, [])
+
+  return (
+    <div>
+      <h1 className="text-xl">Total expenses in the last 12 months</h1>
+      <ChartContainer config={chartConfig} className="min-h-[200px] w-96">
+        <BarChart accessibilityLayer data={chartData}>
+          <CartesianGrid vertical={false} />
+          <XAxis
+            dataKey="month"
+            tickLine={false}
+            tickMargin={10}
+            axisLine={false}
+            tickFormatter={(value) => value.slice(0, 3)}
+          />
+          <Bar dataKey="IDR" fill="var(--color-IDR)" radius={5} />
+          <ChartTooltip  content={<ChartTooltipContent hideIndicator={true} indicator="dot" />} />
+          {/* <Bar dataKey="EUR" fill="var(--color-EUR)" radius={4} />
+          <Bar dataKey="USD" fill="var(--color-USD)" radius={4} /> */}
+        </BarChart>
+      </ChartContainer>
+    </div>
+  )
+}

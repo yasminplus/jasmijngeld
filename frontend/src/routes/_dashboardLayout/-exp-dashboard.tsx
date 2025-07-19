@@ -18,18 +18,18 @@ export default function RecentExpenses() {
   })
 
   const fetchTableData = useCallback(() => {
-      getExpenseListPaginated({pageIndex: 0, pageSize: 5})
-      .then(results => {
-        setExpenses(results.rows)
-      })
-      .catch(err => {
-        throw err
-      })
-    }, [])
+    getExpenseListPaginated({pageIndex: 0, pageSize: 5})
+    .then(results => {
+      setExpenses(results.rows)
+    })
+    .catch(err => {
+      throw err
+    })
+  }, [])
   
-    useEffect(() => {
-      fetchTableData()
-    }, [fetchTableData])
+  useEffect(() => {
+    fetchTableData()
+  }, [fetchTableData])
 
   return (
     <div className="w-96 mt-2">

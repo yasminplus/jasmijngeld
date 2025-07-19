@@ -66,7 +66,7 @@ function ListExpenses() {
     fetchTableData()
   }, [fetchTableData])
 
-   useEffect(() => {
+  useEffect(() => {
     const handleDelete = async(expense: Expense) => {
       const amount = `${expense.amount} ${expense.currency}`
       try {

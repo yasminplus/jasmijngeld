@@ -1,0 +1,12 @@
+export type Summary12MonthsType = {
+  month: string
+  total: number
+  currency: string
+}
+
+export type Proc12MoSummary = {
+  month: string
+  IDR?: number
+  EUR?: number
+  USD?: number
+}
