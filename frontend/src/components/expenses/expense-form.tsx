@@ -1,12 +1,14 @@
 import { zodResolver } from "@hookform/resolvers/zod"
+import { Popover, PopoverContent, PopoverTrigger } from "@radix-ui/react-popover"
 import { useNavigate } from "@tanstack/react-router"
+import { format } from "date-fns"
 import { Calendar as CalendarIcon } from "lucide-react"
+import { useCallback, useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
-import { Input } from "@/components/ui/input"
 import {
   Form,
   FormControl,
@@ -15,6 +17,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
 import {
   Select,
   SelectContent,
@@ -22,21 +25,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { 
+import { getPaymentSourceList, PaymentSource } from "@/services/accounts-cards"
+import {
+  createExpense,
   CURRENCY_CHOICES,
   Expense,
   ExpenseCategory,
+  expenseFormSchema,
   ExpenseFormType,
-  Store,
   getExpenseCategories,
   getStoreList,
-  createExpense,
+  Store,
   updateExpense,
-  expenseFormSchema,
-} from '@/services/expenses';
-import { getPaymentSourceList, PaymentSource } from "@/services/accounts-cards"
-import { useCallback, useEffect, useState } from "react"
-import { Popover, PopoverContent, PopoverTrigger } from "@radix-ui/react-popover"
+} from '@/services/expenses'
 
 
 type ExpenseFormProps = {
@@ -79,7 +80,7 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
   async function onSubmit(data: ExpenseFormValues) {
     const payload: ExpenseFormType = {
       ...data,
-      date: data.date.toISOString().split('T')[0],
+      date: format(data.date, "yyyy-MM-dd"),
       store: data.store? data.store : "",
       source: data.source? data.source : ""
     };
