@@ -1,5 +1,6 @@
-import axios from "axios";
-import { getToken, setStoredUser } from "../context/auth";
+import axios from 'axios';
+
+import { getToken, setStoredUser } from '../context/auth';
 
 const BE_BASE_URL = 'http://localhost:8007'
 
@@ -10,7 +11,6 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   (config) => {
     config.headers.Authorization = "Bearer " + getToken('access')
-    // console.log(config)
     return config
   }, 
   (error) => {
@@ -19,28 +19,69 @@ axiosInstance.interceptors.request.use(
 )
 
 let isRefreshing = false
+let failedQueue: any[] = [];
+
+const processQueue = (error: any, token: string | null = null) => {
+  console.log(error)
+  failedQueue.forEach(prom => {
+    console.log("in failedQueue")
+    console.log(prom)
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+  failedQueue = [];
+};
+
 axiosInstance.interceptors.response.use(
   response => response,
   async error => {
+    const originalRequest = error.config;
     const refreshToken = getToken('refresh')
-    if (error.response.status === 401 && refreshToken && !isRefreshing) {
-      isRefreshing = true
+    if (error.response?.status === 401 && refreshToken && !originalRequest._retry) {
+      originalRequest._retry = true;
 
-      const data = {
-        refresh: refreshToken
+      if (isRefreshing) {
+        // Push this request into the queue
+        return new Promise((resolve, reject) => {
+          failedQueue.push({
+            resolve: (token: string) => {
+              originalRequest.headers['Authorization'] = 'Bearer ' + token;
+              resolve(axiosInstance(originalRequest));
+            },
+            reject: (err: any) => {
+              reject(err);
+            }
+          });
+        });
       }
 
-      await axios
-      .post(`${BE_BASE_URL}/api/auth/token/refresh/`, data)
-      .then((res) => {
-        setStoredUser(res.data)
-        axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${res.data.access}`
-      })
+      isRefreshing = true
 
-      error.config.headers.Authorization = "Bearer " + getToken('access')
-      return axiosInstance(error.config)
+      return new Promise(async (resolve, reject) => {
+        try {
+          const res = await axios.post(`${BE_BASE_URL}/api/auth/token/refresh/`, {
+            refresh: refreshToken
+          });
+
+          setStoredUser(res.data)
+          const newAccessToken = res.data.access;
+          axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${newAccessToken}`
+
+          processQueue(null, newAccessToken);
+          originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
+          resolve(axiosInstance(originalRequest));
+        } catch (err) {
+          processQueue(err, null)
+          reject(err)
+        } finally {
+          isRefreshing = false
+        }
+      })
     }
-    isRefreshing = false
+
     return Promise.reject(error)
   }
 )
