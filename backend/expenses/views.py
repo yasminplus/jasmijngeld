@@ -1,7 +1,9 @@
 from django.db.models.functions import TruncMonth
-from django.db.models import Sum
+from django.db.models import Sum, F
 from django.utils import timezone
 from datetime import timedelta
+from dateutil.parser import parse
+from dateutil.relativedelta import relativedelta
 from rest_framework import filters
 from rest_framework.generics import GenericAPIView, ListAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.pagination import PageNumberPagination
@@ -10,7 +12,7 @@ from rest_framework.permissions import IsAuthenticated
 from users.permissions import IsEmailVerified
 
 from .models import ExpenseCategory, Expense, Store
-from .serializers import ExpenseCategorySerializer, ExpenseSerializer, ExpenseSummaryLast12MonthsSerializer, StoreSerializer
+from .serializers import ExpenseCategorySerializer, ExpenseSerializer, ExpenseSummaryLast12MonthsSerializer, ExpenseSummaryMonthlySerializer, StoreSerializer
 
 class CategoryResultsSetPagination(PageNumberPagination):
     page_size = 25
@@ -75,7 +77,7 @@ class ExpenseRetrieveUpdateDeleteView(ExpenseView, RetrieveUpdateDestroyAPIView)
     pass
 
 
-class ExpenseSummaryLast12Months(ListAPIView):
+class ExpenseSummaryLast12MonthsView(ListAPIView):
     serializer_class = ExpenseSummaryLast12MonthsSerializer
     pagination_class = None
 
@@ -93,4 +95,24 @@ class ExpenseSummaryLast12Months(ListAPIView):
                     .values('month', 'currency')\
                     .annotate(total=Sum('amount'))\
                     .values('month', 'currency', 'total')
+        return qs
+
+class ExpenseSummaryMonthlyView(ListAPIView):
+    serializer_class = ExpenseSummaryMonthlySerializer
+    pagination_class = None
+
+    def get_queryset(self):
+        date_str = self.request.query_params.get('date')
+        date = parse(date_str)
+        first_day_of_the_month = date.replace(day=1)
+        last_day_of_the_month = first_day_of_the_month + relativedelta(day=31)
+
+        qs = Expense.objects\
+                    .filter(user=self.request.user)\
+                    .filter(date__gte=first_day_of_the_month)\
+                    .filter(date__lte=last_day_of_the_month)\
+                    .values('currency', category_name=F('category__name'))\
+                    .annotate(amount=Sum('amount'))\
+                    .order_by('category_name', 'currency')
+        print(qs)
         return qs
