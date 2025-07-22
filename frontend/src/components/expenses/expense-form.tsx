@@ -1,44 +1,28 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Popover, PopoverContent, PopoverTrigger } from "@radix-ui/react-popover"
-import { useNavigate } from "@tanstack/react-router"
-import { format } from "date-fns"
-import { Calendar as CalendarIcon } from "lucide-react"
-import { useCallback, useEffect, useState } from "react"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
+import { format } from 'date-fns';
+import { Calendar as CalendarIcon, Check } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
+    Form, FormControl, FormField, FormItem, FormLabel, FormMessage
+} from '@/components/ui/form';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { getPaymentSourceList, PaymentSource } from "@/services/accounts-cards"
+    Select, SelectContent, SelectItem, SelectTrigger, SelectValue
+} from '@/components/ui/select';
+import { cn } from '@/lib/utils';
+import { getPaymentSourceList, PaymentSource } from '@/services/accounts-cards';
 import {
-  createExpense,
-  CURRENCY_CHOICES,
-  Expense,
-  ExpenseCategory,
-  expenseFormSchema,
-  ExpenseFormType,
-  getExpenseCategories,
-  getStoreList,
-  Store,
-  updateExpense,
-} from '@/services/expenses'
+    createExpense, CURRENCY_CHOICES, Expense, ExpenseCategory, expenseFormSchema, ExpenseFormType,
+    getExpenseCategories, getStoreList, Store, updateExpense
+} from '@/services/expenses';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useNavigate } from '@tanstack/react-router';
 
+import { InputField } from '../form/input-field';
 
 type ExpenseFormProps = {
   expense?: Expense
@@ -162,26 +146,12 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
               )}
             />
 
-            <FormField
-              control={form.control}
+            <InputField
               name="amount"
-              render={ ({ field }) => (
-                <FormItem className='text-left'>
-                  <FormLabel>
-                    Amount
-                    <span className="text-destructive"> *</span>
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      name="amount"
-                      type="number"
-                      value={field.value || ""}
-                      onChange={field.onChange}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              control={form.control}
+              label="Amount"
+              required
+              type='number'
             />
 
             <FormField
@@ -213,21 +183,10 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
               )}
             />
 
-            <FormField
-              control={form.control}
+            <InputField 
               name="description"
-              render={ ({ field }) => (
-                <FormItem className='text-left'>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Input
-                      value={field.value || ""}
-                      onChange={field.onChange}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              control={form.control}
+              label="Description"
             />
 
             <FormField
