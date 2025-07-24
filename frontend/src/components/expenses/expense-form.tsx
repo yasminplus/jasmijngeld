@@ -1,5 +1,5 @@
 import { format } from 'date-fns';
-import { Calendar as CalendarIcon, Check } from 'lucide-react';
+import { Calendar as CalendarIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -13,7 +13,6 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import {
     Select, SelectContent, SelectItem, SelectTrigger, SelectValue
 } from '@/components/ui/select';
-import { cn } from '@/lib/utils';
 import { getPaymentSourceList, PaymentSource } from '@/services/accounts-cards';
 import {
     createExpense, CURRENCY_CHOICES, Expense, ExpenseCategory, expenseFormSchema, ExpenseFormType,
@@ -23,6 +22,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from '@tanstack/react-router';
 
 import { InputField } from '../form/input-field';
+import { SelectInputField } from '../form/select-input-field';
 
 type ExpenseFormProps = {
   expense?: Expense
@@ -220,32 +220,11 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
               )}
             />
 
-            <FormField
-              control={form.control}
+            <SelectInputField
               name="store"
-              render={({ field }) => (
-                <FormItem className='text-left'>
-                  <FormLabel>Store</FormLabel>
-                  <FormControl>
-                    <Select
-                      // try either this or the line below
-                      // defaultValue={expense? expense.source_type : undefined} 
-                      value={field.value || ""}
-                      onValueChange={field.onChange}
-                    >
-                      <SelectTrigger className="">
-                        <SelectValue placeholder="Select store" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {storeList.map( choice => 
-                          <SelectItem key={choice.id} value={choice.name}>{choice.name}</SelectItem>
-                        )}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              control={form.control}
+              label="Store"
+              options={storeList}
             />
 
             <FormField

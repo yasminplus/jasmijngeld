@@ -11,13 +11,13 @@ interface InputFieldProps<TFieldValues extends FieldValues> {
   type?: string
 }
 
-export function InputField<TData extends FieldValues>({ 
+export function InputField<TFieldValues extends FieldValues>({ 
   name, 
   control, 
   label, 
   required = false, 
   type = 'text' 
-}: InputFieldProps<TData>) {
+}: InputFieldProps<TFieldValues>) {
 
   return (
     <>
