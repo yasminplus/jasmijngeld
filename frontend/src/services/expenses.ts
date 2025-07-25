@@ -1,8 +1,10 @@
-import axiosInstance from "@/services/axios";
-import { Proc12MoSummary, Summary12MonthsType } from "@/types/ExpenseSummaryType";
-import { addMonths, format, parse } from "date-fns";
-import { z } from "zod"
+import { addMonths, format, parse } from 'date-fns';
+import { z } from 'zod';
 
+import axiosInstance from '@/services/axios';
+import {
+    Proc12MoSummary, Summary12MonthsType, SummaryMonthlyCategory
+} from '@/types/ExpenseSummaryType';
 
 export interface ExpenseCategory {
   id: number;
@@ -215,4 +217,16 @@ function processSummary12Months(data: Summary12MonthsType[]) {
     res.push(entry)
   }
   return res
+}
+
+export function getMonthlyCategorySummary(): Promise<SummaryMonthlyCategory[]> {
+  const dateStr = format(new Date(), 'yyyy-MM-dd')
+  return axiosInstance.get(`/api/expenses/monthly/?date=${dateStr}`, )
+    .then(response => {
+      return response['data']
+    })
+    .catch(error => {
+      console.error(error)
+      throw error;
+    })
 }

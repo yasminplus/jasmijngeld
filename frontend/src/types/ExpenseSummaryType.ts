@@ -10,3 +10,9 @@ export type Proc12MoSummary = {
   EUR?: number
   USD?: number
 }
+
+export type SummaryMonthlyCategory = {
+  category_name: string
+  amount: number
+  currency: string
+}
