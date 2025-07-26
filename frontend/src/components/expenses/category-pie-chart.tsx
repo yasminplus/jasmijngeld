@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Pie, PieChart, Tooltip } from 'recharts';
+import { Cell, Pie, PieChart, PieLabelRenderProps, Tooltip } from 'recharts';
 
 import { CURRENCY_CHOICES, getMonthlyCategorySummary } from '@/services/expenses';
 import { SummaryMonthlyCategory } from '@/types/ExpenseSummaryType';
@@ -7,77 +7,34 @@ import { SummaryMonthlyCategory } from '@/types/ExpenseSummaryType';
 type MonthlyWrapper = {
   currency: string
   data: SummaryMonthlyCategory[]
+  count: number
 }
 
 export default function MonthlyCategoryPieChart() {
   const [chartData, setChartData] = useState<MonthlyWrapper[]>([])
-  // const [chartData, setChartData] = useState<MonthlyWrapper[]>(
-  //   [{
-  //     'currency': 'IDR',
-  //     'data':[
-  //       {
-  //           "category_name": "Bills",
-  //           "amount": 51000.00,
-  //           "currency": "IDR"
-  //       },
-  //       {
-  //           "category_name": "Charity & Gift",
-  //           "amount": 150147.00,
-  //           "currency": "IDR"
-  //       },
-  //       {
-  //           "category_name": "Eat Out",
-  //           "amount": 319000.00,
-  //           "currency": "IDR"
-  //       },
-  //       {
-  //           "category_name": "Education",
-  //           "amount": 300000.00,
-  //           "currency": "IDR"
-  //       },
-  //       {
-  //           "category_name": "Entertainment",
-  //           "amount": 50000.00,
-  //           "currency": "IDR"
-  //       },
-  //       {
-  //           "category_name": "Health",
-  //           "amount": 250000.00,
-  //           "currency": "IDR"
-  //       },
-  //       {
-  //           "category_name": "Household Stuffs",
-  //           "amount": 140045.00,
-  //           "currency": "IDR"
-  //       },
-  //       {
-  //           "category_name": "Personal Care",
-  //           "amount": 520000.00,
-  //           "currency": "IDR"
-  //       },
-  //       {
-  //           "category_name": "Shopping",
-  //           "amount": 100000.00,
-  //           "currency": "IDR"
-  //       }
-  //     ]
-  //   }]
-  // )
-
+  const [pieColors, setPieColors] = useState<string[]>([])
+  const formatLabel = ({ amount }: PieLabelRenderProps) => {
+    return amount.toLocaleString()
+  }
   useEffect(() => {
     getMonthlyCategorySummary()
     .then(res => {
       console.log(res)
+      let maxTemp = 0
       const wrapper: MonthlyWrapper[] = []
       CURRENCY_CHOICES.map(c => {
         const data = res.filter(v => v.currency === c)
         if (data.length > 0) {
+          maxTemp = Math.max(maxTemp, data.length)
           wrapper.push({
             'currency': c,
-            'data': data 
+            'data': data,
+            'count': data.length
           })
         }
       })
+      const pieColorsTmp = Array.from({ length: 20 }, (_, i) => `hsl(${(i * 360) / maxTemp}, 70%, 50%)`);
+      setPieColors(pieColorsTmp)
       setChartData(wrapper)
     })
     .catch(err => {
@@ -97,11 +54,15 @@ export default function MonthlyCategoryPieChart() {
               nameKey="category_name"
               isAnimationActive={false}
               cx="150"
-              cy={100 * (idx + 1) + (idx * 60)}
+              cy={100 * (idx + 1) + (idx * 90)}
               outerRadius={70}
               fill="#8884d8"
-              label
-            />
+              label={formatLabel}
+            >
+              {item['data'].map((entry, index) => (
+                <Cell key={`cell-${entry.category_name}`} fill={pieColors[index]} />
+              ))}
+            </Pie>
           ))}
           {/* <Pie dataKey="value" data={data02} cx={500} cy={200} innerRadius={40} outerRadius={80} fill="#82ca9d" /> */}
           <Tooltip />
