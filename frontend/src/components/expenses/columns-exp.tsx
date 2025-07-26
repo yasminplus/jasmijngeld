@@ -1,15 +1,11 @@
 "use client"
 
-import { 
-  ColumnDef
- } from "@tanstack/react-table"
-import { Link } from "@tanstack/react-router"
-import { parse } from "date-fns"
-import { ArrowUpDown, Pencil } from "lucide-react"
+import { parse } from 'date-fns';
+import { ArrowUpDown, Pencil } from 'lucide-react';
 
-import { Button } from "@/components/ui/button"
-
-import { Expense } from '@/services/expenses'
+import { Button } from '@/components/ui/button';
+import { Expense } from '@/services/expenses';
+import { Link } from '@tanstack/react-router';
 
 export const expensesColumns: ColumnDef<Expense>[] = [
   {
@@ -53,13 +49,26 @@ export const expensesColumns: ColumnDef<Expense>[] = [
         </Button>
       )
     },
+    cell: ({row}) => {
+      const expense = row.original
+      const amt = expense.amount.toLocaleString()
+      return amt
+    },
     footer: ({ table }) => {
       if (table.getFilteredRowModel().rows.length > 0) {
         const currencies = table.getColumn("currency")?.getFilterValue() as Array<string>
         if (currencies && currencies.length == 1) {
           const sum = table.getFilteredRowModel().rows.reduce((total, row) => total + Number(row.getValue('amount')), 0)
-          const sumStr = sum.toFixed(2).split('.')
-          return sumStr[1] === '00' ? sumStr[0] : sum.toFixed(2)
+          const [, decimalPart] = sum.toFixed(2).split('.')
+          let fractionDigits = 0
+          if (decimalPart !== '00') {
+            fractionDigits = 2
+          }
+          return sum.toLocaleString(undefined, {
+            minimumFractionDigits: fractionDigits,
+            maximumFractionDigits: fractionDigits
+          })
+
         }
       }
     },
