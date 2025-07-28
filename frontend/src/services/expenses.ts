@@ -210,7 +210,7 @@ function processSummary12Months(data: Summary12MonthsType[]) {
     filtered.forEach((el) => {
       const currency = el['currency']
       if (currency === 'IDR' || currency === 'EUR' || currency === 'USD') {
-        entry[currency] = el['total']
+        entry[currency] = Number(el['total'])
       }
       entry['month'] = format(dt, 'MMM yyyy')
     })
