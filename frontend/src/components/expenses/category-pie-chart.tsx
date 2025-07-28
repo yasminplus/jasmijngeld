@@ -10,6 +10,21 @@ type MonthlyWrapper = {
   count: number
 }
 
+const CustomTooltip = ({ active, payload }) => {
+  const isVisible = active && payload && payload.length;
+  return (
+    <div className="custom-tooltip" style={{ visibility: isVisible ? 'visible' : 'hidden' }}>
+      {isVisible && (
+        <>
+          <p className="text-sm bg-white px-2 py-2 text-gray-800 border-gray-400 border rounded-sm opacity-95">
+            {`${payload[0].name} : ${payload[0].value.toLocaleString()}`}
+          </p>
+        </>
+      )}
+    </div>
+  );
+};
+
 export default function MonthlyCategoryPieChart() {
   const [chartData, setChartData] = useState<MonthlyWrapper[]>([])
   const [pieColors, setPieColors] = useState<string[]>([])
@@ -19,11 +34,11 @@ export default function MonthlyCategoryPieChart() {
   useEffect(() => {
     getMonthlyCategorySummary()
     .then(res => {
-      console.log(res)
       let maxTemp = 0
       const wrapper: MonthlyWrapper[] = []
       CURRENCY_CHOICES.map(c => {
         const data = res.filter(v => v.currency === c)
+        data.sort((a, b) => b.amount - a.amount)
         if (data.length > 0) {
           maxTemp = Math.max(maxTemp, data.length)
           wrapper.push({
@@ -64,8 +79,7 @@ export default function MonthlyCategoryPieChart() {
               ))}
             </Pie>
           ))}
-          {/* <Pie dataKey="value" data={data02} cx={500} cy={200} innerRadius={40} outerRadius={80} fill="#82ca9d" /> */}
-          <Tooltip />
+          <Tooltip content={CustomTooltip} />
         </PieChart>
     </>
   )
