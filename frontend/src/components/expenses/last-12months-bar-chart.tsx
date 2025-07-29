@@ -1,19 +1,11 @@
-import { getSummary12Months } from "@/services/expenses";
-import { Proc12MoSummary } from "@/types/ExpenseSummaryType";
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
+import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
 
-import { 
-  Bar, 
-  BarChart, 
-  CartesianGrid,
-  XAxis,
-} from "recharts"
-import { 
-  ChartConfig, 
-  ChartContainer,
-  ChartTooltip, 
-  ChartTooltipContent, 
-} from "@/components/ui/chart"
+import {
+    ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent
+} from '@/components/ui/chart';
+import { getSummary12Months } from '@/services/expenses';
+import { Proc12MoSummary } from '@/types/ExpenseSummaryType';
 
 export default function Last12MonthsBarChart() {
   const [chartData, setChartData] = useState<Proc12MoSummary[]>([])
@@ -50,6 +42,7 @@ export default function Last12MonthsBarChart() {
 
   return (
     <div>
+      {/* TODO: show a radio button to select which currency to show in this bar chart */}
       <h1 className="text-xl">Total expenses in the last 12 months</h1>
       <ChartContainer config={chartConfig} className="min-h-[200px] w-96">
         <BarChart accessibilityLayer data={chartData}>
@@ -61,8 +54,8 @@ export default function Last12MonthsBarChart() {
             axisLine={false}
             tickFormatter={(value) => value.slice(0, 3)}
           />
-          <Bar dataKey="IDR" fill="var(--color-IDR)" radius={5} />
           <ChartTooltip  content={<ChartTooltipContent hideIndicator={true} indicator="dot" />} />
+          <Bar dataKey="IDR" fill="var(--color-IDR)" radius={5} />
           {/* <Bar dataKey="EUR" fill="var(--color-EUR)" radius={4} />
           <Bar dataKey="USD" fill="var(--color-USD)" radius={4} /> */}
         </BarChart>
