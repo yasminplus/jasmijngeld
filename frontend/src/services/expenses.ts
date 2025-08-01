@@ -3,7 +3,9 @@ import { z } from 'zod';
 
 import axiosInstance from '@/services/axios';
 import {
-    Proc12MoSummary, Summary12MonthsType, SummaryMonthlyCategory
+  type Proc12MoSummary, 
+  type Summary12MonthsType, 
+  type SummaryMonthlyCategory
 } from '@/types/ExpenseSummaryType';
 
 export interface ExpenseCategory {

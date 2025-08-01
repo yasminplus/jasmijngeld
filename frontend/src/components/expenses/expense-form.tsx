@@ -13,10 +13,10 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import {
     Select, SelectContent, SelectItem, SelectTrigger, SelectValue
 } from '@/components/ui/select';
-import { getPaymentSourceList, PaymentSource } from '@/services/accounts-cards';
+import { getPaymentSourceList, type PaymentSource } from '@/services/accounts-cards';
 import {
-    createExpense, CURRENCY_CHOICES, Expense, ExpenseCategory, expenseFormSchema, ExpenseFormType,
-    getExpenseCategories, getStoreList, Store, updateExpense
+    createExpense, CURRENCY_CHOICES, type Expense, type ExpenseCategory, expenseFormSchema, type ExpenseFormType,
+    getExpenseCategories, getStoreList, type Store, updateExpense
 } from '@/services/expenses';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from '@tanstack/react-router';

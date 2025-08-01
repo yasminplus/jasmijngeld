@@ -1,8 +1,8 @@
-import login_service from "@/services/login";
-import { Token } from "@/services/login";
-import { jwtDecode, JwtPayload } from "jwt-decode";
-import * as React from 'react'
-import { z } from "zod"
+import { jwtDecode, type JwtPayload } from 'jwt-decode';
+import * as React from 'react';
+import { z } from 'zod';
+
+import login_service, { type Token } from '@/services/login';
 
 const formSchema = z.object({
   email: z.string().email(),

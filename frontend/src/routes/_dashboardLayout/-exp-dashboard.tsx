@@ -6,7 +6,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Expense, getExpenseListPaginated } from "@/services/expenses"
+import { type Expense, getExpenseListPaginated } from "@/services/expenses"
 import { Link, linkOptions } from "@tanstack/react-router"
 import { useCallback, useEffect, useState } from "react"
 

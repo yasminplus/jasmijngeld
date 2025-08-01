@@ -1,5 +1,5 @@
-import { InputHTMLAttributes, useEffect, useMemo, useState } from "react";
-import { Column } from "@tanstack/react-table";
+import { type InputHTMLAttributes, useEffect, useMemo, useState } from "react";
+import { type Column } from "@tanstack/react-table";
 import { Input } from "@/components/ui/input"
 import {
   Select,

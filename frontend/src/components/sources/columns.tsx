@@ -1,12 +1,12 @@
 "use client"
 
-import { ColumnDef } from "@tanstack/react-table"
+import { type ColumnDef } from "@tanstack/react-table"
 import { Link } from "@tanstack/react-router"
 import { ArrowUpDown, Pencil } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 
-import { PaymentSource } from '@/services/accounts-cards' 
+import { type PaymentSource } from '@/services/accounts-cards' 
 
 export const sourcesColumns: ColumnDef<PaymentSource>[] = [
   {

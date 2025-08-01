@@ -1,6 +1,6 @@
 "use client"
 
-import { Table } from "@tanstack/react-table"
+import { type Table } from "@tanstack/react-table"
 import { useCallback, useEffect, useState } from "react"
 import { 
   format, 
@@ -27,7 +27,7 @@ interface DataTableToolbarProps<TData> {
   table: Table<TData>
 }
 
-interface DTFacetedFilterPropsOption<> {
+interface DTFacetedFilterPropsOption {
   label: string
   value: string
   icon?: React.ComponentType<{ className?: string }>

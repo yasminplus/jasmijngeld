@@ -2,13 +2,16 @@ import { useEffect, useState } from 'react';
 import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
 
 import {
-    ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent
+    type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent
 } from '@/components/ui/chart';
+import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { getSummary12Months } from '@/services/expenses';
-import { Proc12MoSummary } from '@/types/ExpenseSummaryType';
+import { type Proc12MoSummary } from '@/types/ExpenseSummaryType';
 
 export default function Last12MonthsBarChart() {
   const [chartData, setChartData] = useState<Proc12MoSummary[]>([])
+  const [currency, setCurrency] = useState('IDR')
   // for testing with example data
   // because there's too much gap for the EUR and IDR, the EUR won't show
   // const [chartData, setChartData] = useState<Proc12MoSummary[]>([
@@ -43,7 +46,20 @@ export default function Last12MonthsBarChart() {
   return (
     <div>
       {/* TODO: show a radio button to select which currency to show in this bar chart */}
+
       <h1 className="text-xl">Total expenses in the last 12 months</h1>
+      
+      <RadioGroup value={currency} onValueChange={setCurrency} className='py-4' >
+        <div className="flex space-x-2">
+          <RadioGroupItem value="IDR" id="IDR" />
+          <Label htmlFor="IDR">IDR</Label>
+        </div>
+        <div className="flex space-x-2">
+          <RadioGroupItem value="EUR" id="EUR" />
+          <Label htmlFor="EUR">EUR</Label>
+        </div>
+      </RadioGroup>
+
       <ChartContainer config={chartConfig} className="min-h-[200px] w-96">
         <BarChart accessibilityLayer data={chartData}>
           <CartesianGrid vertical={false} />
@@ -60,6 +76,7 @@ export default function Last12MonthsBarChart() {
           <Bar dataKey="USD" fill="var(--color-USD)" radius={4} /> */}
         </BarChart>
       </ChartContainer>
+
     </div>
   )
 }

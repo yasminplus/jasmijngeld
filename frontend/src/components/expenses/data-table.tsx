@@ -3,10 +3,10 @@
 import { useState } from "react"
 
 import {
-  ColumnDef,
-  ColumnFiltersState,
-  PaginationState,
-  SortingState,
+  type ColumnDef,
+  type ColumnFiltersState,
+  type PaginationState,
+  type SortingState,
   flexRender,
   getCoreRowModel,
   getFacetedRowModel,

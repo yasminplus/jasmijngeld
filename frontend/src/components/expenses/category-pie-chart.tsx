@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Cell, Pie, PieChart, PieLabelRenderProps, Tooltip } from 'recharts';
+import { Cell, Pie, PieChart, type PieLabelRenderProps, Tooltip } from 'recharts';
 
 import { CURRENCY_CHOICES, getMonthlyCategorySummary } from '@/services/expenses';
-import { SummaryMonthlyCategory } from '@/types/ExpenseSummaryType';
+import { type SummaryMonthlyCategory } from '@/types/ExpenseSummaryType';
 
 type MonthlyWrapper = {
   currency: string

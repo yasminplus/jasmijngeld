@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Plus } from "lucide-react"
-import { SearchSchemaInput, createFileRoute, Link } from '@tanstack/react-router'
+import { type SearchSchemaInput, createFileRoute, Link } from '@tanstack/react-router'
 import { toast } from "sonner"
 import { z } from "zod"
 
@@ -10,11 +10,11 @@ import { AlertDelete } from '@/components/alert-delete'
 import { DataTable } from '@/components/sources/data-table'
 import { sourcesColumns } from '@/components/sources/columns'
 import { 
-  PaymentSource, 
+  type PaymentSource, 
   deletePaymentSource, 
   getPaymentSourceList 
 } from '@/services/accounts-cards' 
-import OperationsType from '@/types/OperationsType'
+import type OperationsType from '@/types/OperationsType'
 
 export const Route = createFileRoute('/_dashboardLayout/accountscards/')({
   component: ListAccounts,

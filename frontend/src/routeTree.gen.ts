@@ -8,193 +8,260 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-// Import Routes
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as DashboardLayoutRouteRouteImport } from './routes/_dashboardLayout/route'
+import { Route as AuthLayoutRouteRouteImport } from './routes/_authLayout/route'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as DashboardLayoutDashboardRouteImport } from './routes/_dashboardLayout/dashboard'
+import { Route as AuthLayoutSignupRouteImport } from './routes/_authLayout/signup'
+import { Route as AuthLayoutLoginRouteImport } from './routes/_authLayout/login'
+import { Route as DashboardLayoutExpensesIndexRouteImport } from './routes/_dashboardLayout/expenses/index'
+import { Route as DashboardLayoutAccountscardsIndexRouteImport } from './routes/_dashboardLayout/accountscards/index'
+import { Route as DashboardLayoutExpensesNewRouteImport } from './routes/_dashboardLayout/expenses/new'
+import { Route as DashboardLayoutAccountscardsNewRouteImport } from './routes/_dashboardLayout/accountscards/new'
+import { Route as DashboardLayoutExpensesExpIdEditRouteImport } from './routes/_dashboardLayout/expenses/$expId.edit'
+import { Route as DashboardLayoutAccountscardsSourceIdEditRouteImport } from './routes/_dashboardLayout/accountscards/$sourceId.edit'
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as DashboardLayoutRouteImport } from './routes/_dashboardLayout/route'
-import { Route as AuthLayoutRouteImport } from './routes/_authLayout/route'
-import { Route as IndexImport } from './routes/index'
-import { Route as DashboardLayoutDashboardImport } from './routes/_dashboardLayout/dashboard'
-import { Route as AuthLayoutSignupImport } from './routes/_authLayout/signup'
-import { Route as AuthLayoutLoginImport } from './routes/_authLayout/login'
-import { Route as DashboardLayoutExpensesIndexImport } from './routes/_dashboardLayout/expenses/index'
-import { Route as DashboardLayoutAccountscardsIndexImport } from './routes/_dashboardLayout/accountscards/index'
-import { Route as DashboardLayoutExpensesNewImport } from './routes/_dashboardLayout/expenses/new'
-import { Route as DashboardLayoutAccountscardsNewImport } from './routes/_dashboardLayout/accountscards/new'
-import { Route as DashboardLayoutExpensesExpIdEditImport } from './routes/_dashboardLayout/expenses/$expId.edit'
-import { Route as DashboardLayoutAccountscardsSourceIdEditImport } from './routes/_dashboardLayout/accountscards/$sourceId.edit'
-
-// Create/Update Routes
-
-const DashboardLayoutRouteRoute = DashboardLayoutRouteImport.update({
+const DashboardLayoutRouteRoute = DashboardLayoutRouteRouteImport.update({
   id: '/_dashboardLayout',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const AuthLayoutRouteRoute = AuthLayoutRouteImport.update({
+const AuthLayoutRouteRoute = AuthLayoutRouteRouteImport.update({
   id: '/_authLayout',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const IndexRoute = IndexImport.update({
+const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const DashboardLayoutDashboardRoute = DashboardLayoutDashboardImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => DashboardLayoutRouteRoute,
-} as any)
-
-const AuthLayoutSignupRoute = AuthLayoutSignupImport.update({
+const DashboardLayoutDashboardRoute =
+  DashboardLayoutDashboardRouteImport.update({
+    id: '/dashboard',
+    path: '/dashboard',
+    getParentRoute: () => DashboardLayoutRouteRoute,
+  } as any)
+const AuthLayoutSignupRoute = AuthLayoutSignupRouteImport.update({
   id: '/signup',
   path: '/signup',
   getParentRoute: () => AuthLayoutRouteRoute,
 } as any)
-
-const AuthLayoutLoginRoute = AuthLayoutLoginImport.update({
+const AuthLayoutLoginRoute = AuthLayoutLoginRouteImport.update({
   id: '/login',
   path: '/login',
   getParentRoute: () => AuthLayoutRouteRoute,
 } as any)
-
 const DashboardLayoutExpensesIndexRoute =
-  DashboardLayoutExpensesIndexImport.update({
+  DashboardLayoutExpensesIndexRouteImport.update({
     id: '/expenses/',
     path: '/expenses/',
     getParentRoute: () => DashboardLayoutRouteRoute,
   } as any)
-
 const DashboardLayoutAccountscardsIndexRoute =
-  DashboardLayoutAccountscardsIndexImport.update({
+  DashboardLayoutAccountscardsIndexRouteImport.update({
     id: '/accountscards/',
     path: '/accountscards/',
     getParentRoute: () => DashboardLayoutRouteRoute,
   } as any)
-
-const DashboardLayoutExpensesNewRoute = DashboardLayoutExpensesNewImport.update(
-  {
+const DashboardLayoutExpensesNewRoute =
+  DashboardLayoutExpensesNewRouteImport.update({
     id: '/expenses/new',
     path: '/expenses/new',
     getParentRoute: () => DashboardLayoutRouteRoute,
-  } as any,
-)
-
+  } as any)
 const DashboardLayoutAccountscardsNewRoute =
-  DashboardLayoutAccountscardsNewImport.update({
+  DashboardLayoutAccountscardsNewRouteImport.update({
     id: '/accountscards/new',
     path: '/accountscards/new',
     getParentRoute: () => DashboardLayoutRouteRoute,
   } as any)
-
 const DashboardLayoutExpensesExpIdEditRoute =
-  DashboardLayoutExpensesExpIdEditImport.update({
+  DashboardLayoutExpensesExpIdEditRouteImport.update({
     id: '/expenses/$expId/edit',
     path: '/expenses/$expId/edit',
     getParentRoute: () => DashboardLayoutRouteRoute,
   } as any)
-
 const DashboardLayoutAccountscardsSourceIdEditRoute =
-  DashboardLayoutAccountscardsSourceIdEditImport.update({
+  DashboardLayoutAccountscardsSourceIdEditRouteImport.update({
     id: '/accountscards/$sourceId/edit',
     path: '/accountscards/$sourceId/edit',
     getParentRoute: () => DashboardLayoutRouteRoute,
   } as any)
 
-// Populate the FileRoutesByPath interface
+export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
+  '/login': typeof AuthLayoutLoginRoute
+  '/signup': typeof AuthLayoutSignupRoute
+  '/dashboard': typeof DashboardLayoutDashboardRoute
+  '/accountscards/new': typeof DashboardLayoutAccountscardsNewRoute
+  '/expenses/new': typeof DashboardLayoutExpensesNewRoute
+  '/accountscards': typeof DashboardLayoutAccountscardsIndexRoute
+  '/expenses': typeof DashboardLayoutExpensesIndexRoute
+  '/accountscards/$sourceId/edit': typeof DashboardLayoutAccountscardsSourceIdEditRoute
+  '/expenses/$expId/edit': typeof DashboardLayoutExpensesExpIdEditRoute
+}
+export interface FileRoutesByTo {
+  '/': typeof IndexRoute
+  '/login': typeof AuthLayoutLoginRoute
+  '/signup': typeof AuthLayoutSignupRoute
+  '/dashboard': typeof DashboardLayoutDashboardRoute
+  '/accountscards/new': typeof DashboardLayoutAccountscardsNewRoute
+  '/expenses/new': typeof DashboardLayoutExpensesNewRoute
+  '/accountscards': typeof DashboardLayoutAccountscardsIndexRoute
+  '/expenses': typeof DashboardLayoutExpensesIndexRoute
+  '/accountscards/$sourceId/edit': typeof DashboardLayoutAccountscardsSourceIdEditRoute
+  '/expenses/$expId/edit': typeof DashboardLayoutExpensesExpIdEditRoute
+}
+export interface FileRoutesById {
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/_authLayout': typeof AuthLayoutRouteRouteWithChildren
+  '/_dashboardLayout': typeof DashboardLayoutRouteRouteWithChildren
+  '/_authLayout/login': typeof AuthLayoutLoginRoute
+  '/_authLayout/signup': typeof AuthLayoutSignupRoute
+  '/_dashboardLayout/dashboard': typeof DashboardLayoutDashboardRoute
+  '/_dashboardLayout/accountscards/new': typeof DashboardLayoutAccountscardsNewRoute
+  '/_dashboardLayout/expenses/new': typeof DashboardLayoutExpensesNewRoute
+  '/_dashboardLayout/accountscards/': typeof DashboardLayoutAccountscardsIndexRoute
+  '/_dashboardLayout/expenses/': typeof DashboardLayoutExpensesIndexRoute
+  '/_dashboardLayout/accountscards/$sourceId/edit': typeof DashboardLayoutAccountscardsSourceIdEditRoute
+  '/_dashboardLayout/expenses/$expId/edit': typeof DashboardLayoutExpensesExpIdEditRoute
+}
+export interface FileRouteTypes {
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/signup'
+    | '/dashboard'
+    | '/accountscards/new'
+    | '/expenses/new'
+    | '/accountscards'
+    | '/expenses'
+    | '/accountscards/$sourceId/edit'
+    | '/expenses/$expId/edit'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/'
+    | '/login'
+    | '/signup'
+    | '/dashboard'
+    | '/accountscards/new'
+    | '/expenses/new'
+    | '/accountscards'
+    | '/expenses'
+    | '/accountscards/$sourceId/edit'
+    | '/expenses/$expId/edit'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authLayout'
+    | '/_dashboardLayout'
+    | '/_authLayout/login'
+    | '/_authLayout/signup'
+    | '/_dashboardLayout/dashboard'
+    | '/_dashboardLayout/accountscards/new'
+    | '/_dashboardLayout/expenses/new'
+    | '/_dashboardLayout/accountscards/'
+    | '/_dashboardLayout/expenses/'
+    | '/_dashboardLayout/accountscards/$sourceId/edit'
+    | '/_dashboardLayout/expenses/$expId/edit'
+  fileRoutesById: FileRoutesById
+}
+export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
+  AuthLayoutRouteRoute: typeof AuthLayoutRouteRouteWithChildren
+  DashboardLayoutRouteRoute: typeof DashboardLayoutRouteRouteWithChildren
+}
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
+    '/_dashboardLayout': {
+      id: '/_dashboardLayout'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof DashboardLayoutRouteRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authLayout': {
       id: '/_authLayout'
       path: ''
       fullPath: ''
-      preLoaderRoute: typeof AuthLayoutRouteImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof AuthLayoutRouteRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_dashboardLayout': {
-      id: '/_dashboardLayout'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof DashboardLayoutRouteImport
-      parentRoute: typeof rootRoute
-    }
-    '/_authLayout/login': {
-      id: '/_authLayout/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof AuthLayoutLoginImport
-      parentRoute: typeof AuthLayoutRouteImport
-    }
-    '/_authLayout/signup': {
-      id: '/_authLayout/signup'
-      path: '/signup'
-      fullPath: '/signup'
-      preLoaderRoute: typeof AuthLayoutSignupImport
-      parentRoute: typeof AuthLayoutRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_dashboardLayout/dashboard': {
       id: '/_dashboardLayout/dashboard'
       path: '/dashboard'
       fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardLayoutDashboardImport
-      parentRoute: typeof DashboardLayoutRouteImport
+      preLoaderRoute: typeof DashboardLayoutDashboardRouteImport
+      parentRoute: typeof DashboardLayoutRouteRoute
     }
-    '/_dashboardLayout/accountscards/new': {
-      id: '/_dashboardLayout/accountscards/new'
-      path: '/accountscards/new'
-      fullPath: '/accountscards/new'
-      preLoaderRoute: typeof DashboardLayoutAccountscardsNewImport
-      parentRoute: typeof DashboardLayoutRouteImport
+    '/_authLayout/signup': {
+      id: '/_authLayout/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof AuthLayoutSignupRouteImport
+      parentRoute: typeof AuthLayoutRouteRoute
     }
-    '/_dashboardLayout/expenses/new': {
-      id: '/_dashboardLayout/expenses/new'
-      path: '/expenses/new'
-      fullPath: '/expenses/new'
-      preLoaderRoute: typeof DashboardLayoutExpensesNewImport
-      parentRoute: typeof DashboardLayoutRouteImport
-    }
-    '/_dashboardLayout/accountscards/': {
-      id: '/_dashboardLayout/accountscards/'
-      path: '/accountscards'
-      fullPath: '/accountscards'
-      preLoaderRoute: typeof DashboardLayoutAccountscardsIndexImport
-      parentRoute: typeof DashboardLayoutRouteImport
+    '/_authLayout/login': {
+      id: '/_authLayout/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof AuthLayoutLoginRouteImport
+      parentRoute: typeof AuthLayoutRouteRoute
     }
     '/_dashboardLayout/expenses/': {
       id: '/_dashboardLayout/expenses/'
       path: '/expenses'
       fullPath: '/expenses'
-      preLoaderRoute: typeof DashboardLayoutExpensesIndexImport
-      parentRoute: typeof DashboardLayoutRouteImport
+      preLoaderRoute: typeof DashboardLayoutExpensesIndexRouteImport
+      parentRoute: typeof DashboardLayoutRouteRoute
     }
-    '/_dashboardLayout/accountscards/$sourceId/edit': {
-      id: '/_dashboardLayout/accountscards/$sourceId/edit'
-      path: '/accountscards/$sourceId/edit'
-      fullPath: '/accountscards/$sourceId/edit'
-      preLoaderRoute: typeof DashboardLayoutAccountscardsSourceIdEditImport
-      parentRoute: typeof DashboardLayoutRouteImport
+    '/_dashboardLayout/accountscards/': {
+      id: '/_dashboardLayout/accountscards/'
+      path: '/accountscards'
+      fullPath: '/accountscards'
+      preLoaderRoute: typeof DashboardLayoutAccountscardsIndexRouteImport
+      parentRoute: typeof DashboardLayoutRouteRoute
+    }
+    '/_dashboardLayout/expenses/new': {
+      id: '/_dashboardLayout/expenses/new'
+      path: '/expenses/new'
+      fullPath: '/expenses/new'
+      preLoaderRoute: typeof DashboardLayoutExpensesNewRouteImport
+      parentRoute: typeof DashboardLayoutRouteRoute
+    }
+    '/_dashboardLayout/accountscards/new': {
+      id: '/_dashboardLayout/accountscards/new'
+      path: '/accountscards/new'
+      fullPath: '/accountscards/new'
+      preLoaderRoute: typeof DashboardLayoutAccountscardsNewRouteImport
+      parentRoute: typeof DashboardLayoutRouteRoute
     }
     '/_dashboardLayout/expenses/$expId/edit': {
       id: '/_dashboardLayout/expenses/$expId/edit'
       path: '/expenses/$expId/edit'
       fullPath: '/expenses/$expId/edit'
-      preLoaderRoute: typeof DashboardLayoutExpensesExpIdEditImport
-      parentRoute: typeof DashboardLayoutRouteImport
+      preLoaderRoute: typeof DashboardLayoutExpensesExpIdEditRouteImport
+      parentRoute: typeof DashboardLayoutRouteRoute
+    }
+    '/_dashboardLayout/accountscards/$sourceId/edit': {
+      id: '/_dashboardLayout/accountscards/$sourceId/edit'
+      path: '/accountscards/$sourceId/edit'
+      fullPath: '/accountscards/$sourceId/edit'
+      preLoaderRoute: typeof DashboardLayoutAccountscardsSourceIdEditRouteImport
+      parentRoute: typeof DashboardLayoutRouteRoute
     }
   }
 }
-
-// Create and export the route tree
 
 interface AuthLayoutRouteRouteChildren {
   AuthLayoutLoginRoute: typeof AuthLayoutLoginRoute
@@ -235,179 +302,11 @@ const DashboardLayoutRouteRouteChildren: DashboardLayoutRouteRouteChildren = {
 const DashboardLayoutRouteRouteWithChildren =
   DashboardLayoutRouteRoute._addFileChildren(DashboardLayoutRouteRouteChildren)
 
-export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '': typeof DashboardLayoutRouteRouteWithChildren
-  '/login': typeof AuthLayoutLoginRoute
-  '/signup': typeof AuthLayoutSignupRoute
-  '/dashboard': typeof DashboardLayoutDashboardRoute
-  '/accountscards/new': typeof DashboardLayoutAccountscardsNewRoute
-  '/expenses/new': typeof DashboardLayoutExpensesNewRoute
-  '/accountscards': typeof DashboardLayoutAccountscardsIndexRoute
-  '/expenses': typeof DashboardLayoutExpensesIndexRoute
-  '/accountscards/$sourceId/edit': typeof DashboardLayoutAccountscardsSourceIdEditRoute
-  '/expenses/$expId/edit': typeof DashboardLayoutExpensesExpIdEditRoute
-}
-
-export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '': typeof DashboardLayoutRouteRouteWithChildren
-  '/login': typeof AuthLayoutLoginRoute
-  '/signup': typeof AuthLayoutSignupRoute
-  '/dashboard': typeof DashboardLayoutDashboardRoute
-  '/accountscards/new': typeof DashboardLayoutAccountscardsNewRoute
-  '/expenses/new': typeof DashboardLayoutExpensesNewRoute
-  '/accountscards': typeof DashboardLayoutAccountscardsIndexRoute
-  '/expenses': typeof DashboardLayoutExpensesIndexRoute
-  '/accountscards/$sourceId/edit': typeof DashboardLayoutAccountscardsSourceIdEditRoute
-  '/expenses/$expId/edit': typeof DashboardLayoutExpensesExpIdEditRoute
-}
-
-export interface FileRoutesById {
-  __root__: typeof rootRoute
-  '/': typeof IndexRoute
-  '/_authLayout': typeof AuthLayoutRouteRouteWithChildren
-  '/_dashboardLayout': typeof DashboardLayoutRouteRouteWithChildren
-  '/_authLayout/login': typeof AuthLayoutLoginRoute
-  '/_authLayout/signup': typeof AuthLayoutSignupRoute
-  '/_dashboardLayout/dashboard': typeof DashboardLayoutDashboardRoute
-  '/_dashboardLayout/accountscards/new': typeof DashboardLayoutAccountscardsNewRoute
-  '/_dashboardLayout/expenses/new': typeof DashboardLayoutExpensesNewRoute
-  '/_dashboardLayout/accountscards/': typeof DashboardLayoutAccountscardsIndexRoute
-  '/_dashboardLayout/expenses/': typeof DashboardLayoutExpensesIndexRoute
-  '/_dashboardLayout/accountscards/$sourceId/edit': typeof DashboardLayoutAccountscardsSourceIdEditRoute
-  '/_dashboardLayout/expenses/$expId/edit': typeof DashboardLayoutExpensesExpIdEditRoute
-}
-
-export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | ''
-    | '/login'
-    | '/signup'
-    | '/dashboard'
-    | '/accountscards/new'
-    | '/expenses/new'
-    | '/accountscards'
-    | '/expenses'
-    | '/accountscards/$sourceId/edit'
-    | '/expenses/$expId/edit'
-  fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | ''
-    | '/login'
-    | '/signup'
-    | '/dashboard'
-    | '/accountscards/new'
-    | '/expenses/new'
-    | '/accountscards'
-    | '/expenses'
-    | '/accountscards/$sourceId/edit'
-    | '/expenses/$expId/edit'
-  id:
-    | '__root__'
-    | '/'
-    | '/_authLayout'
-    | '/_dashboardLayout'
-    | '/_authLayout/login'
-    | '/_authLayout/signup'
-    | '/_dashboardLayout/dashboard'
-    | '/_dashboardLayout/accountscards/new'
-    | '/_dashboardLayout/expenses/new'
-    | '/_dashboardLayout/accountscards/'
-    | '/_dashboardLayout/expenses/'
-    | '/_dashboardLayout/accountscards/$sourceId/edit'
-    | '/_dashboardLayout/expenses/$expId/edit'
-  fileRoutesById: FileRoutesById
-}
-
-export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AuthLayoutRouteRoute: typeof AuthLayoutRouteRouteWithChildren
-  DashboardLayoutRouteRoute: typeof DashboardLayoutRouteRouteWithChildren
-}
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthLayoutRouteRoute: AuthLayoutRouteRouteWithChildren,
   DashboardLayoutRouteRoute: DashboardLayoutRouteRouteWithChildren,
 }
-
-export const routeTree = rootRoute
+export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-/* ROUTE_MANIFEST_START
-{
-  "routes": {
-    "__root__": {
-      "filePath": "__root.tsx",
-      "children": [
-        "/",
-        "/_authLayout",
-        "/_dashboardLayout"
-      ]
-    },
-    "/": {
-      "filePath": "index.tsx"
-    },
-    "/_authLayout": {
-      "filePath": "_authLayout/route.tsx",
-      "children": [
-        "/_authLayout/login",
-        "/_authLayout/signup"
-      ]
-    },
-    "/_dashboardLayout": {
-      "filePath": "_dashboardLayout/route.tsx",
-      "children": [
-        "/_dashboardLayout/dashboard",
-        "/_dashboardLayout/accountscards/new",
-        "/_dashboardLayout/expenses/new",
-        "/_dashboardLayout/accountscards/",
-        "/_dashboardLayout/expenses/",
-        "/_dashboardLayout/accountscards/$sourceId/edit",
-        "/_dashboardLayout/expenses/$expId/edit"
-      ]
-    },
-    "/_authLayout/login": {
-      "filePath": "_authLayout/login.tsx",
-      "parent": "/_authLayout"
-    },
-    "/_authLayout/signup": {
-      "filePath": "_authLayout/signup.tsx",
-      "parent": "/_authLayout"
-    },
-    "/_dashboardLayout/dashboard": {
-      "filePath": "_dashboardLayout/dashboard.tsx",
-      "parent": "/_dashboardLayout"
-    },
-    "/_dashboardLayout/accountscards/new": {
-      "filePath": "_dashboardLayout/accountscards/new.tsx",
-      "parent": "/_dashboardLayout"
-    },
-    "/_dashboardLayout/expenses/new": {
-      "filePath": "_dashboardLayout/expenses/new.tsx",
-      "parent": "/_dashboardLayout"
-    },
-    "/_dashboardLayout/accountscards/": {
-      "filePath": "_dashboardLayout/accountscards/index.tsx",
-      "parent": "/_dashboardLayout"
-    },
-    "/_dashboardLayout/expenses/": {
-      "filePath": "_dashboardLayout/expenses/index.tsx",
-      "parent": "/_dashboardLayout"
-    },
-    "/_dashboardLayout/accountscards/$sourceId/edit": {
-      "filePath": "_dashboardLayout/accountscards/$sourceId.edit.tsx",
-      "parent": "/_dashboardLayout"
-    },
-    "/_dashboardLayout/expenses/$expId/edit": {
-      "filePath": "_dashboardLayout/expenses/$expId.edit.tsx",
-      "parent": "/_dashboardLayout"
-    }
-  }
-}
-ROUTE_MANIFEST_END */

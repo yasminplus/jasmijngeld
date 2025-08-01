@@ -1,6 +1,6 @@
 import { Plus } from "lucide-react"
 import { useCallback, useEffect, useState } from 'react'
-import { SearchSchemaInput, Link, createFileRoute } from '@tanstack/react-router'
+import { type SearchSchemaInput, Link, createFileRoute } from '@tanstack/react-router'
 import { toast } from "sonner"
 import { z } from "zod"
 
@@ -11,11 +11,11 @@ import { DataTable } from '@/components/expenses/data-table'
 import { AlertDelete } from "@/components/alert-delete"
 
 import { 
-  Expense, 
+  type Expense, 
   deleteExpense, 
   getExpenseList,
 } from '@/services/expenses'
-import OperationsType from '@/types/OperationsType'
+import type OperationsType from '@/types/OperationsType'
 
 export const Route = createFileRoute('/_dashboardLayout/expenses/')({
   component: ListExpenses,

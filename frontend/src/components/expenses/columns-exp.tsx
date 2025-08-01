@@ -4,7 +4,7 @@ import { parse } from 'date-fns';
 import { ArrowUpDown, Pencil } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Expense } from '@/services/expenses';
+import { type Expense } from '@/services/expenses';
 import { Link } from '@tanstack/react-router';
 
 export const expensesColumns: ColumnDef<Expense>[] = [

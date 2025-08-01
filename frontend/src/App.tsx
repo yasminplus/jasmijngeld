@@ -2,11 +2,6 @@ import './App.css'
 
 import { buttonVariants } from "@/components/ui/button"
 import { Brand } from './components/Brand'
-import LoginForm from './components/auth/LoginForm.tsx';
-import RegisterForm from './components/auth/RegisterForm.tsx';
-import AuthLayout from './components/auth/AuthLayout.tsx';
-import DashboardLayout from './components/dashboard/DashboardLayout.tsx';
-import Home from './components/dashboard/Home.tsx';
 
 function App() {
 
