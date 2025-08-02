@@ -1,8 +1,16 @@
 import { useEffect, useState } from 'react';
-import { Cell, Pie, PieChart, type PieLabelRenderProps, Tooltip } from 'recharts';
-
+import { Cell, Pie, PieChart, type PieLabelRenderProps } from 'recharts';
+import {
+  type ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart"
 import { CURRENCY_CHOICES, getMonthlyCategorySummary } from '@/services/expenses';
 import { type SummaryMonthlyCategory } from '@/types/ExpenseSummaryType';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
+
 
 type MonthlyWrapper = {
   currency: string
@@ -10,24 +18,16 @@ type MonthlyWrapper = {
   count: number
 }
 
-const CustomTooltip = ({ active, payload }) => {
-  const isVisible = active && payload && payload.length;
-  return (
-    <div className="custom-tooltip" style={{ visibility: isVisible ? 'visible' : 'hidden' }}>
-      {isVisible && (
-        <>
-          <p className="text-sm bg-white px-2 py-2 text-gray-800 border-gray-400 border rounded-sm opacity-95">
-            {`${payload[0].name} : ${payload[0].value.toLocaleString()}`}
-          </p>
-        </>
-      )}
-    </div>
-  );
-};
+const chartConfig = {
+  amount: {
+    label: "Amount",
+  },
+} satisfies ChartConfig
 
 export default function MonthlyCategoryPieChart() {
   const [chartData, setChartData] = useState<MonthlyWrapper[]>([])
   const [pieColors, setPieColors] = useState<string[]>([])
+  const [currency, setCurrency] = useState('IDR')
   const formatLabel = ({ amount }: PieLabelRenderProps) => {
     return amount.toLocaleString()
   }
@@ -58,20 +58,34 @@ export default function MonthlyCategoryPieChart() {
   }, [])
   
   return (
-    <>
+    <div>
       <h1 className="text-xl">Expense category</h1>
-        <PieChart width={500} height={400}>
-          {chartData.map((item, idx) => (
+      <RadioGroup value={currency} onValueChange={setCurrency} className='py-4' >
+        <div className='flex flex-row justify-start space-x-10'>
+          { CURRENCY_CHOICES.map(cur => {
+            return (
+              <div className="flex flex-row space-x-2" key={cur}>
+                  <RadioGroupItem value={cur} id={cur} />
+                  <Label htmlFor={cur}>{cur}</Label>
+                </div>
+            )
+          })
+        }
+        </div>
+      </RadioGroup>
+      <ChartContainer 
+        config={chartConfig}
+        className="[&_.recharts-pie-label-text]:fill-foreground aspect-square max-h-[250px] pb-0 min-h-[200px] w-96"
+      >
+        <PieChart>
+           <ChartTooltip content={<ChartTooltipContent hideLabel/>} />
+          {chartData.map((item) => item['currency'] === currency && (
             <Pie
               key={item['currency']}
               data={item['data'].map(d => ({ ...d, amount: Number(d.amount) }))}
               dataKey="amount"
               nameKey="category_name"
-              isAnimationActive={false}
-              cx="150"
-              cy={100 * (idx + 1) + (idx * 90)}
-              outerRadius={70}
-              fill="#8884d8"
+              innerRadius={60}
               label={formatLabel}
             >
               {item['data'].map((entry, index) => (
@@ -79,8 +93,8 @@ export default function MonthlyCategoryPieChart() {
               ))}
             </Pie>
           ))}
-          <Tooltip content={CustomTooltip} />
         </PieChart>
-    </>
+      </ChartContainer>
+    </div>
   )
 }

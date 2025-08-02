@@ -11,7 +11,7 @@ import { type Proc12MoSummary } from '@/types/ExpenseSummaryType';
 
 export default function Last12MonthsBarChart() {
   const [chartData, setChartData] = useState<Proc12MoSummary[]>([])
-  const [currency, setCurrency] = useState('EUR')
+  const [currency, setCurrency] = useState('IDR')
 
   const chartConfig = {
     IDR: {
