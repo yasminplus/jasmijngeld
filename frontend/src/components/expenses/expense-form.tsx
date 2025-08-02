@@ -36,7 +36,7 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
   const [storeList, setStoreList] = useState<Store[]>([])
   const [sourceList, setSourceList] = useState<PaymentSource[]>([])
   const [open, setOpen] = useState(false)
-  
+
   const form = useForm<ExpenseFormValues>({
     defaultValues: expense 
     ? {
@@ -45,7 +45,7 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
       date: new Date(expense.date),
       description: expense.description,
       category: expense.category,
-      store: expense.store,
+      store: expense.store? expense.store : undefined,
       source: expense.source
     } 
     : {
