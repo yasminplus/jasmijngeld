@@ -8,8 +8,7 @@ import {
 } from "@/components/ui/chart"
 import { CURRENCY_CHOICES, getMonthlyCategorySummary } from '@/services/expenses';
 import { type SummaryMonthlyCategory } from '@/types/ExpenseSummaryType';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Label } from '@/components/ui/label';
+import CurrencyRadioGroup from '../currency-radio-group';
 
 
 type MonthlyWrapper = {
@@ -63,21 +62,8 @@ export default function MonthlyCategoryPieChart() {
     <div>
       <h1 className="text-xl">Expense category</h1>
 
-      {/* TODO: extract this part into its own component and reuse for all charts */}
-      <RadioGroup value={currency} onValueChange={setCurrency} className='py-4' >
-        <div className='flex flex-row justify-start space-x-10'>
-          { CURRENCY_CHOICES.map(cur => {
-            return (
-              <div className="flex flex-row space-x-2" key={cur}>
-                  <RadioGroupItem value={cur} id={cur} />
-                  <Label htmlFor={cur}>{cur}</Label>
-                </div>
-            )
-          })
-        }
-        </div>
-      </RadioGroup>
-      
+      <CurrencyRadioGroup currency={currency} setCurrency={setCurrency} />
+
       <ChartContainer 
         config={chartConfig}
         className="[&_.recharts-pie-label-text]:fill-foreground aspect-square max-h-[250px] pb-0 min-h-[200px] w-96"

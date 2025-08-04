@@ -1,16 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
 
 import {
     type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent
 } from '@/components/ui/chart';
-import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { CURRENCY_CHOICES, getSummary12Months } from '@/services/expenses';
+import { CURRENCY_CHOICES } from '@/services/expenses';
 import { type Proc12MoSummary } from '@/types/ExpenseSummaryType';
+import CurrencyRadioGroup from '../currency-radio-group';
 
-export default function Last12MonthsBarChart() {
-  const [chartData, setChartData] = useState<Proc12MoSummary[]>([])
+interface Props {
+  passedData: Proc12MoSummary[]
+}
+export default function Last12MonthsBarChart({ passedData = [] }: Props) {
+  const chartData: Proc12MoSummary[] = passedData
   const [currency, setCurrency] = useState('IDR')
 
   const chartConfig = {
@@ -28,31 +30,11 @@ export default function Last12MonthsBarChart() {
     },
   } satisfies ChartConfig
 
-  useEffect(() => {
-    getSummary12Months()
-    .then(res => {
-      setChartData(res)
-    })
-    .catch(err => {
-      throw err
-    })
-  }, [])
-
   return (
     <div>
       <h1 className="text-xl">Total expenses in the last 12 months</h1>
       
-      <RadioGroup value={currency} onValueChange={setCurrency} className='py-4' >
-        { CURRENCY_CHOICES.map(cur => {
-          return (
-              <div className="flex space-x-2" key={cur}>
-                <RadioGroupItem value={cur} id={cur} />
-                <Label htmlFor={cur}>{cur}</Label>
-              </div>
-          )
-        })
-      }
-      </RadioGroup>
+      <CurrencyRadioGroup currency={currency} setCurrency={setCurrency} />
 
       <ChartContainer config={chartConfig} className="min-h-[200px] w-96">
         <BarChart accessibilityLayer data={chartData}>
