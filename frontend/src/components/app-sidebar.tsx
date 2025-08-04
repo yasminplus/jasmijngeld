@@ -1,4 +1,4 @@
-import { Calendar, Home, Inbox, Plus, Settings } from "lucide-react"
+import { Plus } from "lucide-react"
 
 import {
   Sidebar,
@@ -17,49 +17,25 @@ import {
   Link, 
   useRouterState 
 } from "@tanstack/react-router"
-
-
-// Menu items.
-const items = [
-  {
-    title: "Dashboard",
-    url: "/dashboard",
-    icon: Home,
-  },
-  {
-    title: "Expenses",
-    url: "/expenses",
-    icon: Inbox,
-  },
-  {
-    title: "Accounts & Cards",
-    url: "/accountscards",
-    icon: Calendar,
-  },
-  {
-    title: "Settings",
-    url: "#",
-    icon: Settings,
-  },
-]
+import { sidebarItems } from "./sidebar-items"
 
 export function AppSidebar() {
   const routerState = useRouterState()
 
   const isLinkActive = (url: string) => {
-    return routerState.location.href == url
+    return routerState.location.href.startsWith(url)
   }
 
   return (
     <Sidebar style={{borderRight: '0px'}}>
-      <SidebarHeader >
+      <SidebarHeader className="pt-3">
         <Brand pb={"pb-1"} size={"text-4xl"} />
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
+              {sidebarItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild isActive={isLinkActive(item.url)}>
                     <Link 
