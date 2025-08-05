@@ -21,7 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { 
-  PaymentSource,
+  type PaymentSource,
   SOURCE_TYPE_CHOICES,
   createPaymentSource,
   sourceSchema,
