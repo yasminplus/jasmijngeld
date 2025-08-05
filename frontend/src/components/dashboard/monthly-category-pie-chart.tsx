@@ -62,7 +62,7 @@ export default function MonthlyCategoryPieChart({ currency } :Props) {
   
   return (
     <div>
-      <h1 className="text-xl">Expense category</h1>
+      <h1 className="text-xl">Monthly expense by category</h1>
 
       <ChartContainer 
         config={chartConfig}
@@ -76,6 +76,7 @@ export default function MonthlyCategoryPieChart({ currency } :Props) {
               data={item['data'].map(d => ({ ...d, amount: Number(d.amount) }))}
               dataKey="amount"
               nameKey="category_name"
+              isAnimationActive={false}
               innerRadius={60}
               label={formatLabel}
             >

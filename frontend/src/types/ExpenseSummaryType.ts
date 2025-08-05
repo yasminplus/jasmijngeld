@@ -16,3 +16,9 @@ export type SummaryMonthlyCategory = {
   amount: number
   currency: string
 }
+
+export type SummaryMonthlySource = {
+  source_name: string
+  amount: number
+  currency: string
+}

@@ -3,8 +3,9 @@ import { createFileRoute } from '@tanstack/react-router';
 import { format } from 'date-fns';
 
 import { useAuthContext } from '@/context/auth';
-import MonthlyCategoryPieChart from '@/components/dashboard/category-pie-chart';
 import Last12MonthsBarChart from '@/components/dashboard/last-12months-bar-chart';
+import MonthlyCategoryPieChart from '@/components/dashboard/monthly-category-pie-chart';
+import MonthlySourcePieChart from '@/components/dashboard/monthly-source-pie-chart';
 import CurrentExpense from '@/components/dashboard/current-expense';
 import RecentExpenses from './-exp-dashboard';
 import { getSummary12Months } from '@/services/expenses';
@@ -39,7 +40,8 @@ function DashboardHome() {
       <p>Hello, { authContext.user?.first_name } </p>
       <CurrencyRadioGroup currency={currency} setCurrency={setCurrency} />
       <CurrentExpense passedData={expThisMonth} currency={currency}  />
-      <MonthlyCategoryPieChart  currency={currency} />
+      <MonthlyCategoryPieChart currency={currency} />
+      <MonthlySourcePieChart currency={currency} />
       <Last12MonthsBarChart passedData={last12MonthsData} currency={currency}  />
       <RecentExpenses />
     </div>

@@ -5,7 +5,8 @@ import axiosInstance from '@/services/axios';
 import {
   type Proc12MoSummary, 
   type Summary12MonthsType, 
-  type SummaryMonthlyCategory
+  type SummaryMonthlyCategory,
+  type SummaryMonthlySource
 } from '@/types/ExpenseSummaryType';
 
 export interface ExpenseCategory {
@@ -223,7 +224,19 @@ function processSummary12Months(data: Summary12MonthsType[]) {
 
 export function getMonthlyCategorySummary(): Promise<SummaryMonthlyCategory[]> {
   const dateStr = format(new Date(), 'yyyy-MM-dd')
-  return axiosInstance.get(`/api/expenses/monthly/?date=${dateStr}`, )
+  return axiosInstance.get(`/api/expenses/monthly-cat/?date=${dateStr}`, )
+    .then(response => {
+      return response['data']
+    })
+    .catch(error => {
+      console.error(error)
+      throw error;
+    })
+}
+
+export function getMonthlySourceSummary(): Promise<SummaryMonthlySource[]> {
+  const dateStr = format(new Date(), 'yyyy-MM-dd')
+  return axiosInstance.get(`/api/expenses/monthly-src/?date=${dateStr}`, )
     .then(response => {
       return response['data']
     })
