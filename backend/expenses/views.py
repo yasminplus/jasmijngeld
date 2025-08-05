@@ -12,7 +12,7 @@ from rest_framework.permissions import IsAuthenticated
 from users.permissions import IsEmailVerified
 
 from .models import ExpenseCategory, Expense, Store
-from .serializers import ExpenseCategorySerializer, ExpenseSerializer, ExpenseSummaryLast12MonthsSerializer, ExpenseSummaryMonthlySerializer, StoreSerializer
+from .serializers import ExpenseCategorySerializer, ExpenseSerializer, ExpenseSummaryLast12MonthsSerializer, ExpenseSummaryMonthlyByCategorySerializer, ExpenseSummaryMonthlyBySourceSerializer, StoreSerializer
 
 class CategoryResultsSetPagination(PageNumberPagination):
     page_size = 25
@@ -97,8 +97,9 @@ class ExpenseSummaryLast12MonthsView(ListAPIView):
                     .values('month', 'currency', 'total')
         return qs
 
-class ExpenseSummaryMonthlyView(ListAPIView):
-    serializer_class = ExpenseSummaryMonthlySerializer
+
+class ExpenseSummaryMonthlyByCategoryView(ListAPIView):
+    serializer_class = ExpenseSummaryMonthlyByCategorySerializer
     pagination_class = None
 
     def get_queryset(self):
@@ -114,5 +115,24 @@ class ExpenseSummaryMonthlyView(ListAPIView):
                     .values('currency', category_name=F('category__name'))\
                     .annotate(amount=Sum('amount'))\
                     .order_by('category_name', 'currency')
-        print(qs)
+        return qs
+
+
+class ExpenseSummaryMonthlyBySourceView(ListAPIView):
+    serializer_class = ExpenseSummaryMonthlyBySourceSerializer
+    pagination_class = None
+
+    def get_queryset(self):
+        date_str = self.request.query_params.get('date')
+        date = parse(date_str)
+        first_day_of_the_month = date.replace(day=1)
+        last_day_of_the_month = first_day_of_the_month + relativedelta(day=31)
+
+        qs = Expense.objects\
+                    .filter(user=self.request.user)\
+                    .filter(date__gte=first_day_of_the_month)\
+                    .filter(date__lte=last_day_of_the_month)\
+                    .values('currency', source_name=F('source__name'))\
+                    .annotate(amount=Sum('amount'))\
+                    .order_by('source_name', 'currency')
         return qs

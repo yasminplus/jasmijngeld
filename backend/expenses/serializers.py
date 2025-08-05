@@ -47,7 +47,13 @@ class ExpenseSummaryLast12MonthsSerializer(serializers.Serializer):
     currency = serializers.CharField()
 
 
-class ExpenseSummaryMonthlySerializer(serializers.Serializer):
+class ExpenseSummaryMonthlyByCategorySerializer(serializers.Serializer):
     category_name = serializers.CharField()
+    amount = serializers.DecimalField(max_digits=None, decimal_places=2)
+    currency = serializers.CharField()
+
+
+class ExpenseSummaryMonthlyBySourceSerializer(serializers.Serializer):
+    source_name = serializers.CharField()
     amount = serializers.DecimalField(max_digits=None, decimal_places=2)
     currency = serializers.CharField()
