@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/chart"
 import { CURRENCY_CHOICES, getMonthlyCategorySummary } from '@/services/expenses';
 import { type SummaryMonthlyCategory } from '@/types/ExpenseSummaryType';
-import CurrencyRadioGroup from '../currency-radio-group';
 
 
 type MonthlyWrapper = {
@@ -24,10 +23,13 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export default function MonthlyCategoryPieChart() {
+interface Props {
+  currency: string
+}
+
+export default function MonthlyCategoryPieChart({ currency } :Props) {
   const [chartData, setChartData] = useState<MonthlyWrapper[]>([])
   const [pieColors, setPieColors] = useState<string[]>([])
-  const [currency, setCurrency] = useState('IDR')
   const formatLabel = ({ amount }: PieLabelRenderProps) => {
     return amount.toLocaleString()
   }
@@ -61,8 +63,6 @@ export default function MonthlyCategoryPieChart() {
   return (
     <div>
       <h1 className="text-xl">Expense category</h1>
-
-      <CurrencyRadioGroup currency={currency} setCurrency={setCurrency} />
 
       <ChartContainer 
         config={chartConfig}

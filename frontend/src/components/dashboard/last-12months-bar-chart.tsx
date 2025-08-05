@@ -1,19 +1,16 @@
-import { useState } from 'react';
 import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
-
 import {
     type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent
 } from '@/components/ui/chart';
 import { CURRENCY_CHOICES } from '@/services/expenses';
 import { type Proc12MoSummary } from '@/types/ExpenseSummaryType';
-import CurrencyRadioGroup from '../currency-radio-group';
 
 interface Props {
   passedData: Proc12MoSummary[]
+  currency: string
 }
-export default function Last12MonthsBarChart({ passedData = [] }: Props) {
+export default function Last12MonthsBarChart({ passedData = [], currency }: Props) {
   const chartData: Proc12MoSummary[] = passedData
-  const [currency, setCurrency] = useState('IDR')
 
   const chartConfig = {
     IDR: {
@@ -33,8 +30,6 @@ export default function Last12MonthsBarChart({ passedData = [] }: Props) {
   return (
     <div>
       <h1 className="text-xl">Total expenses in the last 12 months</h1>
-      
-      <CurrencyRadioGroup currency={currency} setCurrency={setCurrency} />
 
       <ChartContainer config={chartConfig} className="min-h-[200px] w-96">
         <BarChart accessibilityLayer data={chartData}>

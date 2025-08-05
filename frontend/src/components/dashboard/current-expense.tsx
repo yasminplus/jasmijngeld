@@ -1,27 +1,23 @@
-import type { Proc12MoSummary } from "@/types/ExpenseSummaryType";
 import {
   Card,
   CardContent,
 } from "@/components/ui/card"
+import type { Proc12MoSummary } from "@/types/ExpenseSummaryType";
 import { CURRENCY_CHOICES } from "@/services/expenses";
-import { useState } from "react";
-import CurrencyRadioGroup from "../currency-radio-group";
 
 interface Props {
   passedData: Proc12MoSummary
+  currency: string
 }
 
-export default function CurrentExpense({ passedData }: Props) {
-  const [selectedCurrency, setSelectedCurrency] = useState('IDR')
+export default function CurrentExpense({ passedData, currency }: Props) {
 
   return (
     <div className="pb-4">
-      <CurrencyRadioGroup currency={selectedCurrency} setCurrency={setSelectedCurrency} />
-
       {
         CURRENCY_CHOICES.map(cur => {
-          return ( selectedCurrency === cur && (
-            <Card className="w-96 bg-secondary">
+          return ( currency === cur && (
+            <Card className="w-96 bg-secondary" key={cur}>
               <CardContent>
                 <div className="flex flex-row space-x-2 justify-between">
                   <div className="font-semibold self-end">
@@ -37,13 +33,11 @@ export default function CurrentExpense({ passedData }: Props) {
                     </span>
                   </div>
                 </div>
-                
               </CardContent>
             </Card>
           ))
         })
       }
-      
     </div>
   )
 
