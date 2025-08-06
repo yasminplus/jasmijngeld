@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Cell, Label as RCLabel, Pie, PieChart, type PieLabelRenderProps } from 'recharts';
 import {
+  Card,
+  CardContent,
+  CardTitle
+} from '@/components/ui/card';
+import {
   type ChartConfig,
   ChartContainer,
   ChartTooltip,
@@ -61,61 +66,67 @@ export default function MonthlyCategoryPieChart({ currency } :Props) {
   }, [])
   
   return (
-    <div>
-      <h1 className="text-xl">Monthly expense by category</h1>
-
-      <ChartContainer 
-        config={chartConfig}
-        className="[&_.recharts-pie-label-text]:fill-foreground aspect-square max-h-[250px] pb-0 min-h-[200px] w-96"
-      >
-        <PieChart>
-           <ChartTooltip content={<ChartTooltipContent hideLabel/>} />
-          {chartData.map((item) => item['currency'] === currency && (
-            <Pie
-              key={item['currency']}
-              data={item['data'].map(d => ({ ...d, amount: Number(d.amount) }))}
-              dataKey="amount"
-              nameKey="category_name"
-              isAnimationActive={false}
-              innerRadius={60}
-              label={formatLabel}
-            >
-              {item['data'].map((entry, index) => (
-                <Cell key={`cell-${entry.category_name}`} fill={pieColors[index]} />
-              ))}
-              <RCLabel
-                content={({ viewBox }) => {
-                  if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-                    return (
-                      <text
-                        x={viewBox.cx}
-                        y={viewBox.cy}
-                        textAnchor="middle"
-                        dominantBaseline="middle"
-                      >
-                        <tspan
+    <Card>
+      <CardContent>
+        <CardTitle>
+          <h1 className="text-xl">
+            Monthly expense by category
+          </h1>
+        </CardTitle>
+        
+        <ChartContainer 
+          config={chartConfig}
+          className="[&_.recharts-pie-label-text]:fill-foreground aspect-square max-h-[250px] pb-0 min-h-[200px] w-96"
+        >
+          <PieChart>
+            <ChartTooltip content={<ChartTooltipContent hideLabel/>} />
+            {chartData.map((item) => item['currency'] === currency && (
+              <Pie
+                key={item['currency']}
+                data={item['data'].map(d => ({ ...d, amount: Number(d.amount) }))}
+                dataKey="amount"
+                nameKey="category_name"
+                isAnimationActive={false}
+                innerRadius={60}
+                label={formatLabel}
+              >
+                {item['data'].map((entry, index) => (
+                  <Cell key={`cell-${entry.category_name}`} fill={pieColors[index]} />
+                ))}
+                <RCLabel
+                  content={({ viewBox }) => {
+                    if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                      return (
+                        <text
                           x={viewBox.cx}
                           y={viewBox.cy}
-                          className="fill-foreground text-2xl font-bold"
+                          textAnchor="middle"
+                          dominantBaseline="middle"
                         >
-                          { (item['amount'].toLocaleString()) }
-                        </tspan>
-                        <tspan
-                          x={viewBox.cx}
-                          y={(viewBox.cy || 0) + 24}
-                          className="fill-muted-foreground"
-                        >
-                          {item['currency']}
-                        </tspan>
-                      </text>
-                    )
-                  }
-                }}
-              />
-            </Pie>
-          ))}
-        </PieChart>
-      </ChartContainer>
-    </div>
+                          <tspan
+                            x={viewBox.cx}
+                            y={viewBox.cy}
+                            className="fill-foreground text-2xl font-bold"
+                          >
+                            { (item['amount'].toLocaleString()) }
+                          </tspan>
+                          <tspan
+                            x={viewBox.cx}
+                            y={(viewBox.cy || 0) + 24}
+                            className="fill-muted-foreground"
+                          >
+                            {item['currency']}
+                          </tspan>
+                        </text>
+                      )
+                    }
+                  }}
+                />
+              </Pie>
+            ))}
+          </PieChart>
+        </ChartContainer>
+      </CardContent>
+    </Card>
   )
 }

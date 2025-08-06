@@ -7,7 +7,7 @@ import Last12MonthsBarChart from '@/components/dashboard/last-12months-bar-chart
 import MonthlyCategoryPieChart from '@/components/dashboard/monthly-category-pie-chart';
 import MonthlySourcePieChart from '@/components/dashboard/monthly-source-pie-chart';
 import CurrentExpense from '@/components/dashboard/current-expense';
-import RecentExpenses from './-exp-dashboard';
+import RecentExpenses from '@/components/dashboard/recent-expense';
 import { getSummary12Months } from '@/services/expenses';
 import type { Proc12MoSummary } from '@/types/ExpenseSummaryType';
 import CurrencyRadioGroup from '@/components/currency-radio-group';

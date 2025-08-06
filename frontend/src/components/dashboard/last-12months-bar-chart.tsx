@@ -1,6 +1,14 @@
 import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
 import {
-    type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent
+  Card,
+  CardContent,
+  CardTitle
+} from '@/components/ui/card';
+import {
+    type ChartConfig, 
+    ChartContainer, 
+    ChartTooltip, 
+    ChartTooltipContent
 } from '@/components/ui/chart';
 import { CURRENCY_CHOICES } from '@/services/expenses';
 import { type Proc12MoSummary } from '@/types/ExpenseSummaryType';
@@ -28,24 +36,31 @@ export default function Last12MonthsBarChart({ passedData = [], currency }: Prop
   } satisfies ChartConfig
 
   return (
-    <div>
-      <h1 className="text-xl">Total expenses in the last 12 months</h1>
-
-      <ChartContainer config={chartConfig} className="min-h-[200px] w-96">
-        <BarChart accessibilityLayer data={chartData}>
-          <CartesianGrid vertical={false} />
-          <XAxis
-            dataKey="month"
-            tickLine={false}
-            tickMargin={10}
-            axisLine={false}
-            tickFormatter={(value) => value.slice(0, 3)}
-          />
-          <ChartTooltip  content={<ChartTooltipContent hideIndicator={true} indicator="dot" />} />
-          { CURRENCY_CHOICES.map(cur => cur == currency && <Bar dataKey={cur} fill={`var(--color-${cur})`} radius={5} />)}
-        </BarChart>
-      </ChartContainer>
-
-    </div>
+    <Card>
+      <CardContent>
+        <CardTitle>
+          <h1 className="text-xl">
+            Total expenses in the last 12 months
+          </h1>
+        </CardTitle>
+    
+        <ChartContainer config={chartConfig} className="min-h-[200px]">
+          <BarChart accessibilityLayer data={chartData}>
+            <CartesianGrid vertical={false} />
+            <XAxis
+              dataKey="month"
+              tickLine={false}
+              tickMargin={10}
+              axisLine={false}
+              tickFormatter={(value) => value.slice(0, 3)}
+            />
+            <ChartTooltip  
+              content={<ChartTooltipContent hideIndicator={true} indicator="dot" />} 
+            />
+            { CURRENCY_CHOICES.map(cur => cur == currency && <Bar dataKey={cur} fill={`var(--color-${cur})`} radius={5} />)}
+          </BarChart>
+        </ChartContainer>
+      </CardContent>
+    </Card>
   )
 }

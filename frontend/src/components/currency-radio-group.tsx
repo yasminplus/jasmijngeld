@@ -8,7 +8,7 @@ interface Props {
 }
 export default function CurrencyRadioGroup({ currency, setCurrency } :Props ) {
   return (
-    <RadioGroup value={currency} onValueChange={setCurrency} className='py-4' >
+    <RadioGroup value={currency} onValueChange={setCurrency} className='pb-4 pt-3' >
       <div className='flex flex-row justify-start space-x-10'>
         { CURRENCY_CHOICES.map(cur => {
           return (

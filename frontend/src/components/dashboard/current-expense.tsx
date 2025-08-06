@@ -13,11 +13,11 @@ interface Props {
 export default function CurrentExpense({ passedData, currency }: Props) {
 
   return (
-    <div className="pb-4">
+    <div className="mb-4">
       {
         CURRENCY_CHOICES.map(cur => {
           return ( currency === cur && (
-            <Card className="w-96 bg-secondary" key={cur}>
+            <Card className="w-[33rem]" key={cur}>
               <CardContent>
                 <div className="flex flex-row space-x-2 justify-between">
                   <div className="font-semibold self-end">
