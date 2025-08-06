@@ -41,17 +41,17 @@ function DashboardHome() {
       {/* <p>Hello, { authContext.user?.first_name } </p> */}
       <CurrencyRadioGroup currency={currency} setCurrency={setCurrency} />
         <CurrentExpense passedData={expThisMonth} currency={currency}  />
-        <div className="grid grid-cols-3 grid-rows-[auto_1fr] gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 lg:grid-rows-[auto_1fr_1.2fr] xl:grid-rows-[auto_1fr] gap-4">
           <div className="col-start-1 row-start-1 ">
             <MonthlyCategoryPieChart currency={currency} />
           </div>
-          <div className="col-start-2 row-start-1 ">
+          <div className="col-start-1 lg:col-start-2 row-start-2 lg:row-start-1 ">
             <MonthlySourcePieChart currency={currency} />
           </div>
-          <div className="col-start-1 col-span-2 row-start-2">
+          <div className="col-start-1 lg:col-span-2 xl:row-start-2">
             <Last12MonthsBarChart passedData={last12MonthsData} currency={currency}  />
           </div>
-          <div className="col-start-3 row-span-full">
+          <div className="col-start-1 xl:col-start-3 xl:row-span-full">
             <RecentExpenses />
           </div>
         </div>
