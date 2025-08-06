@@ -39,7 +39,7 @@ function DashboardLayout() {
       <AppSidebar />
       <div id="content" className='flex flex-col flex-grow w-screen' >
         <Header />
-        <main className='p-4'>
+        <main className='px-4 pb-4'>
           <Outlet>
             <SidebarTrigger />
           </Outlet>

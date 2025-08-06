@@ -37,13 +37,24 @@ function DashboardHome() {
 
   return (
     <div>
-      <p>Hello, { authContext.user?.first_name } </p>
+      {/* TODO: Greeting is good but dont know yet where to put. */}
+      {/* <p>Hello, { authContext.user?.first_name } </p> */}
       <CurrencyRadioGroup currency={currency} setCurrency={setCurrency} />
-      <CurrentExpense passedData={expThisMonth} currency={currency}  />
-      <MonthlyCategoryPieChart currency={currency} />
-      <MonthlySourcePieChart currency={currency} />
-      <Last12MonthsBarChart passedData={last12MonthsData} currency={currency}  />
-      <RecentExpenses />
+        <CurrentExpense passedData={expThisMonth} currency={currency}  />
+        <div className="grid grid-cols-3 grid-rows-[auto_1fr] gap-4">
+          <div className="col-start-1 row-start-1 ">
+            <MonthlyCategoryPieChart currency={currency} />
+          </div>
+          <div className="col-start-2 row-start-1 ">
+            <MonthlySourcePieChart currency={currency} />
+          </div>
+          <div className="col-start-1 col-span-2 row-start-2">
+            <Last12MonthsBarChart passedData={last12MonthsData} currency={currency}  />
+          </div>
+          <div className="col-start-3 row-span-full">
+            <RecentExpenses />
+          </div>
+        </div>
     </div>
   )
 }
