@@ -1,4 +1,4 @@
-import { Calendar, Home, Inbox, Settings } from "lucide-react"
+import { CreditCard, Home, HandCoins, Settings } from "lucide-react"
 
 // Sidebar menu items
 export const sidebarItems = [
@@ -10,12 +10,12 @@ export const sidebarItems = [
   {
     title: "Expenses",
     url: "/expenses",
-    icon: Inbox,
+    icon: HandCoins,
   },
   {
     title: "Accounts & Cards",
     url: "/accountscards",
-    icon: Calendar,
+    icon: CreditCard,
   },
   {
     title: "Settings",
