@@ -1,15 +1,14 @@
 import { useState } from "react";
 import { format, parse } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Input } from "@/components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 interface DatePickerInputProps {
   date: Date | undefined
-  // onDateChange: Dispatch<SetStateAction<Date | undefined>>
   onDateChange: (param: Date | undefined) => void
   stringDate: string
   setStringDate: (param: string) => void
@@ -61,14 +60,12 @@ export function DatePickerInput({ date, onDateChange, stringDate, setStringDate}
           selected={date!}
           onSelect={(selectedDate) => {
             if (!selectedDate) return
-            // setDate(selectedDate)
             setStringDate(format(selectedDate, "dd/MM/yyyy"))
             onDateChange(selectedDate)
             setErrorMessage("")
             setOpen(false)
           }}
           defaultMonth={date}
-          initialFocus
         />
       </PopoverContent>
     </Popover>

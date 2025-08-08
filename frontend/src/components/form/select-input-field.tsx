@@ -60,7 +60,6 @@ export function SelectInputField<TFieldValues extends FieldValues>({
                         key={option.name}
                         value={option.name}
                         onSelect={(val) => {
-                          console.log(val)
                           field.onChange(val)
                           setOpen(false)
                         }}
