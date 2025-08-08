@@ -1,15 +1,14 @@
 import { format } from 'date-fns';
-import { Calendar as CalendarIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { useNavigate } from '@tanstack/react-router';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
 import {
     Form, FormControl, FormField, FormItem, FormLabel, FormMessage
 } from '@/components/ui/form';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
     Select, SelectContent, SelectItem, SelectTrigger, SelectValue
 } from '@/components/ui/select';
@@ -18,9 +17,8 @@ import {
     createExpense, CURRENCY_CHOICES, type Expense, type ExpenseCategory, expenseFormSchema, type ExpenseFormType,
     getExpenseCategories, getStoreList, type Store, updateExpense
 } from '@/services/expenses';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useNavigate } from '@tanstack/react-router';
 
+import { DatePickerInputField } from '../form/date-picker-input-field';
 import { InputField } from '../form/input-field';
 import { SelectInputField } from '../form/select-input-field';
 
@@ -35,7 +33,7 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
   const [categories, setCategories] = useState<ExpenseCategory[]>([])
   const [storeList, setStoreList] = useState<Store[]>([])
   const [sourceList, setSourceList] = useState<PaymentSource[]>([])
-  const [open, setOpen] = useState(false)
+  const [stringDate, setStringDate] = useState<string>("")
 
   const form = useForm<ExpenseFormValues>({
     defaultValues: expense 
@@ -100,6 +98,14 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
     fetchSelectOptions()
   }, [fetchSelectOptions])
 
+  useEffect(() => {
+    if (expense) {
+      setStringDate(format(expense.date, "dd/MM/yyyy"))
+    } else {
+      setStringDate(format(new Date(), "dd/MM/yyyy"))
+    }
+  }, [expense])
+
   return (
     <>
       <div className='w-52'> 
@@ -107,43 +113,13 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 mx-auto py-10">
 
-            <FormField
-              control={form.control}
+            <DatePickerInputField 
+              stringDate={stringDate} 
+              setStringDate={setStringDate}
               name="date"
-              render={ ({ field }) => (
-                <FormItem className='text-left'>
-                  <FormLabel>
-                    Date
-                    <span className="text-destructive"> *</span>
-                  </FormLabel>
-                  <FormControl>
-                    <Popover open={open} onOpenChange={setOpen}>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant="outline"
-                          id="date"
-                          className="w-52 justify-between font-normal"
-                        >
-                          {field.value ? field.value.toLocaleDateString() : "Select date"}
-                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto overflow-hidden p-0" align="start">
-                        <Calendar 
-                          mode="single"
-                          selected={field.value}
-                          captionLayout="dropdown"
-                          onSelect={(e) => {
-                            field.onChange(e)
-                            setOpen(false)
-                          }}
-                        />
-                      </PopoverContent>
-                    </Popover>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              control={form.control}
+              label="Date"
+              required
             />
 
             <InputField
