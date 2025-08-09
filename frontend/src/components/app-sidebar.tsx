@@ -57,9 +57,11 @@ export function AppSidebar() {
         
         {/* Do we put it as footer or simply below other sidebar menu? */}
         <SidebarFooter>
-          <Button>
-            <Plus /> Add Expense
-          </Button>
+          <Link to={'/expenses/new'} >
+            <Button className='w-full'>
+              <Plus />Add Expense
+            </Button>
+          </Link>
         </SidebarFooter>
     </Sidebar>
   )
