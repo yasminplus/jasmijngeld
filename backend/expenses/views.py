@@ -51,7 +51,7 @@ class ExpenseCategoryListView(ListAPIView):
     permission_classes = (IsAuthenticated, IsEmailVerified)
     serializer_class = ExpenseCategorySerializer
     lookup_field = "id"
-    queryset = ExpenseCategory.objects.all()
+    queryset = ExpenseCategory.objects.all().order_by('name')
     pagination_class = CategoryResultsSetPagination
 
 
