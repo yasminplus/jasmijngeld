@@ -9,6 +9,7 @@ from users.models import User
 # Create your models here.
 class ExpenseCategory(models.Model):
     name = models.CharField(max_length=30)
+    icon = models.CharField(blank=True)     # icon name on the frontend
 
     def __str__(self):
         return self.name
