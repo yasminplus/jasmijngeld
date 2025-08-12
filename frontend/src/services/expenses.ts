@@ -1,4 +1,23 @@
 import { addMonths, format, parse } from 'date-fns';
+import { 
+  BanknoteArrowDown, 
+  Bus, 
+  CircleQuestionMark, 
+  Drama, 
+  Gift, 
+  GraduationCap, 
+  HeartPulse, 
+  House, 
+  Luggage, 
+  MonitorSmartphone, 
+  Repeat, 
+  Shirt, 
+  ShoppingBasket, 
+  SoapDispenserDroplet, 
+  Utensils, 
+  WalletCards, 
+  type LucideIcon 
+} from 'lucide-react';
 import { z } from 'zod';
 
 import axiosInstance from '@/services/axios';
@@ -12,6 +31,8 @@ import {
 export interface ExpenseCategory {
   id: number;
   name: string;
+  icon: string;
+  iconObj?: LucideIcon
 }
 
 export interface Store {
@@ -70,12 +91,38 @@ export function getExpenseCategories(): Promise<ExpenseCategory[]> {
   return axiosInstance.get(`/api/expenses/categories/`)
     .then(response => {
       const res = response['data']
-      return res.results;
+      return expandCategoriesWithIcon(res.results);
     })
     .catch(error => {
       console.error(error)
       throw error;
     })
+}
+
+function expandCategoriesWithIcon(categories: ExpenseCategory[]) {
+  const iconMap = {
+    "banknote-arrow-down": BanknoteArrowDown,
+    "bus": Bus,
+    "circle-question-mark": CircleQuestionMark,
+    "drama": Drama,
+    "gift": Gift,
+    "graduation-cap": GraduationCap,
+    "heart-pulse": HeartPulse,
+    "house": House,
+    "luggage": Luggage,
+    "monitor-smartphone": MonitorSmartphone,
+    "repeat": Repeat,
+    "shirt": Shirt,
+    "shopping-basket": ShoppingBasket,
+    "soap-dispenser-droplet": SoapDispenserDroplet,
+    "utensils": Utensils,
+    "wallet-cards": WalletCards
+  }
+  const res = categories.map(cat => ({
+    ...cat,
+    iconObj: iconMap[cat.icon as keyof typeof iconMap]
+  }))
+  return res
 }
 
 // for client-side pagination
@@ -245,3 +292,4 @@ export function getMonthlySourceSummary(): Promise<SummaryMonthlySource[]> {
       throw error;
     })
 }
+

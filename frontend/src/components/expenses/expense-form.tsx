@@ -186,7 +186,10 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
                       </SelectTrigger>
                       <SelectContent>
                         {categories.map( choice => 
-                          <SelectItem key={choice.id} value={choice.name}>{choice.name}</SelectItem>
+                          <SelectItem key={choice.id} value={choice.name}>
+                            {choice.iconObj ? <choice.iconObj className="inline mr-2" /> : null}
+                            {choice.name}
+                          </SelectItem>
                         )}
                       </SelectContent>
                     </Select>
