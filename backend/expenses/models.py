@@ -10,6 +10,7 @@ from users.models import User
 class ExpenseCategory(models.Model):
     name = models.CharField(max_length=30)
     icon = models.CharField(blank=True)     # icon name on the frontend
+    hue = models.FloatField(null=True)     # hue value to use on the frontend
 
     def __str__(self):
         return self.name
