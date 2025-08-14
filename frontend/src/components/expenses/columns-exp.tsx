@@ -30,9 +30,16 @@ export const expensesColumns: ColumnDef<Expense>[] = [
       return startOk && endOk 
     },
     footer: ({ table }) => {
-      if (table.getFilteredRowModel().rows.length > 0) {
+      const filteredData = table.getFilteredRowModel().rows
+      if (filteredData.length > 0) {
         const currencies = table.getColumn("currency")?.getFilterValue() as Array<string>
-        if (currencies && currencies.length == 1) {
+        const filteredCurrencies = new Set()
+        if (!currencies) {
+          filteredData.forEach(row => {
+            filteredCurrencies.add(row.getValue('currency'))
+          });
+        }
+        if (currencies && currencies.length == 1 || filteredCurrencies.size == 1) {
           return 'Total'
         }
       }
@@ -97,10 +104,17 @@ export const expensesColumns: ColumnDef<Expense>[] = [
       return filterValue.includes(row.getValue(columnId))
     },
     footer: ({ table }) => {
-      if (table.getFilteredRowModel().rows.length > 0) {
+      const filteredData = table.getFilteredRowModel().rows
+      if (filteredData.length > 0) {
         const currencies = table.getColumn("currency")?.getFilterValue() as Array<string>
-        if (currencies && currencies.length == 1) {
-          return currencies[0]
+        const filteredCurrencies = new Set()
+        if (!currencies) {
+          filteredData.forEach(row => {
+            filteredCurrencies.add(row.getValue('currency'))
+          });
+        }
+        if (currencies && currencies.length == 1 || filteredCurrencies.size == 1) {
+          return currencies? currencies[0] : filteredCurrencies.values().next().value
         }
       }
     },
