@@ -33,6 +33,7 @@ export interface ExpenseCategory {
   name: string;
   icon: string;
   iconObj?: LucideIcon
+  hue: number;
 }
 
 export interface Store {

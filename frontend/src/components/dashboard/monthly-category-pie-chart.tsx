@@ -11,7 +11,11 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-import { CURRENCY_CHOICES, getMonthlyCategorySummary } from '@/services/expenses';
+import { 
+  CURRENCY_CHOICES, 
+  getExpenseCategories, 
+  getMonthlyCategorySummary
+} from '@/services/expenses';
 import { type SummaryMonthlyCategory } from '@/types/ExpenseSummaryType';
 
 
@@ -32,9 +36,9 @@ interface Props {
   currency: string
 }
 
-export default function MonthlyCategoryPieChart({ currency } :Props) {
+export default function MonthlyCategoryPieChart({ currency }: Props) {
   const [chartData, setChartData] = useState<MonthlyWrapper[]>([])
-  const [pieColors, setPieColors] = useState<string[]>([])
+  const [catColors, setCatColors] = useState<Map<string, string>>()
   const formatLabel = ({ amount }: PieLabelRenderProps) => {
     return amount.toLocaleString()
   }
@@ -56,12 +60,19 @@ export default function MonthlyCategoryPieChart({ currency } :Props) {
           })
         }
       })
-      const pieColorsTmp = Array.from({ length: 20 }, (_, i) => `hsl(${(i * 360) / maxTemp}, 70%, 50%)`);
-      setPieColors(pieColorsTmp)
       setChartData(wrapper)
     })
     .catch(err => {
       throw err
+    })
+  }, [])
+
+  useEffect(() => {
+    getExpenseCategories()
+    .then(res => {
+      const categoryHues = new Map()
+      res.map(cat => categoryHues.set(cat.name, `hsl(${cat.hue} 100% 55%)`))
+      setCatColors(categoryHues)
     })
   }, [])
   
@@ -90,8 +101,8 @@ export default function MonthlyCategoryPieChart({ currency } :Props) {
                 innerRadius={60}
                 label={formatLabel}
               >
-                {item['data'].map((entry, index) => (
-                  <Cell key={`cell-${entry.category_name}`} fill={pieColors[index]} />
+                {item['data'].map((entry) => (
+                  <Cell key={`cell-${entry.category_name}`} fill={catColors?.get(entry.category_name)} />
                 ))}
                 <RCLabel
                   content={({ viewBox }) => {
