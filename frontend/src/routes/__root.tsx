@@ -6,6 +6,7 @@ import {
 } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 import { Toaster } from '@/components/ui/sonner';
+import { ThemeProvider } from "@/components/theme-provider"
 import { type AuthContextI } from '@/context/auth';
 
 interface MyRouterContext {
@@ -18,10 +19,12 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 
 function RootComponent() {
   return (
-    <React.Fragment>
-      <Outlet />
-      <Toaster position="top-center"/>
-      <TanStackRouterDevtools position="top-left" />
-    </React.Fragment>
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <React.Fragment>
+        <Outlet />
+        <Toaster position="top-center"/>
+        <TanStackRouterDevtools position="top-left" />
+      </React.Fragment>
+    </ThemeProvider>
   )
 }
