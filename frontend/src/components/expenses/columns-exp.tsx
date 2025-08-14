@@ -6,6 +6,7 @@ import { ArrowUpDown, Pencil } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { type Expense } from '@/services/expenses';
 import { Link } from '@tanstack/react-router';
+import type { ColumnDef } from '@tanstack/react-table';
 
 export const expensesColumns: ColumnDef<Expense>[] = [
   {
@@ -55,10 +56,17 @@ export const expensesColumns: ColumnDef<Expense>[] = [
       return amt
     },
     footer: ({ table }) => {
-      if (table.getFilteredRowModel().rows.length > 0) {
+      const filteredData = table.getFilteredRowModel().rows
+      if (filteredData.length > 0) {
         const currencies = table.getColumn("currency")?.getFilterValue() as Array<string>
-        if (currencies && currencies.length == 1) {
-          const sum = table.getFilteredRowModel().rows.reduce((total, row) => total + Number(row.getValue('amount')), 0)
+        const filteredCurrencies = new Set()
+        if (!currencies) {
+          filteredData.forEach(row => {
+            filteredCurrencies.add(row.getValue('currency'))
+          });
+        }
+        if (currencies && currencies.length == 1 || filteredCurrencies.size == 1) {
+          const sum = filteredData.reduce((total, row) => total + Number(row.getValue('amount')), 0)
           const [, decimalPart] = sum.toFixed(2).split('.')
           let fractionDigits = 0
           if (decimalPart !== '00') {
