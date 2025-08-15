@@ -8,7 +8,7 @@ export const Route = createFileRoute('/_dashboardLayout/expenses/new')({
 function AddExpense() {
   return (
     <div>
-      <h1>Add new expense</h1>
+      <h1 className='text-2xl font-semibold'>Add new expense</h1>
       <ExpenseForm />
     </div>
   )

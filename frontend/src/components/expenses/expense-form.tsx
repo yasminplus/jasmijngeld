@@ -111,7 +111,7 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
       <div className='w-52'> 
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 mx-auto py-10">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 mx-auto pt-5">
 
             <DatePickerInputField 
               stringDate={stringDate} 
@@ -236,7 +236,7 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
             
             <Button 
               type="submit" 
-              className="w-full mt-10"
+              className="w-full mt-5"
               disabled={isSubmitting}
             >
               Save

@@ -65,10 +65,10 @@ export default function PaymentSourceForm({ account }: PaymentSourceFormProps) {
   }
   return (
     <>
-      <div className='w-32'> 
+      <div className='w-52'> 
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 max-w-3xl w-48 mx-auto py-10">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 max-w-3xl mx-auto py-5">
 
           <FormField
             control={form.control}
@@ -136,7 +136,7 @@ export default function PaymentSourceForm({ account }: PaymentSourceFormProps) {
           
           <Button 
             type="submit" 
-            className="w-full mt-10"
+            className="w-full mt-5"
             disabled={isSubmitting}
           >
             Save

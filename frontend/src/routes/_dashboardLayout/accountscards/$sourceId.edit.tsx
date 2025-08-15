@@ -14,7 +14,7 @@ function EditAccount() {
 
   return (
     <>
-      <h1>Edit account/card</h1>
+      <h1 className='text-2xl font-semibold'>Edit account/card</h1>
       <PaymentSourceForm account={loaderData} />
     </>
   )

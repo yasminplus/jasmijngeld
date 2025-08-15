@@ -14,7 +14,7 @@ function EditExpense() {
 
   return (
     <div>
-      <h1>Edit expense</h1>
+      <h1 className='text-2xl font-semibold'>Edit expense</h1>
       <ExpenseForm expense={loaderData} />
     </div>
   )

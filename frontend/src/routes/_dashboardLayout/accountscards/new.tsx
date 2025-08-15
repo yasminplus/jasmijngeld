@@ -9,7 +9,7 @@ function AddAccount() {
 
   return (
     <>
-      <h1>Add new account/card</h1>
+      <h1 className='text-2xl font-semibold'>Add new account/card</h1>
       <PaymentSourceForm />
     </>
   )
