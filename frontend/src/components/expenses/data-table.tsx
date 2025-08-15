@@ -50,6 +50,17 @@ export function DataTable<TData, TValue>({
     pageSize: DEFAULT_PAGE_SIZE, //default page size
   });
 
+  const [columnVisibility] = useState({
+    date: true,
+    amountCurrency: true,
+    currency: false, // hide this column by default
+    description: true,
+    store: true,
+    category: true,
+    source: true,
+    edit_action: true,
+  });
+
   const table = useReactTable({
     data,
     columns,
@@ -62,6 +73,7 @@ export function DataTable<TData, TValue>({
     getFacetedUniqueValues: getFacetedUniqueValues(), //if you need a list of unique values
     state: {
       columnFilters,
+      columnVisibility,
       pagination,
       sorting,
     },

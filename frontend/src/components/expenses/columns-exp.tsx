@@ -6,7 +6,7 @@ import { ArrowUpDown, Pencil } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { type Expense } from '@/services/expenses';
 import { Link } from '@tanstack/react-router';
-import type { ColumnDef } from '@tanstack/react-table';
+import type { ColumnDef, Row } from '@tanstack/react-table';
 
 export const expensesColumns: ColumnDef<Expense>[] = [
   {
@@ -46,7 +46,10 @@ export const expensesColumns: ColumnDef<Expense>[] = [
     },
   },
   {
-    accessorKey: "amount",
+    id: 'amountCurrency',
+    accessorFn: (row) => {
+      return `${row.currency} ${row.amount.toLocaleString()}`
+    },
     header: ({ column }) => {
       return (
         <Button variant="ghost"
@@ -57,10 +60,8 @@ export const expensesColumns: ColumnDef<Expense>[] = [
         </Button>
       )
     },
-    cell: ({row}) => {
-      const expense = row.original
-      const amt = expense.amount.toLocaleString()
-      return amt
+    sortingFn: (rowA: Row<Expense>, rowB: Row<Expense>) => {
+      return rowA.original.amount - rowB.original.amount
     },
     footer: ({ table }) => {
       const filteredData = table.getFilteredRowModel().rows
@@ -73,50 +74,28 @@ export const expensesColumns: ColumnDef<Expense>[] = [
           });
         }
         if (currencies && currencies.length == 1 || filteredCurrencies.size == 1) {
-          const sum = filteredData.reduce((total, row) => total + Number(row.getValue('amount')), 0)
+          // const sum = filteredData.reduce((total, row) => total + Number(row.getValue('amount')), 0)
+          const sum = filteredData.reduce((total, row) => total + Number(row.original.amount), 0)
           const [, decimalPart] = sum.toFixed(2).split('.')
           let fractionDigits = 0
           if (decimalPart !== '00') {
             fractionDigits = 2
           }
-          return sum.toLocaleString(undefined, {
+          const cur = currencies? currencies[0] : filteredCurrencies.values().next().value
+          const total = sum.toLocaleString(undefined, {
             minimumFractionDigits: fractionDigits,
             maximumFractionDigits: fractionDigits
           })
-
+          return `${cur} ${total}`
         }
       }
     },
   },
   {
     accessorKey: "currency",
-    header: ({ column }) => {
-      return (
-        <Button variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Currency
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      )
-    },
+    header: 'Currency',
     filterFn: (row, columnId, filterValue) => {
       return filterValue.includes(row.getValue(columnId))
-    },
-    footer: ({ table }) => {
-      const filteredData = table.getFilteredRowModel().rows
-      if (filteredData.length > 0) {
-        const currencies = table.getColumn("currency")?.getFilterValue() as Array<string>
-        const filteredCurrencies = new Set()
-        if (!currencies) {
-          filteredData.forEach(row => {
-            filteredCurrencies.add(row.getValue('currency'))
-          });
-        }
-        if (currencies && currencies.length == 1 || filteredCurrencies.size == 1) {
-          return currencies? currencies[0] : filteredCurrencies.values().next().value
-        }
-      }
     },
   },
   {
