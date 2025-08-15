@@ -43,7 +43,7 @@ export function SelectInputField<TFieldValues extends FieldValues>({
           <FormControl>
             <Popover open={open} onOpenChange={setOpen}>
               <PopoverTrigger asChild>
-                <Button variant="outline" size="sm" className="h-9 w-[208px] text-sm justify-between">
+                <Button variant="outline" size="sm" className={`h-9 w-[208px] text-sm justify-between ${ !field.value && 'text-muted-foreground' }`}>
                   {field.value
                   ? options.find((option) => option.name === field.value)?.name
                   : `Select ${name}`}
@@ -64,6 +64,7 @@ export function SelectInputField<TFieldValues extends FieldValues>({
                           setOpen(false)
                         }}
                         // TODO: add Check icon on selected item in the list
+                        // TODO: how to add remove functionality?
                       >
                         {option.name}
                       </CommandItem>

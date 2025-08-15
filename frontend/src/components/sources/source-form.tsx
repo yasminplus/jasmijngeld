@@ -102,7 +102,7 @@ export default function PaymentSourceForm({ account }: PaymentSourceFormProps) {
                     value={field.value || ""}
                     onValueChange={field.onChange}
                   >
-                    <SelectTrigger className="">
+                    <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select type" />
                     </SelectTrigger>
                     <SelectContent>

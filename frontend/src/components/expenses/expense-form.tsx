@@ -144,7 +144,7 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
                       defaultValue={expense? expense.currency : 'IDR'} 
                       onValueChange={field.onChange}
                     >
-                      <SelectTrigger className="">
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select currency" />
                       </SelectTrigger>
                       <SelectContent>
@@ -181,7 +181,7 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
                       value={field.value || ""}
                       onValueChange={field.onChange}
                     >
-                      <SelectTrigger className="">
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select category" />
                       </SelectTrigger>
                       <SelectContent>
@@ -219,7 +219,7 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
                       value={field.value || ""}
                       onValueChange={field.onChange}
                     >
-                      <SelectTrigger className="">
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select payment source" />
                       </SelectTrigger>
                       <SelectContent>
