@@ -8,7 +8,8 @@ interface InputFieldProps<TFieldValues extends FieldValues> {
   control: Control<TFieldValues>,
   label: string,
   required?: boolean,
-  type?: string
+  type?: string,
+  placeholder?: string
 }
 
 export function InputField<TFieldValues extends FieldValues>({ 
@@ -16,7 +17,8 @@ export function InputField<TFieldValues extends FieldValues>({
   control, 
   label, 
   required = false, 
-  type = 'text' 
+  type = 'text',
+  placeholder = ''
 }: InputFieldProps<TFieldValues>) {
 
   return (
@@ -35,6 +37,7 @@ export function InputField<TFieldValues extends FieldValues>({
                 value={field.value || ""}
                 onChange={field.onChange}
                 type={type}
+                placeholder={placeholder}
               />
             </FormControl>
             <FormMessage />

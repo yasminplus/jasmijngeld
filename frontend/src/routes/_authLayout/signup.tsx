@@ -4,43 +4,44 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { Button } from "@/components/ui/button"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
+import { Form } from "@/components/ui/form"
+import { InputField } from '@/components/form/input-field'
 
 export const Route = createFileRoute('/_authLayout/signup')({
   component: SignUpForm,
 })
 
+
 const formSchema = z
   .object({
+    first_name: z.string().min(3),
+    last_name: z.string().optional().or(z.literal('')),
     email: z.string().email().min(15),
     password: z.string().trim().min(8).trim(),
-    confirm: z.string().trim().min(8).trim()
+    confirm: z.string().trim().min(8).trim(),
   })
   .refine((data) => data.password === data.confirm, {
     message: "Passwords do not match",
     path: ["confirm"],
   })
 
+type SignUpValues = z.infer<typeof formSchema>
+
 function SignUpForm() {
   const form = useForm<z.infer<typeof formSchema>>({
       resolver: zodResolver(formSchema),
       defaultValues: {
+        first_name: "",
+        last_name: "",
         email: "",
         password: "",
         confirm: ""
       }
     })
   
-    function onSubmit(values: z.infer<typeof formSchema>) {
-      console.log(values)
+    function onSubmit(data: SignUpValues) {
+      const { confirm, ...payload } = data
+      console.log(payload)
     }
   
     return (
@@ -50,56 +51,50 @@ function SignUpForm() {
         <Form {...form}>
           
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
+
+            <InputField
+              name="first_name"
               control={form.control}
+              label="First name"
+              required
+              placeholder="Enter your first name"
+            />
+
+            <InputField
+              name="last_name"
+              control={form.control}
+              label="Last name"
+              required
+              placeholder="Enter your last name"
+            />
+
+            <InputField
               name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter your email address" {...field} />
-                  </FormControl>
-                  {/* <FormDescription>
-                    Enter your email address
-                  </FormDescription> */}
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-  
-            <FormField
               control={form.control}
+              label="Email"
+              required
+              type='email'
+              placeholder="Enter your email address"
+            />
+
+            <InputField
               name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter your password" {...field} type="password" />
-                  </FormControl>
-                  {/* <FormDescription>
-                    Enter your password
-                  </FormDescription> */}
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-  
-            <FormField
               control={form.control}
-              name="confirm"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Confirm password</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Reenter your password" {...field} type="password" />
-                  </FormControl>
-                  {/* <FormDescription>
-                    Enter your password
-                  </FormDescription> */}
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Password"
+              required
+              type='password'
+              placeholder="Enter your password"
             />
+
+            <InputField
+              name="confirm"
+              control={form.control}
+              label="Confirm password"
+              required
+              type='password'
+              placeholder="Reenter your password"
+            />
+            
             <Button type="submit" className="w-full">Sign Up</Button>
           </form>
         </Form>
