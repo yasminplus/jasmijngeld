@@ -57,6 +57,7 @@ export function DatePickerInput({ date, onDateChange, stringDate, setStringDate}
       <PopoverContent className="w-auto p-0">
         <Calendar
           mode="single"
+          weekStartsOn={1}
           selected={date!}
           onSelect={(selectedDate) => {
             if (!selectedDate) return
