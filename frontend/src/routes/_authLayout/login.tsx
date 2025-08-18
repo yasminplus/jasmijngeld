@@ -104,7 +104,9 @@ function LoginForm() {
         ) }
       </Form>
       {/* remove link to signup for now */}
-      <p className="text-sm pt-2 text-center">Don't have an account? <Link to="/signup">Sign Up</Link></p>
+      <p className="text-sm pt-2 text-center">
+        Don't have an account? <Link to="/signup" className='font-semibold'>Sign up</Link>
+      </p>
     </>
   )
 }

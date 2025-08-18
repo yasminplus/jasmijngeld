@@ -6,6 +6,7 @@ import { z } from "zod"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { InputField } from '@/components/form/input-field'
+import { postSignupData } from '@/services/signup'
 
 export const Route = createFileRoute('/_authLayout/signup')({
   component: SignUpForm,
@@ -41,8 +42,22 @@ function SignUpForm() {
   
     function onSubmit(data: SignUpValues) {
       const { confirm, ...payload } = data
-      console.log(payload)
+      postSignupData(payload)
+      .then(() => {
+        // TODO: redirect to tell to verify token page
+      })
+      .catch(error => {
+        const res = error['response']
+        const err_msg = res['data']
+        const validFields = ["first_name", "last_name", "email", "password", "confirm"] as const;
+        for (const field in err_msg) {
+          if (validFields.includes(field as typeof validFields[number])) {
+            form.setError(field as typeof validFields[number], { type: "manual", message: err_msg[field] });
+          }
+        }
+      })
     }
+
   
     return (
       <>
@@ -98,7 +113,9 @@ function SignUpForm() {
             <Button type="submit" className="w-full">Sign Up</Button>
           </form>
         </Form>
-        <p className="text-sm pt-2 text-center">Already have an account? <Link to="/login">Log In</Link></p>
+        <p className="text-sm pt-2 text-center">
+          Already have an account? <Link to="/login" className='font-semibold'>Log in</Link>
+        </p>
   
       </>
     )
