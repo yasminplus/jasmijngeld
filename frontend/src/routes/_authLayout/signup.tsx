@@ -45,7 +45,7 @@ function SignUpForm() {
       const { confirm, ...payload } = data
       postSignupData(payload)
       .then(() => {
-        navigate({to: '/check-email'})
+        navigate({to: '/check-email-verify'})
       })
       .catch(error => {
         const res = error['response']
