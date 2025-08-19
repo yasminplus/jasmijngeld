@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -29,6 +29,7 @@ const formSchema = z
 type SignUpValues = z.infer<typeof formSchema>
 
 function SignUpForm() {
+  const navigate = useNavigate()
   const form = useForm<z.infer<typeof formSchema>>({
       resolver: zodResolver(formSchema),
       defaultValues: {
@@ -44,7 +45,7 @@ function SignUpForm() {
       const { confirm, ...payload } = data
       postSignupData(payload)
       .then(() => {
-        // TODO: redirect to tell to verify token page
+        navigate({to: '/check-email'})
       })
       .catch(error => {
         const res = error['response']

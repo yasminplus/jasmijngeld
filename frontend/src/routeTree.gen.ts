@@ -15,6 +15,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardLayoutDashboardRouteImport } from './routes/_dashboardLayout/dashboard'
 import { Route as AuthLayoutSignupRouteImport } from './routes/_authLayout/signup'
 import { Route as AuthLayoutLoginRouteImport } from './routes/_authLayout/login'
+import { Route as AuthLayoutCheckEmailVerifyRouteImport } from './routes/_authLayout/check-email-verify'
 import { Route as DashboardLayoutExpensesIndexRouteImport } from './routes/_dashboardLayout/expenses/index'
 import { Route as DashboardLayoutAccountscardsIndexRouteImport } from './routes/_dashboardLayout/accountscards/index'
 import { Route as DashboardLayoutExpensesNewRouteImport } from './routes/_dashboardLayout/expenses/new'
@@ -51,6 +52,12 @@ const AuthLayoutLoginRoute = AuthLayoutLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => AuthLayoutRouteRoute,
 } as any)
+const AuthLayoutCheckEmailVerifyRoute =
+  AuthLayoutCheckEmailVerifyRouteImport.update({
+    id: '/check-email-verify',
+    path: '/check-email-verify',
+    getParentRoute: () => AuthLayoutRouteRoute,
+  } as any)
 const DashboardLayoutExpensesIndexRoute =
   DashboardLayoutExpensesIndexRouteImport.update({
     id: '/expenses/',
@@ -90,6 +97,7 @@ const DashboardLayoutAccountscardsSourceIdEditRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/check-email-verify': typeof AuthLayoutCheckEmailVerifyRoute
   '/login': typeof AuthLayoutLoginRoute
   '/signup': typeof AuthLayoutSignupRoute
   '/dashboard': typeof DashboardLayoutDashboardRoute
@@ -102,6 +110,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/check-email-verify': typeof AuthLayoutCheckEmailVerifyRoute
   '/login': typeof AuthLayoutLoginRoute
   '/signup': typeof AuthLayoutSignupRoute
   '/dashboard': typeof DashboardLayoutDashboardRoute
@@ -117,6 +126,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authLayout': typeof AuthLayoutRouteRouteWithChildren
   '/_dashboardLayout': typeof DashboardLayoutRouteRouteWithChildren
+  '/_authLayout/check-email-verify': typeof AuthLayoutCheckEmailVerifyRoute
   '/_authLayout/login': typeof AuthLayoutLoginRoute
   '/_authLayout/signup': typeof AuthLayoutSignupRoute
   '/_dashboardLayout/dashboard': typeof DashboardLayoutDashboardRoute
@@ -131,6 +141,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/check-email-verify'
     | '/login'
     | '/signup'
     | '/dashboard'
@@ -143,6 +154,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/check-email-verify'
     | '/login'
     | '/signup'
     | '/dashboard'
@@ -157,6 +169,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authLayout'
     | '/_dashboardLayout'
+    | '/_authLayout/check-email-verify'
     | '/_authLayout/login'
     | '/_authLayout/signup'
     | '/_dashboardLayout/dashboard'
@@ -218,6 +231,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLayoutLoginRouteImport
       parentRoute: typeof AuthLayoutRouteRoute
     }
+    '/_authLayout/check-email-verify': {
+      id: '/_authLayout/check-email-verify'
+      path: '/check-email-verify'
+      fullPath: '/check-email-verify'
+      preLoaderRoute: typeof AuthLayoutCheckEmailVerifyRouteImport
+      parentRoute: typeof AuthLayoutRouteRoute
+    }
     '/_dashboardLayout/expenses/': {
       id: '/_dashboardLayout/expenses/'
       path: '/expenses'
@@ -264,11 +284,13 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthLayoutRouteRouteChildren {
+  AuthLayoutCheckEmailVerifyRoute: typeof AuthLayoutCheckEmailVerifyRoute
   AuthLayoutLoginRoute: typeof AuthLayoutLoginRoute
   AuthLayoutSignupRoute: typeof AuthLayoutSignupRoute
 }
 
 const AuthLayoutRouteRouteChildren: AuthLayoutRouteRouteChildren = {
+  AuthLayoutCheckEmailVerifyRoute: AuthLayoutCheckEmailVerifyRoute,
   AuthLayoutLoginRoute: AuthLayoutLoginRoute,
   AuthLayoutSignupRoute: AuthLayoutSignupRoute,
 }
