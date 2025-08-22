@@ -22,6 +22,7 @@ import { Route as DashboardLayoutExpensesNewRouteImport } from './routes/_dashbo
 import { Route as DashboardLayoutAccountscardsNewRouteImport } from './routes/_dashboardLayout/accountscards/new'
 import { Route as DashboardLayoutExpensesExpIdEditRouteImport } from './routes/_dashboardLayout/expenses/$expId.edit'
 import { Route as DashboardLayoutAccountscardsSourceIdEditRouteImport } from './routes/_dashboardLayout/accountscards/$sourceId.edit'
+import { Route as AuthLayoutVerifyUidb64TokenRouteImport } from './routes/_authLayout/verify.$uidb64.$token'
 
 const DashboardLayoutRouteRoute = DashboardLayoutRouteRouteImport.update({
   id: '/_dashboardLayout',
@@ -94,6 +95,12 @@ const DashboardLayoutAccountscardsSourceIdEditRoute =
     path: '/accountscards/$sourceId/edit',
     getParentRoute: () => DashboardLayoutRouteRoute,
   } as any)
+const AuthLayoutVerifyUidb64TokenRoute =
+  AuthLayoutVerifyUidb64TokenRouteImport.update({
+    id: '/verify/$uidb64/$token',
+    path: '/verify/$uidb64/$token',
+    getParentRoute: () => AuthLayoutRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -105,6 +112,7 @@ export interface FileRoutesByFullPath {
   '/expenses/new': typeof DashboardLayoutExpensesNewRoute
   '/accountscards': typeof DashboardLayoutAccountscardsIndexRoute
   '/expenses': typeof DashboardLayoutExpensesIndexRoute
+  '/verify/$uidb64/$token': typeof AuthLayoutVerifyUidb64TokenRoute
   '/accountscards/$sourceId/edit': typeof DashboardLayoutAccountscardsSourceIdEditRoute
   '/expenses/$expId/edit': typeof DashboardLayoutExpensesExpIdEditRoute
 }
@@ -118,6 +126,7 @@ export interface FileRoutesByTo {
   '/expenses/new': typeof DashboardLayoutExpensesNewRoute
   '/accountscards': typeof DashboardLayoutAccountscardsIndexRoute
   '/expenses': typeof DashboardLayoutExpensesIndexRoute
+  '/verify/$uidb64/$token': typeof AuthLayoutVerifyUidb64TokenRoute
   '/accountscards/$sourceId/edit': typeof DashboardLayoutAccountscardsSourceIdEditRoute
   '/expenses/$expId/edit': typeof DashboardLayoutExpensesExpIdEditRoute
 }
@@ -134,6 +143,7 @@ export interface FileRoutesById {
   '/_dashboardLayout/expenses/new': typeof DashboardLayoutExpensesNewRoute
   '/_dashboardLayout/accountscards/': typeof DashboardLayoutAccountscardsIndexRoute
   '/_dashboardLayout/expenses/': typeof DashboardLayoutExpensesIndexRoute
+  '/_authLayout/verify/$uidb64/$token': typeof AuthLayoutVerifyUidb64TokenRoute
   '/_dashboardLayout/accountscards/$sourceId/edit': typeof DashboardLayoutAccountscardsSourceIdEditRoute
   '/_dashboardLayout/expenses/$expId/edit': typeof DashboardLayoutExpensesExpIdEditRoute
 }
@@ -149,6 +159,7 @@ export interface FileRouteTypes {
     | '/expenses/new'
     | '/accountscards'
     | '/expenses'
+    | '/verify/$uidb64/$token'
     | '/accountscards/$sourceId/edit'
     | '/expenses/$expId/edit'
   fileRoutesByTo: FileRoutesByTo
@@ -162,6 +173,7 @@ export interface FileRouteTypes {
     | '/expenses/new'
     | '/accountscards'
     | '/expenses'
+    | '/verify/$uidb64/$token'
     | '/accountscards/$sourceId/edit'
     | '/expenses/$expId/edit'
   id:
@@ -177,6 +189,7 @@ export interface FileRouteTypes {
     | '/_dashboardLayout/expenses/new'
     | '/_dashboardLayout/accountscards/'
     | '/_dashboardLayout/expenses/'
+    | '/_authLayout/verify/$uidb64/$token'
     | '/_dashboardLayout/accountscards/$sourceId/edit'
     | '/_dashboardLayout/expenses/$expId/edit'
   fileRoutesById: FileRoutesById
@@ -280,6 +293,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardLayoutAccountscardsSourceIdEditRouteImport
       parentRoute: typeof DashboardLayoutRouteRoute
     }
+    '/_authLayout/verify/$uidb64/$token': {
+      id: '/_authLayout/verify/$uidb64/$token'
+      path: '/verify/$uidb64/$token'
+      fullPath: '/verify/$uidb64/$token'
+      preLoaderRoute: typeof AuthLayoutVerifyUidb64TokenRouteImport
+      parentRoute: typeof AuthLayoutRouteRoute
+    }
   }
 }
 
@@ -287,12 +307,14 @@ interface AuthLayoutRouteRouteChildren {
   AuthLayoutCheckEmailVerifyRoute: typeof AuthLayoutCheckEmailVerifyRoute
   AuthLayoutLoginRoute: typeof AuthLayoutLoginRoute
   AuthLayoutSignupRoute: typeof AuthLayoutSignupRoute
+  AuthLayoutVerifyUidb64TokenRoute: typeof AuthLayoutVerifyUidb64TokenRoute
 }
 
 const AuthLayoutRouteRouteChildren: AuthLayoutRouteRouteChildren = {
   AuthLayoutCheckEmailVerifyRoute: AuthLayoutCheckEmailVerifyRoute,
   AuthLayoutLoginRoute: AuthLayoutLoginRoute,
   AuthLayoutSignupRoute: AuthLayoutSignupRoute,
+  AuthLayoutVerifyUidb64TokenRoute: AuthLayoutVerifyUidb64TokenRoute,
 }
 
 const AuthLayoutRouteRouteWithChildren = AuthLayoutRouteRoute._addFileChildren(
