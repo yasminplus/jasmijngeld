@@ -17,6 +17,7 @@ from .serializers import UserSerializer, JGTokenObtainPairSerializer
 
 
 class RegistrationView(CreateAPIView):
+    authentication_classes = []
     serializer_class = UserSerializer
 
     def post(self, request, *args, **kwargs):
@@ -91,6 +92,7 @@ class RequestVerifyView(GenericAPIView):
         pass
 
 class VerifyAccountView(GenericAPIView):
+    authentication_classes = []
     def get(self, request, *args, **kwargs):
         if "uidb64" not in kwargs or "token" not in kwargs:
             raise ImproperlyConfigured(
