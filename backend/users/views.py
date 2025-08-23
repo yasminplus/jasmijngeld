@@ -1,6 +1,6 @@
 from django.conf import settings
 # from django.contrib.auth.tokens import default_token_generator
-from django.core.exceptions import ImproperlyConfigured, ValidationError
+from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist, ValidationError
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.urls import reverse, resolve
@@ -90,6 +90,18 @@ class JGTokenObtainPairView(TokenObtainPairView):
 class RequestVerifyView(GenericAPIView):
     def get(self, request, *args, **kwargs):
         pass
+
+class RequestVerifTokenView(GenericAPIView):
+    authentication_classes = []
+    def post(self, request, *args, **kwargs):
+        email = request.data.get('email')
+        try:
+            user = User.objects.get(email=email)
+            send_verification_email(user)
+        except ObjectDoesNotExist as e:
+            # do not tell user that email is not found
+            print(e)
+        return Response(status=status.HTTP_200_OK)
 
 class VerifyAccountView(GenericAPIView):
     authentication_classes = []

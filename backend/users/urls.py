@@ -5,7 +5,7 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 
-from .views import RegistrationView, VerifyAccountView, RequestResetPasswordView
+from .views import RegistrationView, RequestVerifTokenView, VerifyAccountView, RequestResetPasswordView
 
 app_name = 'users'
 
@@ -15,6 +15,5 @@ urlpatterns = [
 
     path('register/', RegistrationView.as_view(), name='register'),
     path('verify/<str:uidb64>/<str:token>/', VerifyAccountView.as_view(), name='verify_email'),
-    # TODO
-    # path('request-verify/', VerifyAccountView.as_view(), name='verify_email'),
+    path('request/', RequestVerifTokenView.as_view(), name='request_token'),
 ]
