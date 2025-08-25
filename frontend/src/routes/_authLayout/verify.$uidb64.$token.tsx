@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button'
-import { verifySignupToken } from '@/services/signup'
+import { resendVerificationLink, verifySignupToken } from '@/services/signup'
 import { createFileRoute } from '@tanstack/react-router'
 import { AxiosError } from 'axios'
 
@@ -21,21 +21,29 @@ export const Route = createFileRoute('/_authLayout/verify/$uidb64/$token')({
 
 function VerifyEmailSignup() {
   const { status } = Route.useLoaderData()
+  const params = Route.useParams()
   console.log(status)
 
-  function onSubmitResend() {
+  async function onSubmitResend() {
     // TODO
+    try {
+      await resendVerificationLink(params.uidb64, params.token)
+      console.log("Successfully resending verification link")
+    } catch (error) {
+      console.error(error)
+    }
+    
   }
 
   if (status == 410) {
     // inform that token is expired. show component to send verification token again.
     return (
       <>
-        <p className='text-left'>Your verification link is expired. Please request a new one.</p>
+        <p className='text-left mb-6'>Your verification link is expired. Please request a new one.</p>
         {/* 
         TODO: if the link is legit (only expired, not made up links, 
         allow the BE to return user id and make a resend request. 
-        or make a resend request based on the token) */}
+        or make a resend request based on the verif token or the auth token (Bearer etc)) */}
         <Button onClick={onSubmitResend} className="w-full">Resend email</Button>
       </>
     )

@@ -34,6 +34,17 @@ export function verifySignupToken(uidb64: string, token: string): Promise<number
   })
 }
 
+export function resendVerificationLink(uidb64: string, token: string): Promise<void> {
+  return axiosInstance.get(`/api/auth/resend/${uidb64}/${token}/`)
+  .then(() => {
+    return 
+  })
+  .catch(error => {
+    // console.error(error)
+    throw error
+  })
+}
+
 export function sendVerificationLink(data: RequestTokenPayload): Promise<void> {
   return axiosInstance.post(`/api/auth/request/`, data)
   .then(response => {
