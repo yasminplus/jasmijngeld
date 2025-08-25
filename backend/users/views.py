@@ -84,6 +84,22 @@ def send_email(user, type):
     except Exception as e:
         print(e)
 
+# copied from django.contrib.auth.PasswordResetConfirmView
+def get_user(uidb64):
+    try:
+        # urlsafe_base64_decode() decodes to bytestring
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = User._default_manager.get(pk=uid)
+    except (
+        TypeError,
+        ValueError,
+        OverflowError,
+        User.DoesNotExist,
+        ValidationError,
+    ):
+        user = None
+    return user
+
 class JGTokenObtainPairView(TokenObtainPairView):
     serializer_class = JGTokenObtainPairSerializer
 
@@ -91,6 +107,34 @@ class RequestVerifyView(GenericAPIView):
     def get(self, request, *args, **kwargs):
         pass
 
+
+"""
+TODO: what if the user requests the token after 
+the token expires and the user logs in the page?
+we should accept any resend request nevertheless.
+"""
+class ResendVerifTokenView(GenericAPIView):
+    authentication_classes = []
+    def get(self, request, *args, **kwargs):
+        # TODO: check if we can use this for unverified logged-in users
+        # user = request.user
+
+        if "uidb64" not in kwargs or "token" not in kwargs:
+            raise ImproperlyConfigured(
+                "The URL path must contain 'uidb64' and 'token' parameters."
+            )
+
+        user = get_user(kwargs["uidb64"])
+
+        if user is not None:
+            send_verification_email(user)
+            return Response(status=status.HTTP_200_OK)
+        else:
+            # TODO: check what should we return
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+# we can use this for reset pw
 class RequestVerifTokenView(GenericAPIView):
     authentication_classes = []
     def post(self, request, *args, **kwargs):
@@ -112,7 +156,7 @@ class VerifyAccountView(GenericAPIView):
             )
 
         self.validlink = False
-        user = self.get_user(kwargs["uidb64"])
+        user = get_user(kwargs["uidb64"])
 
         if user is not None:
             token = kwargs['token']
@@ -125,21 +169,7 @@ class VerifyAccountView(GenericAPIView):
                 return Response({"message": gettext_lazy("Expired token")}, status=status.HTTP_410_GONE)
 
     
-    # copied from django.contrib.auth.PasswordResetConfirmView
-    def get_user(self, uidb64):
-        try:
-            # urlsafe_base64_decode() decodes to bytestring
-            uid = urlsafe_base64_decode(uidb64).decode()
-            user = User._default_manager.get(pk=uid)
-        except (
-            TypeError,
-            ValueError,
-            OverflowError,
-            User.DoesNotExist,
-            ValidationError,
-        ):
-            user = None
-        return user
+
 
 class RequestResetPasswordView(GenericAPIView):
     pass
