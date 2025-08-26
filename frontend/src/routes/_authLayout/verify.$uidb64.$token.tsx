@@ -2,6 +2,8 @@ import { Button } from '@/components/ui/button'
 import { resendVerificationLink, verifySignupToken } from '@/services/signup'
 import { createFileRoute } from '@tanstack/react-router'
 import { AxiosError } from 'axios'
+import { toast } from "sonner"
+
 
 export const Route = createFileRoute('/_authLayout/verify/$uidb64/$token')({
   component: VerifyEmailSignup,
@@ -25,12 +27,12 @@ function VerifyEmailSignup() {
   console.log(status)
 
   async function onSubmitResend() {
-    // TODO
     try {
       await resendVerificationLink(params.uidb64, params.token)
-      console.log("Successfully resending verification link")
+      toast.success("Successfully resent verification link.")
     } catch (error) {
       console.error(error)
+      toast.error("Uh oh, we could not resend you the verification link.")
     }
     
   }
