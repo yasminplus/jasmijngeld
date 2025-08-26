@@ -21,6 +21,8 @@ export const Route = createFileRoute('/_dashboardLayout')({
           redirect: location.href,
         },
       })
+    } else if (!context.authContext.user?.is_verified) {
+      console.log("redirecting to unverified")
     }
   },
   component: DashboardLayout,
@@ -36,7 +38,7 @@ function DashboardLayout() {
       "--sidebar-width": "16rem",
       "--sidebar-width-mobile": "16rem"
     }}>
-      <AppSidebar />
+      <AppSidebar  />
       <div id="content" className='flex flex-col flex-grow w-screen' >
         <Header />
         <main className='px-4 pb-4'>

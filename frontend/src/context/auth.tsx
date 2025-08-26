@@ -3,6 +3,7 @@ import * as React from 'react';
 import { z } from 'zod';
 
 import login_service, { type Token } from '@/services/login';
+import { AxiosError } from 'axios';
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -12,11 +13,13 @@ const formSchema = z.object({
 type UserPayload = JwtPayload & {
   first_name: string,
   last_name: string,
+  is_verified: boolean
 }
 
 export interface User {
   first_name: string;
   last_name: string;
+  is_verified: boolean;
   access: string;
   refresh: string;
 }
@@ -36,6 +39,7 @@ export const base_key = 'jasmijngeld.auth.user'
 function getStoredUser(): User | null {
   const first_name = localStorage.getItem(base_key + '.first_name')
   const last_name = localStorage.getItem(base_key + '.last_name') || ""
+  const is_verified = localStorage.getItem(base_key + '.is_verified') == "true"
   const access = localStorage.getItem(base_key + '.access')
   const refresh = localStorage.getItem(base_key + '.refresh')
 
@@ -43,6 +47,7 @@ function getStoredUser(): User | null {
     return {
       first_name,
       last_name,
+      is_verified,
       access,
       refresh,
     };
@@ -60,11 +65,13 @@ export function setStoredUser(token: Token | null) {
     const data = jwtDecode<UserPayload>(token.access)
     localStorage.setItem(base_key + '.first_name', data.first_name)
     localStorage.setItem(base_key + '.last_name', data.last_name)
+    localStorage.setItem(base_key + '.is_verified', data.is_verified.toString())
     localStorage.setItem(base_key + '.access', token.access)
     localStorage.setItem(base_key + '.refresh', token.refresh)
   } else {
     localStorage.removeItem(base_key + '.first_name')
     localStorage.removeItem(base_key + '.last_name')
+    localStorage.removeItem(base_key + '.is_verified')
     localStorage.removeItem(base_key + '.access')
     localStorage.removeItem(base_key + '.refresh')
     console.log("removing user")
@@ -84,11 +91,12 @@ export function AuthProvider({ children}: {children: React.ReactNode}) {
       const cur_user = getStoredUser()
       setUser(cur_user)
     } catch (error) {
-      // TODO: handle type error here
-      if (error.response.status == 401) {
-        throw new Error('Wrong email or password. Please try again.')
-      } else {
-        throw new Error('A problem is occurred when logging in')
+      if (error instanceof AxiosError) {
+        if (error.response?.status == 401) {
+          throw new Error('Wrong email or password. Please try again.')
+        } else {
+          throw new Error('A problem is occurred when logging in')
+        }
       }
     }
   }
@@ -96,8 +104,6 @@ export function AuthProvider({ children}: {children: React.ReactNode}) {
   const logout_i = async function() {
     setStoredUser(null)
     setUser(null)
-    // TODO: something with isAuthenticated - do we still need to?
-    // isAuthenticated = false
   }
 
   React.useEffect(() => {
