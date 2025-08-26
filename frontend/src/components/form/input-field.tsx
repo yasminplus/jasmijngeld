@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 interface InputFieldProps<TFieldValues extends FieldValues> {
   name: FieldPath<TFieldValues>,
   control: Control<TFieldValues>,
-  label: string,
+  label?: string,
   required?: boolean,
   type?: string,
   placeholder?: string
@@ -15,7 +15,7 @@ interface InputFieldProps<TFieldValues extends FieldValues> {
 export function InputField<TFieldValues extends FieldValues>({ 
   name, 
   control, 
-  label, 
+  label = '', 
   required = false, 
   type = 'text',
   placeholder = ''
@@ -28,10 +28,12 @@ export function InputField<TFieldValues extends FieldValues>({
         name={name}
         render={ ({ field }) => (
           <FormItem className='text-left'>
-            <FormLabel>
-              {label}
-              {required && <span className="text-destructive"> *</span>}
-            </FormLabel>
+            {label &&
+              <FormLabel>
+                {label}
+                {required && <span className="text-destructive"> *</span>}
+              </FormLabel>
+            }
             <FormControl>
               <Input
                 value={field.value || ""}

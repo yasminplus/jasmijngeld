@@ -1,4 +1,4 @@
-import { useNavigate } from "@tanstack/react-router"
+// import { useNavigate } from "@tanstack/react-router"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -13,9 +13,17 @@ const formSchema = z
   })
 
 type EmailValue = z.infer<typeof formSchema>
-  
-export default function InsertEmailVerify() {
-  const navigate = useNavigate()
+
+interface Props {
+  resetPassword: boolean
+}
+/*
+Initially this was used to ask users whose verification links are already expired
+to enter their email address, to send another verification link, but it's bad for 
+the UX. Maybe we can reuse this for Password Resets.
+*/
+export default function InsertEmailVerify({ resetPassword }: Props) {
+  // const navigate = useNavigate()
   const form = useForm<EmailValue>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -35,19 +43,17 @@ export default function InsertEmailVerify() {
   
   return (
     <>
-      <h1>Enter your email address to verify your email.</h1>
+      <p>Enter your email address to { resetPassword? "reset your password" : "verify your email" }.</p>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <InputField
             name="email"
             control={form.control}
-            label="Email"
-            required
             type='email'
             placeholder="Enter your email address"
           />
 
-          <Button type="submit" className="w-full">Resend email</Button>
+          <Button type="submit" className="w-full">Send email</Button>
         </form>
       </Form>
     </>
