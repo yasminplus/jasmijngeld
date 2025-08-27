@@ -13,6 +13,7 @@ import { Route as DashboardLayoutRouteRouteImport } from './routes/_dashboardLay
 import { Route as AuthLayoutRouteRouteImport } from './routes/_authLayout/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardLayoutDashboardRouteImport } from './routes/_dashboardLayout/dashboard'
+import { Route as AuthLayoutUnverifiedRouteImport } from './routes/_authLayout/unverified'
 import { Route as AuthLayoutSignupRouteImport } from './routes/_authLayout/signup'
 import { Route as AuthLayoutLoginRouteImport } from './routes/_authLayout/login'
 import { Route as AuthLayoutCheckEmailVerifyRouteImport } from './routes/_authLayout/check-email-verify'
@@ -43,6 +44,11 @@ const DashboardLayoutDashboardRoute =
     path: '/dashboard',
     getParentRoute: () => DashboardLayoutRouteRoute,
   } as any)
+const AuthLayoutUnverifiedRoute = AuthLayoutUnverifiedRouteImport.update({
+  id: '/unverified',
+  path: '/unverified',
+  getParentRoute: () => AuthLayoutRouteRoute,
+} as any)
 const AuthLayoutSignupRoute = AuthLayoutSignupRouteImport.update({
   id: '/signup',
   path: '/signup',
@@ -107,6 +113,7 @@ export interface FileRoutesByFullPath {
   '/check-email-verify': typeof AuthLayoutCheckEmailVerifyRoute
   '/login': typeof AuthLayoutLoginRoute
   '/signup': typeof AuthLayoutSignupRoute
+  '/unverified': typeof AuthLayoutUnverifiedRoute
   '/dashboard': typeof DashboardLayoutDashboardRoute
   '/accountscards/new': typeof DashboardLayoutAccountscardsNewRoute
   '/expenses/new': typeof DashboardLayoutExpensesNewRoute
@@ -121,6 +128,7 @@ export interface FileRoutesByTo {
   '/check-email-verify': typeof AuthLayoutCheckEmailVerifyRoute
   '/login': typeof AuthLayoutLoginRoute
   '/signup': typeof AuthLayoutSignupRoute
+  '/unverified': typeof AuthLayoutUnverifiedRoute
   '/dashboard': typeof DashboardLayoutDashboardRoute
   '/accountscards/new': typeof DashboardLayoutAccountscardsNewRoute
   '/expenses/new': typeof DashboardLayoutExpensesNewRoute
@@ -138,6 +146,7 @@ export interface FileRoutesById {
   '/_authLayout/check-email-verify': typeof AuthLayoutCheckEmailVerifyRoute
   '/_authLayout/login': typeof AuthLayoutLoginRoute
   '/_authLayout/signup': typeof AuthLayoutSignupRoute
+  '/_authLayout/unverified': typeof AuthLayoutUnverifiedRoute
   '/_dashboardLayout/dashboard': typeof DashboardLayoutDashboardRoute
   '/_dashboardLayout/accountscards/new': typeof DashboardLayoutAccountscardsNewRoute
   '/_dashboardLayout/expenses/new': typeof DashboardLayoutExpensesNewRoute
@@ -154,6 +163,7 @@ export interface FileRouteTypes {
     | '/check-email-verify'
     | '/login'
     | '/signup'
+    | '/unverified'
     | '/dashboard'
     | '/accountscards/new'
     | '/expenses/new'
@@ -168,6 +178,7 @@ export interface FileRouteTypes {
     | '/check-email-verify'
     | '/login'
     | '/signup'
+    | '/unverified'
     | '/dashboard'
     | '/accountscards/new'
     | '/expenses/new'
@@ -184,6 +195,7 @@ export interface FileRouteTypes {
     | '/_authLayout/check-email-verify'
     | '/_authLayout/login'
     | '/_authLayout/signup'
+    | '/_authLayout/unverified'
     | '/_dashboardLayout/dashboard'
     | '/_dashboardLayout/accountscards/new'
     | '/_dashboardLayout/expenses/new'
@@ -229,6 +241,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardLayoutDashboardRouteImport
       parentRoute: typeof DashboardLayoutRouteRoute
+    }
+    '/_authLayout/unverified': {
+      id: '/_authLayout/unverified'
+      path: '/unverified'
+      fullPath: '/unverified'
+      preLoaderRoute: typeof AuthLayoutUnverifiedRouteImport
+      parentRoute: typeof AuthLayoutRouteRoute
     }
     '/_authLayout/signup': {
       id: '/_authLayout/signup'
@@ -307,6 +326,7 @@ interface AuthLayoutRouteRouteChildren {
   AuthLayoutCheckEmailVerifyRoute: typeof AuthLayoutCheckEmailVerifyRoute
   AuthLayoutLoginRoute: typeof AuthLayoutLoginRoute
   AuthLayoutSignupRoute: typeof AuthLayoutSignupRoute
+  AuthLayoutUnverifiedRoute: typeof AuthLayoutUnverifiedRoute
   AuthLayoutVerifyUidb64TokenRoute: typeof AuthLayoutVerifyUidb64TokenRoute
 }
 
@@ -314,6 +334,7 @@ const AuthLayoutRouteRouteChildren: AuthLayoutRouteRouteChildren = {
   AuthLayoutCheckEmailVerifyRoute: AuthLayoutCheckEmailVerifyRoute,
   AuthLayoutLoginRoute: AuthLayoutLoginRoute,
   AuthLayoutSignupRoute: AuthLayoutSignupRoute,
+  AuthLayoutUnverifiedRoute: AuthLayoutUnverifiedRoute,
   AuthLayoutVerifyUidb64TokenRoute: AuthLayoutVerifyUidb64TokenRoute,
 }
 

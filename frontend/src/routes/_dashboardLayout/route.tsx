@@ -22,7 +22,12 @@ export const Route = createFileRoute('/_dashboardLayout')({
         },
       })
     } else if (!context.authContext.user?.is_verified) {
-      console.log("redirecting to unverified")
+      throw redirect({
+        to: '/unverified',
+        search: {
+          redirect: location.href,
+        },
+      })
     }
   },
   component: DashboardLayout,
