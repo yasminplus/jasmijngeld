@@ -23,7 +23,7 @@ export const Route = createFileRoute('/_dashboardLayout')({
       })
     } else if (!context.authContext.user?.is_verified) {
       throw redirect({
-        to: '/unverified',
+        to: '/unverif',
         search: {
           redirect: location.href,
         },
