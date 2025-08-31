@@ -5,12 +5,11 @@ import { toast } from "sonner"
 
 interface Props {
   uidb64: string
-  token: string
 }
-export default function ResendVerifLink({ uidb64='', token=''}: Props) {
+export default function ResendVerifLink({ uidb64=''}: Props) {
   async function onSubmitResend() {
     try {
-      await resendVerificationLink(uidb64, token)
+      await resendVerificationLink(uidb64)
       toast.success("Successfully resent verification link.")
     } catch (error) {
       console.error(error)

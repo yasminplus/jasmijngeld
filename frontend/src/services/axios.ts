@@ -10,7 +10,9 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   (config) => {
-    config.headers.Authorization = "Bearer " + getToken('access')
+    if (getToken('access')) {
+      config.headers.Authorization = "Bearer " + getToken('access')
+    }
     return config
   }, 
   (error) => {
@@ -22,10 +24,7 @@ let isRefreshing = false
 let failedQueue: any[] = [];
 
 const processQueue = (error: any, token: string | null = null) => {
-  console.log(error)
   failedQueue.forEach(prom => {
-    console.log("in failedQueue")
-    console.log(prom)
     if (error) {
       prom.reject(error);
     } else {

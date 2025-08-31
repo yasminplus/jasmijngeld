@@ -29,18 +29,18 @@ export function verifySignupToken(uidb64: string, token: string): Promise<number
     return response.status
   })
   .catch(error => {
-    // console.error(error)
     throw error
   })
 }
 
-export function resendVerificationLink(uidb64: string, token: string): Promise<void> {
-  return axiosInstance.get(`/api/auth/resend/${uidb64}/${token}/`)
+export function resendVerificationLink(uidb64: string): Promise<void> {
+  return axiosInstance.post(`/api/auth/resend/`, {
+    'uidb64': uidb64
+  })
   .then(() => {
     return 
   })
   .catch(error => {
-    // console.error(error)
     throw error
   })
 }
@@ -52,7 +52,6 @@ export function sendVerificationLink(data: RequestTokenPayload): Promise<void> {
     return 
   })
   .catch(error => {
-    // console.error(error)
     throw error
   })
 }
