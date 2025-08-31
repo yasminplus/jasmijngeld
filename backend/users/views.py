@@ -9,6 +9,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.translation import gettext_lazy
 from rest_framework import status
 from rest_framework.generics import CreateAPIView, GenericAPIView
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .token import default_token_generator
@@ -108,23 +109,18 @@ class RequestVerifyView(GenericAPIView):
         pass
 
 
-"""
-TODO: what if the user requests the token after 
-the token expires and the user logs in the page?
-we should accept any resend request nevertheless.
-"""
 class ResendVerifTokenView(GenericAPIView):
-    authentication_classes = []
-    def get(self, request, *args, **kwargs):
-        # TODO: check if we can use this for unverified logged-in users
-        # user = request.user
+    # with this, user data, if any, is still available
+    permission_classes = [AllowAny]
+    def post(self, request, *args, **kwargs):
+        user = request.user
 
-        if "uidb64" not in kwargs or "token" not in kwargs:
-            raise ImproperlyConfigured(
-                "The URL path must contain 'uidb64' and 'token' parameters."
+        if not user:
+            if "uidb64" not in request.data:
+                raise ImproperlyConfigured(
+                "The URL path must contain 'uidb64' parameters."
             )
-
-        user = get_user(kwargs["uidb64"])
+            user = get_user(request.data["uidb64"])
 
         if user is not None:
             send_verification_email(user)
@@ -146,6 +142,7 @@ class RequestVerifTokenView(GenericAPIView):
             # do not tell user that email is not found
             print(e)
         return Response(status=status.HTTP_200_OK)
+
 
 class VerifyAccountView(GenericAPIView):
     authentication_classes = []
