@@ -1,7 +1,10 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { AxiosError } from 'axios'
 import ResendVerifLink from '@/components/auth/resend-verif-link'
 import { verifySignupToken } from '@/services/signup'
+import TimerProgress from '@/components/TimerProgress'
+import { Button } from '@/components/ui/button'
+import { CheckCircle } from 'lucide-react'
 
 
 export const Route = createFileRoute('/_authLayout/verify/$uidb64/$token')({
@@ -23,6 +26,11 @@ export const Route = createFileRoute('/_authLayout/verify/$uidb64/$token')({
 function VerifyEmailSignup() {
   const { status } = Route.useLoaderData()
   const params = Route.useParams()
+  const navigate = useNavigate()
+
+  function redirectToLogin() {
+    navigate({to: '/login'})
+  }
 
   if (status == 410) {
     // inform that token is expired. show component to send verification token again.
@@ -33,7 +41,21 @@ function VerifyEmailSignup() {
       </>
     )
   } else {
-    // inform that verification is complete, now login
-    <p>Your email has been verified. Please continue logging in.</p>
+    return (
+      // inform that verification is complete, now login
+      <div>
+        <Button className='mt-4' disabled size="icon" variant="ghost"  >
+          <CheckCircle className="size-18" />
+        </Button>
+        <div className='mt-4'>
+          <p>Your email has been verified.</p>
+          <p>Please continue logging in.</p>
+          <br/>
+          <p>Redirecting to <Link className='font-semibold' to={'/login'} >Login</Link> in <TimerProgress duration={5} callback={redirectToLogin} /> seconds...</p>
+        </div>
+        
+      </div>
+
+    )
   }
 }

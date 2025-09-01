@@ -1,8 +1,10 @@
-import { createFileRoute, Link, redirect, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, Link, redirect, useNavigate, useRouterState } from '@tanstack/react-router'
 
+import { useEffect, useState } from 'react';
 import { useRouter } from '@tanstack/react-router';
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
+import { toast } from 'sonner';
 import { z } from "zod"
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from "@/components/ui/button"
@@ -17,12 +19,11 @@ import {
 } from "@/components/ui/form"
 
 import { useAuthContext } from "@/context/auth"
-import { useState } from 'react';
 
 export const Route = createFileRoute('/_authLayout/login')({
   component: LoginForm,
   beforeLoad: ({ context }) => {
-    if (context.authContext.isAuthenticated) {
+    if (context.authContext.isAuthenticated && context.authContext.user?.is_verified) {
       throw redirect({ to: '/dashboard' })
     }
   },
@@ -40,7 +41,13 @@ function LoginForm() {
   const authContext = useAuthContext()
   const router = useRouter()
   const navigate = useNavigate({ from: '/login' })
+  const state = useRouterState({ select: s => s.location.state });
   const [loginError, setLoginError] = useState('')
+
+  useEffect(() => {
+    if (state.message)
+      toast.success(state.message)
+  }, [state])
   
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
