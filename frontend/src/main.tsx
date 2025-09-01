@@ -1,7 +1,7 @@
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 
-import { RouterProvider, createRouter } from '@tanstack/react-router'
+import { ErrorComponent, RouterProvider, createRouter } from '@tanstack/react-router'
 import { routeTree } from './routeTree.gen'
 
 import './index.css'
@@ -12,9 +12,10 @@ import {
 
 const router = createRouter({ 
   routeTree,
+  defaultErrorComponent: ({ error }) => <ErrorComponent error={error} />,
   context: {
     authContext: undefined!
-  }
+  },
 })
 
 // // Register the router instance for type safety
