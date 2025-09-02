@@ -19,7 +19,7 @@ class PaymentSource(models.Model):
     )
     name = models.CharField(max_length=30)
     acc_identifier = models.TextField(max_length=20, blank=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sources")
     """
     each user has to have ONE payment source of type cash. 
     We'll create it automatically when creating a new user/during registration.
