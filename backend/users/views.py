@@ -156,6 +156,10 @@ class VerifyAccountView(GenericAPIView):
         user = get_user(kwargs["uidb64"])
 
         if user is not None:
+            # for when user is already verified
+            if user.is_verified:
+                return Response(status=status.HTTP_200_OK)
+            
             token = kwargs['token']
             if default_token_generator.check_token(user, token, 'EMAIL'):
                 user.is_verified = True
