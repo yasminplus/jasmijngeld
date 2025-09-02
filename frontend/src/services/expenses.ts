@@ -226,6 +226,10 @@ export function getSummary12Months(): Promise<Proc12MoSummary[]> {
 }
 
 function processSummary12Months(data: Summary12MonthsType[]) {
+  if (data.length == 0) {
+    return []
+  }
+
   // collect all months
   const monthsSet = new Set(data.map(item => item.month))
   const allMonths = [...monthsSet]

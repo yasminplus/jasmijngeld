@@ -29,7 +29,7 @@ export default function CurrentExpense({ passedData, currency }: Props) {
                     </span>
                     &nbsp;
                     <span className="text-2xl font-semibold">
-                      {Number(passedData[cur]).toLocaleString()}
+                      {passedData && cur in passedData? Number(passedData[cur]).toLocaleString() : 0}
                     </span>
                   </div>
                 </div>

@@ -43,23 +43,29 @@ export default function Last12MonthsBarChart({ passedData = [], currency }: Prop
             Total expenses in the last 12 months
           </h1>
         </CardTitle>
-    
-        <ChartContainer config={chartConfig} className="min-h-[200px]">
-          <BarChart accessibilityLayer data={chartData}>
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="month"
-              tickLine={false}
-              tickMargin={10}
-              axisLine={false}
-              tickFormatter={(value) => value.slice(0, 3)}
-            />
-            <ChartTooltip  
-              content={<ChartTooltipContent hideIndicator={true} indicator="dot" />} 
-            />
-            { CURRENCY_CHOICES.map(cur => cur == currency && <Bar dataKey={cur} fill={`var(--color-${cur})`} radius={5} />)}
-          </BarChart>
-        </ChartContainer>
+
+        { passedData.length > 0 ?
+            <ChartContainer config={chartConfig} className="min-h-[200px]">
+              <BarChart accessibilityLayer data={chartData}>
+                <CartesianGrid vertical={false} />
+                <XAxis
+                  dataKey="month"
+                  tickLine={false}
+                  tickMargin={10}
+                  axisLine={false}
+                  tickFormatter={(value) => value.slice(0, 3)}
+                />
+                <ChartTooltip  
+                  content={<ChartTooltipContent hideIndicator={true} indicator="dot" />} 
+                />
+                { CURRENCY_CHOICES.map(cur => cur == currency && <Bar dataKey={cur} fill={`var(--color-${cur})`} radius={5} />)}
+              </BarChart>
+            </ChartContainer>
+        :
+          <div className="w-full h-15 mt-2 p-4 text-center align-middle border border-1">
+            <h1>No data</h1>
+          </div>
+        }
       </CardContent>
     </Card>
   )
