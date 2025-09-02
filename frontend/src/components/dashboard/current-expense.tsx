@@ -17,7 +17,7 @@ export default function CurrentExpense({ passedData, currency }: Props) {
       {
         CURRENCY_CHOICES.map(cur => {
           return ( currency === cur && (
-            <Card className="xl:w-[33rem]" key={cur}>
+            <Card key={cur}>
               <CardContent>
                 <div className="flex flex-row space-x-2 justify-between">
                   <div className="font-semibold self-end">

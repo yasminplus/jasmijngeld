@@ -40,7 +40,10 @@ function DashboardHome() {
       {/* TODO: Greeting is good but dont know yet where to put. */}
       {/* <p>Hello, { authContext.user?.first_name } </p> */}
       <CurrencyRadioGroup currency={currency} setCurrency={setCurrency} />
-        <CurrentExpense passedData={expThisMonth} currency={currency}  />
+      {/* TODO: maybe we can place this part within the main grid. */}
+        <div className="grid grid-cols-1 xl:grid-cols-3 lg:grid-cols-2 gap-4">
+          <CurrentExpense passedData={expThisMonth} currency={currency}  />
+        </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 lg:grid-rows-[auto_1fr_1.2fr] xl:grid-rows-[auto_1fr] gap-4">
           <div className="col-start-1 row-start-1 ">
             <MonthlyCategoryPieChart currency={currency} />
