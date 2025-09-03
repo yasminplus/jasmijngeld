@@ -9,7 +9,8 @@ interface InputFieldProps<TFieldValues extends FieldValues> {
   label?: string,
   required?: boolean,
   type?: string,
-  placeholder?: string
+  placeholder?: string,
+  readonly?: boolean
 }
 
 export function InputField<TFieldValues extends FieldValues>({ 
@@ -18,7 +19,8 @@ export function InputField<TFieldValues extends FieldValues>({
   label = '', 
   required = false, 
   type = 'text',
-  placeholder = ''
+  placeholder = '',
+  readonly = false
 }: InputFieldProps<TFieldValues>) {
 
   return (
@@ -40,6 +42,8 @@ export function InputField<TFieldValues extends FieldValues>({
                 onChange={field.onChange}
                 type={type}
                 placeholder={placeholder}
+                readOnly={readonly}
+                className={readonly ? 'opacity-65' : ''}
               />
             </FormControl>
             <FormMessage />

@@ -79,7 +79,6 @@ function SignUpForm() {
             name="last_name"
             control={form.control}
             label="Last name"
-            required
             placeholder="Enter your last name"
           />
 
