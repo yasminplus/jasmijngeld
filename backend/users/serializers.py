@@ -21,3 +21,11 @@ class JGTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['is_verified'] = user.is_verified
 
         return token
+
+
+class UserAccountSerializer(ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ['email', 'first_name', 'last_name', ]
+        read_only_fields = ['email',]

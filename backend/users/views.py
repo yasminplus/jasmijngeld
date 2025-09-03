@@ -8,13 +8,14 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.translation import gettext_lazy
 from rest_framework import status
-from rest_framework.generics import CreateAPIView, GenericAPIView
+from rest_framework.generics import CreateAPIView, GenericAPIView, RetrieveAPIView, UpdateAPIView, RetrieveUpdateAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .token import default_token_generator
 from .models import User
-from .serializers import UserSerializer, JGTokenObtainPairSerializer
+from .serializers import UserSerializer, JGTokenObtainPairSerializer, UserAccountSerializer
 from sources.models import *
 
 
@@ -105,7 +106,7 @@ def get_user(uidb64):
 class JGTokenObtainPairView(TokenObtainPairView):
     serializer_class = JGTokenObtainPairSerializer
 
-class RequestVerifyView(GenericAPIView):
+class RequestVerifyView(GenericAPIView):    
     def get(self, request, *args, **kwargs):
         pass
 
@@ -183,6 +184,17 @@ class VerifyAccountView(GenericAPIView):
             print(e)
     
 
+class RUDUserView(RetrieveUpdateAPIView):
+    serializer_class = UserAccountSerializer
+    # queryset = User.objects.filter(email=request.user.email)
+
+    def get_queryset(self):
+        return User.objects.filter(email=self.request.user.email)
+
+    def get_object(self):
+        queryset = self.get_queryset()
+        return queryset[0]
+    
 
 class RequestResetPasswordView(GenericAPIView):
     pass
