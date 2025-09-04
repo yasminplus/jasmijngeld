@@ -17,6 +17,7 @@ import { Route as DashboardLayoutDashboardRouteImport } from './routes/_dashboar
 import { Route as AuthLayoutSignupRouteImport } from './routes/_authLayout/signup'
 import { Route as AuthLayoutLoginRouteImport } from './routes/_authLayout/login'
 import { Route as AuthLayoutCheckEmailVerifyRouteImport } from './routes/_authLayout/check-email-verify'
+import { Route as DashboardLayoutProfileIndexRouteImport } from './routes/_dashboardLayout/profile/index'
 import { Route as DashboardLayoutExpensesIndexRouteImport } from './routes/_dashboardLayout/expenses/index'
 import { Route as DashboardLayoutAccountscardsIndexRouteImport } from './routes/_dashboardLayout/accountscards/index'
 import { Route as DashboardLayoutExpensesNewRouteImport } from './routes/_dashboardLayout/expenses/new'
@@ -64,6 +65,12 @@ const AuthLayoutCheckEmailVerifyRoute =
     id: '/check-email-verify',
     path: '/check-email-verify',
     getParentRoute: () => AuthLayoutRouteRoute,
+  } as any)
+const DashboardLayoutProfileIndexRoute =
+  DashboardLayoutProfileIndexRouteImport.update({
+    id: '/profile/',
+    path: '/profile/',
+    getParentRoute: () => DashboardLayoutRouteRoute,
   } as any)
 const DashboardLayoutExpensesIndexRoute =
   DashboardLayoutExpensesIndexRouteImport.update({
@@ -119,6 +126,7 @@ export interface FileRoutesByFullPath {
   '/expenses/new': typeof DashboardLayoutExpensesNewRoute
   '/accountscards': typeof DashboardLayoutAccountscardsIndexRoute
   '/expenses': typeof DashboardLayoutExpensesIndexRoute
+  '/profile': typeof DashboardLayoutProfileIndexRoute
   '/verify/$uidb64/$token': typeof AuthLayoutVerifyUidb64TokenRoute
   '/accountscards/$sourceId/edit': typeof DashboardLayoutAccountscardsSourceIdEditRoute
   '/expenses/$expId/edit': typeof DashboardLayoutExpensesExpIdEditRoute
@@ -134,6 +142,7 @@ export interface FileRoutesByTo {
   '/expenses/new': typeof DashboardLayoutExpensesNewRoute
   '/accountscards': typeof DashboardLayoutAccountscardsIndexRoute
   '/expenses': typeof DashboardLayoutExpensesIndexRoute
+  '/profile': typeof DashboardLayoutProfileIndexRoute
   '/verify/$uidb64/$token': typeof AuthLayoutVerifyUidb64TokenRoute
   '/accountscards/$sourceId/edit': typeof DashboardLayoutAccountscardsSourceIdEditRoute
   '/expenses/$expId/edit': typeof DashboardLayoutExpensesExpIdEditRoute
@@ -152,6 +161,7 @@ export interface FileRoutesById {
   '/_dashboardLayout/expenses/new': typeof DashboardLayoutExpensesNewRoute
   '/_dashboardLayout/accountscards/': typeof DashboardLayoutAccountscardsIndexRoute
   '/_dashboardLayout/expenses/': typeof DashboardLayoutExpensesIndexRoute
+  '/_dashboardLayout/profile/': typeof DashboardLayoutProfileIndexRoute
   '/_authLayout/verify/$uidb64/$token': typeof AuthLayoutVerifyUidb64TokenRoute
   '/_dashboardLayout/accountscards/$sourceId/edit': typeof DashboardLayoutAccountscardsSourceIdEditRoute
   '/_dashboardLayout/expenses/$expId/edit': typeof DashboardLayoutExpensesExpIdEditRoute
@@ -169,6 +179,7 @@ export interface FileRouteTypes {
     | '/expenses/new'
     | '/accountscards'
     | '/expenses'
+    | '/profile'
     | '/verify/$uidb64/$token'
     | '/accountscards/$sourceId/edit'
     | '/expenses/$expId/edit'
@@ -184,6 +195,7 @@ export interface FileRouteTypes {
     | '/expenses/new'
     | '/accountscards'
     | '/expenses'
+    | '/profile'
     | '/verify/$uidb64/$token'
     | '/accountscards/$sourceId/edit'
     | '/expenses/$expId/edit'
@@ -201,6 +213,7 @@ export interface FileRouteTypes {
     | '/_dashboardLayout/expenses/new'
     | '/_dashboardLayout/accountscards/'
     | '/_dashboardLayout/expenses/'
+    | '/_dashboardLayout/profile/'
     | '/_authLayout/verify/$uidb64/$token'
     | '/_dashboardLayout/accountscards/$sourceId/edit'
     | '/_dashboardLayout/expenses/$expId/edit'
@@ -270,6 +283,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/check-email-verify'
       preLoaderRoute: typeof AuthLayoutCheckEmailVerifyRouteImport
       parentRoute: typeof AuthLayoutRouteRoute
+    }
+    '/_dashboardLayout/profile/': {
+      id: '/_dashboardLayout/profile/'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof DashboardLayoutProfileIndexRouteImport
+      parentRoute: typeof DashboardLayoutRouteRoute
     }
     '/_dashboardLayout/expenses/': {
       id: '/_dashboardLayout/expenses/'
@@ -347,6 +367,7 @@ interface DashboardLayoutRouteRouteChildren {
   DashboardLayoutExpensesNewRoute: typeof DashboardLayoutExpensesNewRoute
   DashboardLayoutAccountscardsIndexRoute: typeof DashboardLayoutAccountscardsIndexRoute
   DashboardLayoutExpensesIndexRoute: typeof DashboardLayoutExpensesIndexRoute
+  DashboardLayoutProfileIndexRoute: typeof DashboardLayoutProfileIndexRoute
   DashboardLayoutAccountscardsSourceIdEditRoute: typeof DashboardLayoutAccountscardsSourceIdEditRoute
   DashboardLayoutExpensesExpIdEditRoute: typeof DashboardLayoutExpensesExpIdEditRoute
 }
@@ -358,6 +379,7 @@ const DashboardLayoutRouteRouteChildren: DashboardLayoutRouteRouteChildren = {
   DashboardLayoutAccountscardsIndexRoute:
     DashboardLayoutAccountscardsIndexRoute,
   DashboardLayoutExpensesIndexRoute: DashboardLayoutExpensesIndexRoute,
+  DashboardLayoutProfileIndexRoute: DashboardLayoutProfileIndexRoute,
   DashboardLayoutAccountscardsSourceIdEditRoute:
     DashboardLayoutAccountscardsSourceIdEditRoute,
   DashboardLayoutExpensesExpIdEditRoute: DashboardLayoutExpensesExpIdEditRoute,

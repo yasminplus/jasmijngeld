@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { useAuthContext } from '@/context/auth'
-import { useNavigate, useRouterState } from "@tanstack/react-router"
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router"
 import { sidebarItems } from "@/components/sidebar-items"
 import { ModeToggle } from "@/components/mode-toggle"
 
@@ -37,7 +37,9 @@ export function Header() {
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-48">
               <DropdownMenuItem>
-                Profile / Account
+                <Link to="/profile">
+                  Profile / Account
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={logout}>

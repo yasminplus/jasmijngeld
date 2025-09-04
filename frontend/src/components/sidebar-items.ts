@@ -22,4 +22,10 @@ export const sidebarItems = [
     url: "#",
     icon: Settings,
   },
+  // Add this here to show the page title, but not to be added in the Dashboard
+  {
+    title: "Profile",
+    url: "/profile",
+    icon: Settings,
+  },
 ]
