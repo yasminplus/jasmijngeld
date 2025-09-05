@@ -3,19 +3,17 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist, ValidationError
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
-from django.urls import reverse, resolve
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.translation import gettext_lazy
 from rest_framework import status
-from rest_framework.generics import CreateAPIView, GenericAPIView, RetrieveAPIView, UpdateAPIView, RetrieveUpdateAPIView
+from rest_framework.generics import CreateAPIView, GenericAPIView, RetrieveUpdateAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .token import default_token_generator
 from .models import User
-from .serializers import UserSerializer, JGTokenObtainPairSerializer, UserAccountSerializer
+from .serializers import ChangePasswordSerializer, JGTokenObtainPairSerializer, UserAccountSerializer, UserSerializer
 from sources.models import *
 
 
@@ -194,8 +192,29 @@ class RUDUserView(RetrieveUpdateAPIView):
     def get_object(self):
         queryset = self.get_queryset()
         return queryset[0]
-    
+
+
+class ChangePasswordView(CreateAPIView):
+    serializer_class = ChangePasswordSerializer
+
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        user = request.user
+        if user.check_password(data['old']):
+            try:
+                user.set_password(data['new'])
+                user.save()
+                return Response(status=status.HTTP_200_OK)
+            except Exception as e:
+                print(e)
+                return Response({
+                    "message": gettext_lazy("Cannot save changes")
+                }, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({
+                "message": gettext_lazy("Wrong old password")
+            }, status=status.HTTP_403_FORBIDDEN)
+
 
 class RequestResetPasswordView(GenericAPIView):
     pass
-

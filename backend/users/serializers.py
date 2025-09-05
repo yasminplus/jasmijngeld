@@ -1,8 +1,8 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import User
 
-class UserSerializer(ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['email', 'password', 'first_name', 'last_name', ]
@@ -23,9 +23,14 @@ class JGTokenObtainPairSerializer(TokenObtainPairSerializer):
         return token
 
 
-class UserAccountSerializer(ModelSerializer):
+class UserAccountSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
         fields = ['email', 'first_name', 'last_name', ]
         read_only_fields = ['email',]
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old = serializers.CharField()
+    new = serializers.CharField()
