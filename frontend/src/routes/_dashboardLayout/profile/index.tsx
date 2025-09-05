@@ -6,6 +6,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useForm } from 'react-hook-form'
 import { Form } from "@/components/ui/form"
 import { z } from 'zod'
+import ChangePassword from './-change-pw'
 
 export const Route = createFileRoute('/_dashboardLayout/profile/')({
   component: ProfileForm,
@@ -30,14 +31,10 @@ function ProfileForm() {
       first_name: user.first_name,
       last_name: user.last_name? user.last_name : '',
     }
-    // defaultValues: {
-    //   email: "user.email",
-    //   first_name: "user.first_name",
-    //   last_name: "user.last_name"
-    // }
   })
 
   function onSubmit(data: AccountValues) {
+    // TODO: whatever the result is, show toast success/fail
     updateUserAccount(data)
     .then(res => 
       console.log(res)
@@ -47,10 +44,9 @@ function ProfileForm() {
     })
   }
 
-
   return (
     <div className='w-80'>
-      <h1 className="text-2xl text-left mb-5">Edit profile</h1>
+      <h1 className="text-2xl text-left mb-5">Account</h1>
       <Form {...form}>
 
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -84,6 +80,10 @@ function ProfileForm() {
 
         </form>
       </Form>
+
+
+      <ChangePassword />
+
     </div>
   )
 }
