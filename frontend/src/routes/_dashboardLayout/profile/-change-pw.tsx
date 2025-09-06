@@ -1,9 +1,10 @@
+import { AxiosError } from "axios"
+import { CircleAlert } from "lucide-react"
 import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { InputField } from "@/components/form/input-field"
-import { AxiosError } from "axios"
-import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { changePassword, type ChangePwType } from "@/services/users"
@@ -30,7 +31,7 @@ export default function ChangePassword() {
       new_confirm: ""
     }
   })
-  const { isSubmitting } = form.formState
+  const { errors, isSubmitting } = form.formState
 
   function onSubmit(data: ChangePassValues) {
     const payload: ChangePwType = {
@@ -46,7 +47,13 @@ export default function ChangePassword() {
         if (error instanceof AxiosError) {
           if (error.status == 403) {
             form.setError("old_password",
-              { type: "custom", message: error.response?.data.message })
+              { type: "custom", message: error.response?.data.message }
+            )
+          } else {
+            form.setError("root.serverError", { 
+              type: "custom", 
+              message: error.response?.data.message 
+            })
           }
         }
       })
@@ -87,6 +94,13 @@ export default function ChangePassword() {
           <Button type="submit" className="w-full" disabled={isSubmitting}>
             Change password
           </Button>
+
+          {errors.root?.serverError.type === "custom" && 
+            <div className="text-sm text-destructive flex flex-row gap-2">
+              <CircleAlert/> <span className="pt-0.5">{errors.root?.serverError.message} </span>
+            </div>
+          }
+
         </form>
       </Form>
     </div>
