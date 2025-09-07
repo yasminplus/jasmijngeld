@@ -79,6 +79,7 @@ export function DatePickerInputField<TFieldValues extends FieldValues>({
                 <PopoverContent className="w-auto p-0">
                   <Calendar
                     mode="single"
+                    weekStartsOn={1}
                     selected={field.value}
                     onDayClick={(selectedDate) => {
                       if (!selectedDate) return
