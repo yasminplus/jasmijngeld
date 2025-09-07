@@ -108,7 +108,7 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
 
   return (
     <>
-      <div className='w-52'> 
+      <div className='w-66'> 
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 mx-auto pt-5">
@@ -211,7 +211,9 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
               name="source"
               render={({ field }) => (
                 <FormItem className='text-left'>
-                  <FormLabel>Source</FormLabel>
+                  <FormLabel>
+                    Source <span className="text-destructive"> *</span>
+                  </FormLabel> 
                   <FormControl>
                     <Select
                       // try either this or the line below

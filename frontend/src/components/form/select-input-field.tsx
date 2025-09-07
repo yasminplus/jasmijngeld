@@ -43,13 +43,13 @@ export function SelectInputField<TFieldValues extends FieldValues>({
           <FormControl>
             <Popover open={open} onOpenChange={setOpen}>
               <PopoverTrigger asChild>
-                <Button variant="outline" size="sm" className={`h-9 w-[208px] text-sm justify-between ${ !field.value && 'text-muted-foreground' }`}>
+                <Button variant="outline" size="sm" className={`h-9 text-sm justify-between ${ !field.value && 'text-muted-foreground' }`}>
                   {field.value
                   ? options.find((option) => option.name === field.value)?.name
                   : `Select ${name}`}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-[200px] p-0" align="start">
+              <PopoverContent className="w-max p-0" align="start">
                 <Command>
                   <CommandInput placeholder="Search..."  />
                   <CommandList>
