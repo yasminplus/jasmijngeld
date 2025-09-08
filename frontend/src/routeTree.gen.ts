@@ -13,6 +13,7 @@ import { Route as UnverifRouteImport } from './routes/unverif'
 import { Route as DashboardLayoutRouteRouteImport } from './routes/_dashboardLayout/route'
 import { Route as AuthLayoutRouteRouteImport } from './routes/_authLayout/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DashboardLayoutSettingsRouteImport } from './routes/_dashboardLayout/settings'
 import { Route as DashboardLayoutDashboardRouteImport } from './routes/_dashboardLayout/dashboard'
 import { Route as AuthLayoutSignupRouteImport } from './routes/_authLayout/signup'
 import { Route as AuthLayoutLoginRouteImport } from './routes/_authLayout/login'
@@ -43,6 +44,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardLayoutSettingsRoute = DashboardLayoutSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => DashboardLayoutRouteRoute,
 } as any)
 const DashboardLayoutDashboardRoute =
   DashboardLayoutDashboardRouteImport.update({
@@ -122,6 +128,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof AuthLayoutLoginRoute
   '/signup': typeof AuthLayoutSignupRoute
   '/dashboard': typeof DashboardLayoutDashboardRoute
+  '/settings': typeof DashboardLayoutSettingsRoute
   '/accountscards/new': typeof DashboardLayoutAccountscardsNewRoute
   '/expenses/new': typeof DashboardLayoutExpensesNewRoute
   '/accountscards': typeof DashboardLayoutAccountscardsIndexRoute
@@ -138,6 +145,7 @@ export interface FileRoutesByTo {
   '/login': typeof AuthLayoutLoginRoute
   '/signup': typeof AuthLayoutSignupRoute
   '/dashboard': typeof DashboardLayoutDashboardRoute
+  '/settings': typeof DashboardLayoutSettingsRoute
   '/accountscards/new': typeof DashboardLayoutAccountscardsNewRoute
   '/expenses/new': typeof DashboardLayoutExpensesNewRoute
   '/accountscards': typeof DashboardLayoutAccountscardsIndexRoute
@@ -157,6 +165,7 @@ export interface FileRoutesById {
   '/_authLayout/login': typeof AuthLayoutLoginRoute
   '/_authLayout/signup': typeof AuthLayoutSignupRoute
   '/_dashboardLayout/dashboard': typeof DashboardLayoutDashboardRoute
+  '/_dashboardLayout/settings': typeof DashboardLayoutSettingsRoute
   '/_dashboardLayout/accountscards/new': typeof DashboardLayoutAccountscardsNewRoute
   '/_dashboardLayout/expenses/new': typeof DashboardLayoutExpensesNewRoute
   '/_dashboardLayout/accountscards/': typeof DashboardLayoutAccountscardsIndexRoute
@@ -175,6 +184,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/dashboard'
+    | '/settings'
     | '/accountscards/new'
     | '/expenses/new'
     | '/accountscards'
@@ -191,6 +201,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/dashboard'
+    | '/settings'
     | '/accountscards/new'
     | '/expenses/new'
     | '/accountscards'
@@ -209,6 +220,7 @@ export interface FileRouteTypes {
     | '/_authLayout/login'
     | '/_authLayout/signup'
     | '/_dashboardLayout/dashboard'
+    | '/_dashboardLayout/settings'
     | '/_dashboardLayout/accountscards/new'
     | '/_dashboardLayout/expenses/new'
     | '/_dashboardLayout/accountscards/'
@@ -255,6 +267,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_dashboardLayout/settings': {
+      id: '/_dashboardLayout/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof DashboardLayoutSettingsRouteImport
+      parentRoute: typeof DashboardLayoutRouteRoute
     }
     '/_dashboardLayout/dashboard': {
       id: '/_dashboardLayout/dashboard'
@@ -363,6 +382,7 @@ const AuthLayoutRouteRouteWithChildren = AuthLayoutRouteRoute._addFileChildren(
 
 interface DashboardLayoutRouteRouteChildren {
   DashboardLayoutDashboardRoute: typeof DashboardLayoutDashboardRoute
+  DashboardLayoutSettingsRoute: typeof DashboardLayoutSettingsRoute
   DashboardLayoutAccountscardsNewRoute: typeof DashboardLayoutAccountscardsNewRoute
   DashboardLayoutExpensesNewRoute: typeof DashboardLayoutExpensesNewRoute
   DashboardLayoutAccountscardsIndexRoute: typeof DashboardLayoutAccountscardsIndexRoute
@@ -374,6 +394,7 @@ interface DashboardLayoutRouteRouteChildren {
 
 const DashboardLayoutRouteRouteChildren: DashboardLayoutRouteRouteChildren = {
   DashboardLayoutDashboardRoute: DashboardLayoutDashboardRoute,
+  DashboardLayoutSettingsRoute: DashboardLayoutSettingsRoute,
   DashboardLayoutAccountscardsNewRoute: DashboardLayoutAccountscardsNewRoute,
   DashboardLayoutExpensesNewRoute: DashboardLayoutExpensesNewRoute,
   DashboardLayoutAccountscardsIndexRoute:

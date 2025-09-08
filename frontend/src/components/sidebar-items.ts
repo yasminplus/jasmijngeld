@@ -19,7 +19,7 @@ export const sidebarItems = [
   },
   {
     title: "Settings",
-    url: "#",
+    url: "/settings",
     icon: Settings,
   },
   // Add this here to show the page title, but not to be added in the Dashboard
