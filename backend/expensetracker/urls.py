@@ -22,4 +22,5 @@ urlpatterns = [
     path('api/auth/', include('users.urls', namespace="users")),
     path('api/sources/', include('sources.urls', namespace="sources")),
     path('api/expenses/', include('expenses.urls', namespace="expenses")),
+    path('api/settings/', include('settings.urls', namespace="settings")),
 ]
