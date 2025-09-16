@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { CURRENCY_CHOICES } from '@/services/expenses'
+import { getCurrentSettings } from '@/services/settings'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { createFileRoute } from '@tanstack/react-router'
 import { useForm } from 'react-hook-form'
@@ -11,6 +12,7 @@ import z from 'zod'
 
 export const Route = createFileRoute('/_dashboardLayout/settings')({
   component: SettingsComponent,
+  loader: async () => await getCurrentSettings()
 })
 
 const optionSchema = z.object({
@@ -26,11 +28,23 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>
 
+function convertToLabelValue(arr: string[]) {
+  return arr.map(val => {
+    return { label: val, value: val }
+  })
+}
+
 function SettingsComponent() {
+  const currentSettings = Route.useLoaderData()
+  const current: FormValues = {
+    enabledCurrencies: convertToLabelValue(currentSettings.enabledCurrencies),
+    defaultCurrency: currentSettings.defaultCurrency
+  }
+  
   const form = useForm<FormValues>({
     defaultValues: {
-      enabledCurrencies: [{label: 'IDR', value: 'IDR'}],
-      defaultCurrency : 'IDR'
+      enabledCurrencies: current.enabledCurrencies,
+      defaultCurrency : current.defaultCurrency
     },
     resolver: zodResolver(formSchema),
   })
