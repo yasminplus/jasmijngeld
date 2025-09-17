@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import MultipleSelector from '@/components/multiple-selector'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { CURRENCY_CHOICES } from '@/services/expenses'
 import { getAllCurrencies, getCurrentSettings } from '@/services/settings'
 
 export const Route = createFileRoute('/_dashboardLayout/settings')({
@@ -52,6 +51,8 @@ function SettingsComponent() {
     resolver: zodResolver(formSchema),
   })
   const { isSubmitting } = form.formState
+  const watchEnabledCurr = form.watch('enabledCurrencies')
+  
 
   async function onSubmit(data) {
     console.log(data)
@@ -66,10 +67,6 @@ function SettingsComponent() {
       console.error(error)
     })
   }, [])
-
-  const currencyList2 = CURRENCY_CHOICES.map(c => {
-    return {id: c, name: c}
-  })
 
   return (
     <div className='w-60'>
@@ -119,12 +116,12 @@ function SettingsComponent() {
                       <SelectValue placeholder="Select default currency" />
                     </SelectTrigger>
                     <SelectContent>
-                      {currencyList2.map( choice => 
+                      {watchEnabledCurr.map( choice => 
                         <SelectItem 
-                          key={choice.id} 
-                          value={choice.name}
+                          key={choice.value} 
+                          value={choice.label}
                         >
-                          {choice.name}
+                          {choice.label}
                         </SelectItem>
                       )}
                     </SelectContent>
