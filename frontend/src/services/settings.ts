@@ -30,3 +30,14 @@ export async function getCurrentSettings(): Promise<UserSettings> {
       throw error;
     })
 }
+
+export async function getAllCurrencies(): Promise<string[]> {
+  return axiosInstance.get(`/api/settings/currencies/`)
+    .then(response => {
+      const res = response['data']
+      return res['currencies']
+    })
+    .catch(error => {
+      throw error;
+    })
+}

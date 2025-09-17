@@ -1,14 +1,14 @@
-import { SelectInputField } from '@/components/form/select-input-field'
-import MultipleSelector, { type Option } from '@/components/multiple-selector'
-import { Button } from '@/components/ui/button'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { CURRENCY_CHOICES } from '@/services/expenses'
-import { getCurrentSettings } from '@/services/settings'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { createFileRoute } from '@tanstack/react-router'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import z from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { createFileRoute } from '@tanstack/react-router'
+import { Button } from '@/components/ui/button'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import MultipleSelector from '@/components/multiple-selector'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { CURRENCY_CHOICES } from '@/services/expenses'
+import { getAllCurrencies, getCurrentSettings } from '@/services/settings'
 
 export const Route = createFileRoute('/_dashboardLayout/settings')({
   component: SettingsComponent,
@@ -26,6 +26,8 @@ const formSchema = z.object({
   defaultCurrency: z.string()
 })
 
+type OptionValue = z.infer<typeof optionSchema>
+
 type FormValues = z.infer<typeof formSchema>
 
 function convertToLabelValue(arr: string[]) {
@@ -35,6 +37,7 @@ function convertToLabelValue(arr: string[]) {
 }
 
 function SettingsComponent() {
+  const [currList, setCurrList] = useState([] as OptionValue[]) 
   const currentSettings = Route.useLoaderData()
   const current: FormValues = {
     enabledCurrencies: convertToLabelValue(currentSettings.enabledCurrencies),
@@ -54,9 +57,16 @@ function SettingsComponent() {
     console.log(data)
   }
 
-  const currencyList: Option[] = CURRENCY_CHOICES.map(c => {
-    return {label: c, value: c}
-  })
+  useEffect(() => {
+    getAllCurrencies()
+    .then(res => {
+      setCurrList(convertToLabelValue(res))
+    })
+    .catch(error => {
+      console.error(error)
+    })
+  }, [])
+
   const currencyList2 = CURRENCY_CHOICES.map(c => {
     return {id: c, name: c}
   })
@@ -76,8 +86,8 @@ function SettingsComponent() {
                 <FormControl>
                   <MultipleSelector 
                     {...field}
-                    defaultOptions={currencyList} 
-                    options={currencyList} 
+                    defaultOptions={currList} 
+                    options={currList} 
                     emptyIndicator={
                       <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
                         no results found.
@@ -89,14 +99,6 @@ function SettingsComponent() {
               </FormItem>
             )}
           />
-
-
-          {/* <SelectInputField
-            name='defaultCurrency'
-            control={form.control}
-            label='Default currency'
-            options={currencyList2}
-          /> */}
 
           <FormField
             control={form.control}
