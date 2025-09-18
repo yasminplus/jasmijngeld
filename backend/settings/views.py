@@ -14,7 +14,7 @@ class CurrencyListView(APIView):
     pagination_class = None
 
     def get(self, request, *args, **kwargs):
-        currencies = list(list_currencies())
+        currencies = sorted(list(list_currencies()))
         serializer = CurrencySerializer({'currencies': currencies})
         return Response(serializer.data)
 
