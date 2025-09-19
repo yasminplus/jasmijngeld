@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import MultipleSelector from '@/components/multiple-selector'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { getAllCurrencies, getCurrentSettings } from '@/services/settings'
+import { getAllCurrencies, getCurrentSettings, updateSettings } from '@/services/settings'
 
 export const Route = createFileRoute('/_dashboardLayout/settings')({
   component: SettingsComponent,
@@ -37,7 +37,7 @@ function convertToLabelValue(arr: string[]) {
 
 function SettingsComponent() {
   const [currList, setCurrList] = useState([] as OptionValue[]) 
-  const currentSettings = Route.useLoaderData()
+  const [currentSettings, settingsIdList] = Route.useLoaderData()
   const current: FormValues = {
     enabledCurrencies: convertToLabelValue(currentSettings.enabledCurrencies),
     defaultCurrency: currentSettings.defaultCurrency
@@ -56,6 +56,7 @@ function SettingsComponent() {
 
   async function onSubmit(data) {
     console.log(data)
+    const res = await updateSettings(data, settingsIdList)
   }
 
   useEffect(() => {
