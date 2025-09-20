@@ -2,7 +2,7 @@ from babel.numbers import list_currencies
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.generics import RetrieveUpdateAPIView, ListAPIView
+from rest_framework.generics import RetrieveUpdateAPIView, ListCreateAPIView, ListAPIView, CreateAPIView
 
 from users.permissions import IsEmailVerified
 from .models import Settings
@@ -15,13 +15,19 @@ class CurrencyListView(APIView):
 
     def get(self, request, *args, **kwargs):
         currencies = sorted(list(list_currencies()))
-        serializer = CurrencySerializer({'currencies': currencies})
+        top_list = ['AUD', 'EUR', 'IDR', 'MYR', 'SGD', 'USD']
+        for c in top_list:
+            currencies.remove(c)
+        # TODO remove & add on top: AUD, EUR, MYR, SGD, USD
+        top_list.extend(currencies)
+        serializer = CurrencySerializer({'currencies': top_list})
         return Response(serializer.data)
 
     # without using dict
     # def get(self, request, *args, **kwargs):
     #     currencies = list(list_currencies())
     #     return Response(currencies)
+
 
 class CurrentSettingsView(ListAPIView):
     serializer_class = SettingsSerializer
@@ -38,3 +44,20 @@ class CurrentSettingsView(ListAPIView):
         
         user_settings = Settings.objects.filter(user=self.request.user)
         return user_settings
+
+
+class UpdateSettingsView(APIView):
+    permission_classes = (IsAuthenticated, IsEmailVerified)
+
+    def post(self, request, *args, **kwargs):
+        print(request.data)
+
+        for key in request.data:
+            print(key)
+            item = request.data[key]
+            print(item)
+            s = Settings.objects.get(id=item['id'])
+            print(s)
+            if s.value != item['value']:
+                s.value = item['value']
+            s.save()

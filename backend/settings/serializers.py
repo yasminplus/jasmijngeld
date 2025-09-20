@@ -4,7 +4,7 @@ from .models import Settings
 class SettingsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Settings
-        fields = ['key', 'value']
+        fields = ['id', 'key', 'value']
 
 
 class CurrencySerializer(serializers.Serializer):
