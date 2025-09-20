@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import MultipleSelector from '@/components/multiple-selector'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { getAllCurrencies, getCurrentSettings, updateSettings } from '@/services/settings'
+import { getAllCurrencies, getCurrentSettings, updateSettings, type UserSettings } from '@/services/settings'
 
 export const Route = createFileRoute('/_dashboardLayout/settings')({
   component: SettingsComponent,
@@ -54,9 +54,15 @@ function SettingsComponent() {
   const watchEnabledCurr = form.watch('enabledCurrencies')
   
 
-  async function onSubmit(data) {
+  async function onSubmit(data: FormValues) {
     console.log(data)
-    const res = await updateSettings(data, settingsIdList)
+    const temp = data.enabledCurrencies.map(item => item.value)
+    const payload: UserSettings = {
+      enabledCurrencies: temp,
+      defaultCurrency: data.defaultCurrency
+    }
+
+    const res = await updateSettings(payload, settingsIdList)
   }
 
   useEffect(() => {

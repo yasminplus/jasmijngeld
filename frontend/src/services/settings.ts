@@ -52,17 +52,14 @@ export async function updateSettings(currentSettings: UserSettings, settingsIdLi
     'currency_default': {}
   }
   payload['currency_enabled'] = {
-    'value': currentSettings.enabledCurrencies,
+    'value': currentSettings.enabledCurrencies.join(','),
     'id': (settingsIdList.find(s => s.key == 'currency_enabled'))?.id
   }
   payload['currency_default'] = {
     'value': currentSettings.defaultCurrency,
     'id': (settingsIdList.find(s => s.key == 'currency_default'))?.id
   }
-  const pl2 = {
-    keys: payload
-  }
-  return axiosInstance.post(`/api/settings/update/`, pl2)
+  return axiosInstance.post(`/api/settings/update/`, payload)
     .then(response => {
       const res = response['data']
       return res
