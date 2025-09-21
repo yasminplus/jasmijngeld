@@ -46,7 +46,7 @@ export async function getCurrentSettings(): Promise<[UserSettings, SettingsId[]]
     })
 }
 
-export async function updateSettings(currentSettings: UserSettings, settingsIdList: SettingsId[]): Promise<any> {
+export async function updateSettings(currentSettings: UserSettings, settingsIdList: SettingsId[]) {
   const payload: SettingsPayload = {
     'currency_enabled': {},
     'currency_default': {}
@@ -60,13 +60,6 @@ export async function updateSettings(currentSettings: UserSettings, settingsIdLi
     'id': (settingsIdList.find(s => s.key == 'currency_default'))?.id
   }
   return axiosInstance.post(`/api/settings/update/`, payload)
-    .then(response => {
-      const res = response['data']
-      return res
-    })
-    .catch(error => {
-      throw error
-    })
 }
 
 export async function getAllCurrencies(): Promise<string[]> {

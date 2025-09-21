@@ -1,5 +1,8 @@
+import { AxiosError } from "axios"
+import { CircleAlert } from "lucide-react"
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { toast } from "sonner"
 import z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { createFileRoute } from '@tanstack/react-router'
@@ -50,7 +53,7 @@ function SettingsComponent() {
     },
     resolver: zodResolver(formSchema),
   })
-  const { isSubmitting } = form.formState
+  const { errors, isSubmitting } = form.formState
   const watchEnabledCurr = form.watch('enabledCurrencies')
   
 
@@ -62,7 +65,19 @@ function SettingsComponent() {
       defaultCurrency: data.defaultCurrency
     }
 
-    const res = await updateSettings(payload, settingsIdList)
+    updateSettings(payload, settingsIdList)
+      .then(() =>
+        toast.success("Settings successfully updated")
+      )
+      .catch(error => {
+        console.error(error)
+        if (error instanceof AxiosError) {
+          form.setError("root.serverError", { 
+            type: "custom", 
+            message: error.response?.data.message 
+          })
+        }
+      })
   }
 
   useEffect(() => {
@@ -142,7 +157,11 @@ function SettingsComponent() {
           <Button disabled={isSubmitting} type='submit'>
             Save
           </Button>
-
+          {errors.root?.serverError.type === "custom" && 
+            <div className="text-sm text-destructive flex flex-row gap-2">
+              <CircleAlert/> <span className="pt-0.5">{errors.root?.serverError.message} </span>
+            </div>
+          }
         </form>
       </Form>
     </div>
