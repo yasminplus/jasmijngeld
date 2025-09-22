@@ -1,4 +1,6 @@
 from babel.numbers import list_currencies
+from django.utils.translation import gettext_lazy
+from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -50,14 +52,15 @@ class UpdateSettingsView(APIView):
     permission_classes = (IsAuthenticated, IsEmailVerified)
 
     def post(self, request, *args, **kwargs):
-        print(request.data)
-
         for key in request.data:
-            print(key)
             item = request.data[key]
-            print(item)
-            s = Settings.objects.get(id=item['id'])
-            print(s)
-            if s.value != item['value']:
-                s.value = item['value']
-            s.save()
+            try:
+                s = Settings.objects.get(id=item['id'])
+                if s.value != item['value']:
+                    s.value = item['value']
+                s.save()
+                return Response(status=status.HTTP_200_OK)
+            except Exception as e:
+                return Response({
+                    "message": gettext_lazy("Cannot save changes")
+                }, status=status.HTTP_400_BAD_REQUEST)
