@@ -9,8 +9,9 @@ import {
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
 
-import { useAuthContext } from '@/context/auth'
 import { Header } from '@/components/dashboard/Header'
+import { useAuthContext } from '@/context/auth'
+import { useGlobalDataContext } from '@/context/globaldata'
 
 export const Route = createFileRoute('/_dashboardLayout')({
   beforeLoad: ({ context, location }) => {
@@ -36,7 +37,13 @@ export const Route = createFileRoute('/_dashboardLayout')({
 function DashboardLayout() {
   const router = useRouter()
   const navigate = useNavigate()
-  const authContext = useAuthContext()
+  const globalDataContext = useGlobalDataContext()
+
+  /* if we don't do a check here, 
+     the getSettings() is invoked infinitely. */
+  if (globalDataContext.defaultCurrency == "") {
+    globalDataContext.getSettings()
+  }
 
   return (
     <SidebarProvider style={{

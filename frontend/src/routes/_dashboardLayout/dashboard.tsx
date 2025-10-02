@@ -11,6 +11,7 @@ import RecentExpenses from '@/components/dashboard/recent-expense';
 import { getSummary12Months } from '@/services/expenses';
 import type { Proc12MoSummary } from '@/types/ExpenseSummaryType';
 import CurrencyRadioGroup from '@/components/currency-radio-group';
+import { useGlobalDataContext } from '@/context/globaldata';
 
 export const Route = createFileRoute('/_dashboardLayout/dashboard')({
   component: DashboardHome,
@@ -18,11 +19,20 @@ export const Route = createFileRoute('/_dashboardLayout/dashboard')({
 
 function DashboardHome() {
   const authContext = useAuthContext()
+  const globalDataContext = useGlobalDataContext()
   const [last12MonthsData, setLast12MonthsData] = useState<Proc12MoSummary[]>([])
-  const [expThisMonth, setExpThisMonth] = useState<Proc12MoSummary>({month: '', IDR: 0, EUR: 0, USD: 0})
-  const [currency, setCurrency] = useState('IDR')
+  const [expThisMonth, setExpThisMonth] = useState<Proc12MoSummary>(
+    {month: '', IDR: 0, EUR: 0, USD: 0}
+  )
+  const [currency, setCurrency] = useState(globalDataContext.defaultCurrency)
 
   useEffect(() => {
+    /**
+     * TODO: we either need to pass the enabled currencies 
+     * to the getSummary function, or find a way to
+     * use the context from non-React component.
+     */
+
     getSummary12Months()
     .then(res => {
       setLast12MonthsData(res)

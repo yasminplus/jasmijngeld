@@ -8,9 +8,11 @@ import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 import { Toaster } from '@/components/ui/sonner';
 import { ThemeProvider } from "@/components/theme-provider"
 import { type AuthContextI } from '@/context/auth';
+import type { GlobalDataContextI } from '@/context/globaldata';
 
 interface MyRouterContext {
   authContext: AuthContextI
+  globalDataContext: GlobalDataContextI
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
