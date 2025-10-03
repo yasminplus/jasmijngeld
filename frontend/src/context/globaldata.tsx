@@ -1,8 +1,10 @@
-import { getCurrentSettings } from "@/services/settings"
+import { getCurrentSettings, type UserSettings } from "@/services/settings"
 import { createContext, useContext, useState, type ReactNode } from "react"
 
+// TODO: not sure which is better, getSettings or setSettings
 export interface GlobalDataContextI {
   getSettings: () => Promise<void>
+  setSettings: (stgs: UserSettings) => void
   enabledCurrencies: string[]
   defaultCurrency: string
 }
@@ -15,17 +17,22 @@ export function GlobalDataProvider({ children }: {children: ReactNode}) {
 
   const getSettings = async (): Promise<void> => {
     getCurrentSettings()
-    .then((currentSettings) => {
-      setEnabledCurr(currentSettings[0].enabledCurrencies)
-      setDefaultCurr(currentSettings[0].defaultCurrency)
+    .then(([currentSettings, ]) => {
+      setEnabledCurr(currentSettings.enabledCurrencies)
+      setDefaultCurr(currentSettings.defaultCurrency)
     })
+  }
+
+  const setSettings = (stgs: UserSettings) => {
+    setEnabledCurr(stgs.enabledCurrencies)
+    setDefaultCurr(stgs.defaultCurrency)
   }
 
   const enabledCurrencies = enabledCurr
   const defaultCurrency = defaultCurr
 
   return (
-    <GlobalDataContext.Provider value={{getSettings, enabledCurrencies, defaultCurrency}}>
+    <GlobalDataContext.Provider value={{getSettings, setSettings, enabledCurrencies, defaultCurrency}}>
       { children }
     </GlobalDataContext.Provider>
   )

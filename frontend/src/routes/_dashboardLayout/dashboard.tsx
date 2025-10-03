@@ -24,7 +24,13 @@ function DashboardHome() {
   const [expThisMonth, setExpThisMonth] = useState<Proc12MoSummary>(
     {month: '', IDR: 0, EUR: 0, USD: 0}
   )
-  const [currency, setCurrency] = useState(globalDataContext.defaultCurrency)
+  const [currency, setCurrency] = useState('')
+  
+  useEffect(() => {
+    if (globalDataContext.defaultCurrency !== '') {
+      setCurrency(globalDataContext.defaultCurrency)
+    }
+  }, [globalDataContext.defaultCurrency])
 
   useEffect(() => {
     /**
@@ -32,7 +38,6 @@ function DashboardHome() {
      * to the getSummary function, or find a way to
      * use the context from non-React component.
      */
-
     getSummary12Months()
     .then(res => {
       setLast12MonthsData(res)
