@@ -38,7 +38,7 @@ function DashboardHome() {
      * to the getSummary function, or find a way to
      * use the context from non-React component.
      */
-    getSummary12Months()
+    getSummary12Months(globalDataContext.enabledCurrencies)
     .then(res => {
       setLast12MonthsData(res)
       const today = format( new Date(), 'MMM yyyy')
@@ -48,7 +48,7 @@ function DashboardHome() {
     .catch(err => {
       throw err
     })
-  }, [])
+  }, [globalDataContext.enabledCurrencies])
 
   return (
     <div>

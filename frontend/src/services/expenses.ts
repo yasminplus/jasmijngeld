@@ -213,10 +213,10 @@ export function deleteExpense(id:number): Promise<boolean> {
     });
 }
 
-export function getSummary12Months(): Promise<Proc12MoSummary[]> {
+export function getSummary12Months(enabledCurrencies: string[]): Promise<Proc12MoSummary[]> {
   return axiosInstance.get(`/api/expenses/last12months/`)
     .then(response => {
-      const res = processSummary12Months(response['data'])
+      const res = processSummary12Months(response['data'], enabledCurrencies)
       return res
     })
     .catch(error => {
@@ -225,7 +225,7 @@ export function getSummary12Months(): Promise<Proc12MoSummary[]> {
     })
 }
 
-function processSummary12Months(data: Summary12MonthsType[]) {
+function processSummary12Months(data: Summary12MonthsType[], enabledCurrencies: string[]) {
   if (data.length == 0) {
     return []
   }
@@ -256,6 +256,7 @@ function processSummary12Months(data: Summary12MonthsType[]) {
   for (const dt of sortedMonths) {
     const dtStr = format(dt, 'yyyy-MM-dd')
     const filtered = data.filter(v => v.month === dtStr)
+    // TODO: change the init
     const entry: Proc12MoSummary = {
       month: '',
       IDR: 0,
@@ -264,7 +265,7 @@ function processSummary12Months(data: Summary12MonthsType[]) {
     }
     filtered.forEach((el) => {
       const currency = el['currency']
-      if (currency === 'IDR' || currency === 'EUR' || currency === 'USD') {
+      if (currency in enabledCurrencies) {
         entry[currency] = Number(el['total'])
       }
       entry['month'] = format(dt, 'MMM yyyy')
