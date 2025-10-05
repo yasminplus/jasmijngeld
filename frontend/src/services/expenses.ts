@@ -256,16 +256,15 @@ function processSummary12Months(data: Summary12MonthsType[], enabledCurrencies: 
   for (const dt of sortedMonths) {
     const dtStr = format(dt, 'yyyy-MM-dd')
     const filtered = data.filter(v => v.month === dtStr)
-    // TODO: change the init
     const entry: Proc12MoSummary = {
-      month: '',
-      IDR: 0,
-      EUR: 0,
-      USD: 0
+      month: ''
+    }
+    for (const currency of enabledCurrencies) {
+      entry[currency] = 0
     }
     filtered.forEach((el) => {
       const currency = el['currency']
-      if (currency in enabledCurrencies) {
+      if (enabledCurrencies.includes(currency)) {
         entry[currency] = Number(el['total'])
       }
       entry['month'] = format(dt, 'MMM yyyy')

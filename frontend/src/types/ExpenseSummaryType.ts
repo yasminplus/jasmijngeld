@@ -4,11 +4,9 @@ export type Summary12MonthsType = {
   currency: string
 }
 
-export type Proc12MoSummary = {
+export interface Proc12MoSummary {
+  [currency: string]: string | number
   month: string
-  IDR?: number
-  EUR?: number
-  USD?: number
 }
 
 export type SummaryMonthlyCategory = {
