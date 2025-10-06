@@ -11,7 +11,8 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-import { CURRENCY_CHOICES, getMonthlySourceSummary } from '@/services/expenses';
+import { useGlobalDataContext } from '@/context/globaldata';
+import { getMonthlySourceSummary } from '@/services/expenses';
 import { type SummaryMonthlySource } from '@/types/ExpenseSummaryType';
 
 
@@ -38,12 +39,14 @@ export default function MonthlySourcePieChart({ currency } :Props) {
   const formatLabel = ({ amount }: PieLabelRenderProps) => {
     return amount.toLocaleString()
   }
+  const globalDataContext = useGlobalDataContext()
+
   useEffect(() => {
     getMonthlySourceSummary()
     .then(res => {
       let maxTemp = 0
       const wrapper: MonthlyWrapper[] = []
-      CURRENCY_CHOICES.map(c => {
+      globalDataContext.enabledCurrencies.map(c => {
         const data = res.filter(v => v.currency === c)
         data.sort((a, b) => b.amount - a.amount)
         if (data.length > 0) {
@@ -63,7 +66,7 @@ export default function MonthlySourcePieChart({ currency } :Props) {
     .catch(err => {
       throw err
     })
-  }, [])
+  }, [globalDataContext.enabledCurrencies])
   
   return (
     <Card className=''>

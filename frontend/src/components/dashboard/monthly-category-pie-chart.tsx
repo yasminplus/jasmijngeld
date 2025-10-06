@@ -11,11 +11,11 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-import { 
-  CURRENCY_CHOICES, 
-  getExpenseCategories, 
+import {
+  getExpenseCategories,
   getMonthlyCategorySummary
 } from '@/services/expenses';
+import { useGlobalDataContext } from '@/context/globaldata';
 import { type SummaryMonthlyCategory } from '@/types/ExpenseSummaryType';
 
 
@@ -42,12 +42,14 @@ export default function MonthlyCategoryPieChart({ currency }: Props) {
   const formatLabel = ({ amount }: PieLabelRenderProps) => {
     return amount.toLocaleString()
   }
+  const globalDataContext = useGlobalDataContext()
+
   useEffect(() => {
     getMonthlyCategorySummary()
     .then(res => {
       let maxTemp = 0
       const wrapper: MonthlyWrapper[] = []
-      CURRENCY_CHOICES.map(c => {
+      globalDataContext.enabledCurrencies.map(c => {
         const data = res.filter(v => v.currency === c)
         data.sort((a, b) => b.amount - a.amount)
         if (data.length > 0) {
@@ -65,7 +67,7 @@ export default function MonthlyCategoryPieChart({ currency }: Props) {
     .catch(err => {
       throw err
     })
-  }, [])
+  }, [globalDataContext.enabledCurrencies])
 
   useEffect(() => {
     getExpenseCategories()

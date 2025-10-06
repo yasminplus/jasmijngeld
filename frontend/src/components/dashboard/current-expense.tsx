@@ -2,8 +2,8 @@ import {
   Card,
   CardContent,
 } from "@/components/ui/card"
+import { useGlobalDataContext } from '@/context/globaldata';
 import type { Proc12MoSummary } from "@/types/ExpenseSummaryType";
-import { CURRENCY_CHOICES } from "@/services/expenses";
 
 interface Props {
   passedData: Proc12MoSummary
@@ -11,11 +11,12 @@ interface Props {
 }
 
 export default function CurrentExpense({ passedData, currency }: Props) {
+  const globalDataContext = useGlobalDataContext()
 
   return (
     <div className="mb-4">
       {
-        CURRENCY_CHOICES.map(cur => {
+        globalDataContext.enabledCurrencies.map(cur => {
           return ( currency === cur && (
             <Card key={cur}>
               <CardContent>

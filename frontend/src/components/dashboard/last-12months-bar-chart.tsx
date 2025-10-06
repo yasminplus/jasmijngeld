@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
 import {
   Card,
@@ -10,7 +11,7 @@ import {
     ChartTooltip, 
     ChartTooltipContent
 } from '@/components/ui/chart';
-import { CURRENCY_CHOICES } from '@/services/expenses';
+import { useGlobalDataContext } from '@/context/globaldata';
 import { type Proc12MoSummary } from '@/types/ExpenseSummaryType';
 
 interface Props {
@@ -19,21 +20,15 @@ interface Props {
 }
 export default function Last12MonthsBarChart({ passedData = [], currency }: Props) {
   const chartData: Proc12MoSummary[] = passedData
+  const globalDataContext = useGlobalDataContext()
 
-  const chartConfig = {
-    IDR: {
-      label: "IDR",
-      color: "hsl(221.21, 83.19%, 53.33%)",
-    },
-    EUR: {
-      label: "EUR",
-      color: "hsl(221.21, 80.19%, 48.33%)",
-    },
-    USD: {
-      label: "USD",
-      color: "hsl(221.21, 76.19%, 45.33%)",
-    },
-  } satisfies ChartConfig
+  const chartConfig: { [key: string]: { label?: ReactNode; color?: string } } = {} satisfies ChartConfig
+  globalDataContext.enabledCurrencies.forEach(cur => {
+    chartConfig[cur] = {
+      label: cur,
+      color: "hsl(221.21, 83.19%, 53.33%)"
+    }
+  })
 
   return (
     <Card>
@@ -58,7 +53,7 @@ export default function Last12MonthsBarChart({ passedData = [], currency }: Prop
                 <ChartTooltip  
                   content={<ChartTooltipContent hideIndicator={true} indicator="dot" />} 
                 />
-                { CURRENCY_CHOICES.map(cur => cur == currency && <Bar dataKey={cur} fill={`var(--color-${cur})`} radius={5} />)}
+                { globalDataContext.enabledCurrencies.map(cur => cur == currency && <Bar dataKey={cur} fill={`var(--color-${cur})`} radius={5} />)}
               </BarChart>
             </ChartContainer>
         :
