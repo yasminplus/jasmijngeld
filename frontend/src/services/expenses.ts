@@ -72,10 +72,6 @@ export interface Expense extends ExpenseFormType {
   id: number;
 }
 
-export const CURRENCY_CHOICES = [
-  'IDR', 'EUR', 'USD'
-]
-
 export function getStoreList(): Promise<Store[]> {
   return axiosInstance.get(`/api/expenses/stores/`)
     .then(response => {

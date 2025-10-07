@@ -12,15 +12,24 @@ import {
 import {
     Select, SelectContent, SelectItem, SelectTrigger, SelectValue
 } from '@/components/ui/select';
+
+import { DatePickerInputField } from '@/components/form/date-picker-input-field';
+import { InputField } from '@/components/form/input-field';
+import { SelectInputField } from '@/components/form/select-input-field';
+
+import { useGlobalDataContext } from '@/context/globaldata';
+
 import { getPaymentSourceList, type PaymentSource } from '@/services/accounts-cards';
 import {
-    createExpense, CURRENCY_CHOICES, type Expense, type ExpenseCategory, expenseFormSchema, type ExpenseFormType,
-    getExpenseCategories, getStoreList, type Store, updateExpense
+  createExpense, 
+  type Expense, 
+  type ExpenseCategory, 
+  expenseFormSchema, 
+  type ExpenseFormType,
+  getExpenseCategories, 
+  getStoreList, 
+  type Store, updateExpense
 } from '@/services/expenses';
-
-import { DatePickerInputField } from '../form/date-picker-input-field';
-import { InputField } from '../form/input-field';
-import { SelectInputField } from '../form/select-input-field';
 
 type ExpenseFormProps = {
   expense?: Expense
@@ -34,6 +43,7 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
   const [storeList, setStoreList] = useState<Store[]>([])
   const [sourceList, setSourceList] = useState<PaymentSource[]>([])
   const [stringDate, setStringDate] = useState<string>("")
+  const globalDataContext = useGlobalDataContext()
 
   const form = useForm<ExpenseFormValues>({
     defaultValues: expense 
@@ -148,7 +158,7 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
                         <SelectValue placeholder="Select currency" />
                       </SelectTrigger>
                       <SelectContent>
-                        {CURRENCY_CHOICES.map( choice => 
+                        {globalDataContext.enabledCurrencies.map( choice => 
                           <SelectItem key={choice} value={choice}>{choice}</SelectItem>
                         )}
                       </SelectContent>

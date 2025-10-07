@@ -12,16 +12,16 @@ import {
 import { X } from "lucide-react"
 
 import { DataTableFacetedFilter } from "./data-table-faceted-filter"
-import { Button } from "../ui/button"
-import { Input } from "../ui/input"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { DatePickerInput } from "@/components/date-picker-input"
 
+import { useGlobalDataContext } from "@/context/globaldata"
 import { 
-  CURRENCY_CHOICES,
   getExpenseCategories,
   getStoreList
 } from '@/services/expenses'
 import { getPaymentSourceList } from "@/services/accounts-cards"
-import { DatePickerInput } from "../date-picker-input"
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>
@@ -43,7 +43,6 @@ function arr_to_options_typed<T extends { name: string }>(arr: T[]) {
   return arr.map(val => ({ label: val.name, value: val.name }));
 }
 
-const currency_options = arr_to_options(CURRENCY_CHOICES)
 
 export function DataTableToolbar<TData>({
   table,
@@ -60,6 +59,9 @@ export function DataTableToolbar<TData>({
   const [rangeType, setRangeType] = useState<RangeType>("")
 
   const isFiltered = table.getState().columnFilters.length > 0
+
+  const globalDataContext = useGlobalDataContext()
+  const currency_options = arr_to_options(globalDataContext.enabledCurrencies)
 
   const fetchSelectOptions = useCallback(() => {
     Promise.all([getExpenseCategories(), getStoreList(), getPaymentSourceList()])
