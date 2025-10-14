@@ -23,6 +23,7 @@ share/python-wheels/
 *.egg
 MANIFEST
 .env
+.env*
 
 # django
 *.log
@@ -58,6 +59,7 @@ coverage.xml
 
 # ignore staticfiles for whitenoise
 staticfiles/
+static/
 
 # ignore virtual environment
 env/
