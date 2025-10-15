@@ -6,8 +6,14 @@
 
 # Want to help us make this template better? Share your feedback here: https://forms.gle/ybq9Krt8jtBL3iCk7
 
-ARG PYTHON_VERSION=3.13
-FROM python:${PYTHON_VERSION}-slim as base
+# Stage 1: Base build stage
+FROM python:3.13-slim AS builder
+ 
+# Create the app directory
+RUN mkdir /app
+ 
+# Set the working directory
+WORKDIR /app
 
 # Prevents Python from writing pyc files.
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -16,38 +22,41 @@ ENV PYTHONDONTWRITEBYTECODE=1
 # the application crashes without emitting any logs due to buffering.
 ENV PYTHONUNBUFFERED=1
 
+# Install dependencies first for caching benefit
+RUN pip install --upgrade pip 
+COPY requirements.txt /app/ 
+RUN pip install --no-cache-dir -r requirements.txt
+
+
+# Stage 2: Production stage
+FROM python:3.13-slim
+ 
+RUN useradd -m -r appuser && \
+   mkdir /app && \
+   chown -R appuser /app
+
+# Copy the Python dependencies from the builder stage
+COPY --from=builder /usr/local/lib/python3.13/site-packages/ /usr/local/lib/python3.13/site-packages/
+COPY --from=builder /usr/local/bin/ /usr/local/bin/
+
+# Set the working directory
 WORKDIR /app
+ 
+# Copy application code
+COPY --chown=appuser:appuser . .
 
-# Create a non-privileged user that the app will run under.
-# See https://docs.docker.com/go/dockerfile-user-best-practices/
-ARG UID=10001
-RUN adduser \
-    --disabled-password \
-    --gecos "" \
-    --home "/nonexistent" \
-    --shell "/sbin/nologin" \
-    --no-create-home \
-    --uid "${UID}" \
-    appuser
+# Set environment variables to optimize Python
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1 
 
-# Download dependencies as a separate step to take advantage of Docker's caching.
-# Leverage a cache mount to /root/.cache/pip to speed up subsequent builds.
-# Leverage a bind mount to requirements.txt to avoid having to copy them into
-# into this layer.
-RUN --mount=type=cache,target=/root/.cache/pip \
-    --mount=type=bind,source=requirements.txt,target=requirements.txt \
-    python -m pip install -r requirements.txt
-
-# Switch to the non-privileged user to run the application.
+# Switch to non-root user
 USER appuser
-
-# Copy the source code into the container.
-COPY . .
-
-# Expose the port that the application listens on.
+ 
+# Expose the application port
 EXPOSE 8007
 
-# Run the application.
-# CMD gunicorn --bind=127.0.0.1:8007 --chdir /app/expensetracker/wsgi.py
-# CMD gunicorn --bind=127.0.0.1:8007 --chdir /app/expensetracker expensetracker.wsgi
-CMD gunicorn --bind=127.0.0.1:8007 /app/expensetracker/wsgi.py
+# Make entry file executable
+RUN chmod +x  /app/entrypoint.prod.sh
+ 
+# Start the application using Gunicorn
+CMD ["/app/entrypoint.prod.sh"]

@@ -19,19 +19,19 @@ import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-load_dotenv(override=True)
+load_dotenv('.env.local')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure--$$^nr5%7ee$jq48@#823kujg20^kw+2dn@(4-(kt%b34iaze$'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', default=0)
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', '127.0.0.1').split(',')
+CSRF_TRUSTED_ORIGINS = os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS","https://127.0.0.1").split(",")
 
 # Application definition
 
@@ -89,15 +89,17 @@ WSGI_APPLICATION = 'expensetracker.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.{}'.format(
+             os.getenv('DATABASE_ENGINE', 'sqlite3')
+         ),
+         'NAME': os.getenv('DATABASE_NAME', 'postgres'),
+         'USER': os.getenv('DATABASE_USERNAME', 'postgres'),
+         'PASSWORD': os.getenv('DATABASE_PASSWORD', 'postgres'),
+         'HOST': os.getenv('DATABASE_HOST', '127.0.0.1'),
+         'PORT': os.getenv('DATABASE_PORT', 5432),
     }
 }
 
-if os.getenv('DATABASE_URL'):
-    DATABASES['default'] = dj_database_url.config(
-        conn_max_age=600, ssl_require=True
-    )
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -134,6 +136,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -152,7 +155,7 @@ REST_FRAMEWORK = {
 
 # JWT
 
-SECRET_KEY = os.getenv('SECRET_KEY')
+# SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
@@ -221,6 +224,7 @@ FRONTEND_URL = os.getenv("FRONTEND_URL")
 # CORS
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
+    "http://localhost:8084",
 ]
 
 # Currencies
