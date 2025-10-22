@@ -91,9 +91,9 @@ function SettingsComponent() {
   }, [])
 
   return (
-    <div className='w-60'>
+    <div className='w-66'>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className='w-2/3 space-y-6'>
+        <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-3 mx-auto'>
           <FormField
             control={form.control}
             name="enabledCurrencies"
@@ -109,7 +109,7 @@ function SettingsComponent() {
                     options={currList} 
                     emptyIndicator={
                       <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
-                        no results found.
+                        No options.
                       </p>
                     }
                   />
