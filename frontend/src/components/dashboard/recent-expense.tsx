@@ -5,15 +5,8 @@ import {
   CardContent,
   CardTitle
 } from '@/components/ui/card';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
 import { type Expense, getExpenseListPaginated } from "@/services/expenses"
+import ExpenseRow from "./expense-row";
 
 export default function RecentExpenses() {
   const [expenses, setExpenses] = useState<Expense[]>([])
@@ -48,26 +41,14 @@ export default function RecentExpenses() {
           </div>
         </CardTitle>
 
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[100px]">Date</TableHead>
-              <TableHead>Amount</TableHead>
-              <TableHead>Currency</TableHead>
-              <TableHead>Description</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {expenses.map((exp) => (
-              <TableRow key={`${exp.amount}-${exp.date}-${exp.description}`}>
-                <TableCell>{exp.date}</TableCell>
-                <TableCell>{exp.amount}</TableCell>
-                <TableCell>{exp.currency}</TableCell>
-                <TableCell>{exp.description}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+
+        <div className="flex w-full flex-col">
+          {expenses.map(exp => (
+            <ExpenseRow expense={exp} />
+          ))}
+        </div>
+
+
       </CardContent>
     </Card>
   )
