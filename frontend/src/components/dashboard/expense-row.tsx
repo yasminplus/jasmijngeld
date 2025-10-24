@@ -1,4 +1,5 @@
 import { getExpenseCategories, type Expense, type ExpenseCategory } from "@/services/expenses";
+import { groupDigit } from "@/services/generic-utils";
 import { PlusCircle } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 
@@ -42,7 +43,7 @@ export default function ExpenseRow({ expense }: Props) {
         </span>
         &nbsp;
         <span className="text-lg">
-          {expense.amount}
+          {groupDigit(expense.amount)}
         </span>
       </div>
     </div>
