@@ -1,33 +1,26 @@
-import { getExpenseCategories, type Expense, type ExpenseCategory } from "@/services/expenses";
+import { type Expense, type ExpenseCategory } from "@/services/expenses";
 import { groupDigit } from "@/services/generic-utils";
-import { PlusCircle } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
 
 interface Props {
-  expense: Expense
+  expense: Expense,
+  categories: ExpenseCategory[]
 }
-export default function ExpenseRow({ expense }: Props) {
-  const [categories, setCategories] = useState<ExpenseCategory[]>([])
 
-  const fetchStaticData = useCallback(() => {
-    getExpenseCategories()
-    .then(res => {
-      setCategories(res)
-    })
-    .catch(err => {
-      throw err
-    })
-  }, [])
+export default function ExpenseRow({ expense, categories }: Props) {
+  const IconObj = getIcon(expense.category)
 
-  useEffect(() => {
-    fetchStaticData()
-  }, [fetchStaticData])
+  function getIcon(category: string) {
+    const catObj = categories.find(cat => cat.name == category)
+    return catObj?.iconObj
+  }
 
   return (
     <div className="flex flex-row gap-2 text-sm my-2">
       <div className="basis-1/10">
-        {/* TODO: change to respective icon */}
-        <PlusCircle className="size-10"/>
+        {/* TODO: change to respective color */}
+        <div style={{borderRadius: '50%', width: '43px', height: '43px'}} className="bg-sky-600 pt-1.5 pl-1.5">
+          {IconObj ? <IconObj className="size-8" /> : null}
+        </div>
       </div>
       <div className="flex flex-col basis-7/10">
         <div className="font-medium">

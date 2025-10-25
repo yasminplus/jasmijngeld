@@ -5,29 +5,35 @@ import {
   CardContent,
   CardTitle
 } from '@/components/ui/card';
-import { type Expense, getExpenseListPaginated } from "@/services/expenses"
-import ExpenseRow from "./expense-row";
+import ExpenseRow from "@/components/dashboard/expense-row";
+import { type Expense, type ExpenseCategory, getExpenseCategories, getExpenseListPaginated } from "@/services/expenses"
 
 export default function RecentExpenses() {
   const [expenses, setExpenses] = useState<Expense[]>([])
+  const [categories, setCategories] = useState<ExpenseCategory[]>([])
+
   const dashboardLinkOptions = linkOptions({
     to: '/expenses',
     search: { id: 0, op_type: 'none' },
   })
 
-  const fetchTableData = useCallback(() => {
-    getExpenseListPaginated({pageIndex: 0, pageSize: 10})
+  const fetchData = useCallback(() => {
+    Promise.all([
+      getExpenseCategories(), 
+      getExpenseListPaginated({pageIndex: 0, pageSize: 10})
+    ])
     .then(results => {
-      setExpenses(results.rows)
+      setCategories(results[0])
+      setExpenses(results[1].rows)
     })
     .catch(err => {
       throw err
     })
   }, [])
-  
+
   useEffect(() => {
-    fetchTableData()
-  }, [fetchTableData])
+    fetchData()
+  }, [fetchData])
 
   return (
     <Card>
@@ -41,13 +47,11 @@ export default function RecentExpenses() {
           </div>
         </CardTitle>
 
-
         <div className="flex w-full flex-col">
           {expenses.map(exp => (
-            <ExpenseRow expense={exp} />
+            <ExpenseRow expense={exp} categories={categories} />
           ))}
         </div>
-
 
       </CardContent>
     </Card>
