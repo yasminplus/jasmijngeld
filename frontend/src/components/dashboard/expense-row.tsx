@@ -8,17 +8,28 @@ interface Props {
 
 export default function ExpenseRow({ expense, categories }: Props) {
   const IconObj = getIcon(expense.category)
+  const catColor = getColor(expense.category)
 
   function getIcon(category: string) {
     const catObj = categories.find(cat => cat.name == category)
     return catObj?.iconObj
   }
 
+  function getColor(category: string) {
+    const catObj = categories.find(cat => cat.name == category)
+    const color = `hsl(${catObj?.hue} 100% 55%)`
+    return color
+  }
+
   return (
     <div className="flex flex-row gap-2 text-sm my-2">
       <div className="basis-1/10">
-        {/* TODO: change to respective color */}
-        <div style={{borderRadius: '50%', width: '43px', height: '43px'}} className="bg-sky-600 pt-1.5 pl-1.5">
+        <div style={{
+            borderRadius: '50%', width: '43px', height: '43px', 
+            backgroundColor: catColor
+          }} 
+          className="pt-1.5 pl-1.5"
+        >
           {IconObj ? <IconObj className="size-8" /> : null}
         </div>
       </div>

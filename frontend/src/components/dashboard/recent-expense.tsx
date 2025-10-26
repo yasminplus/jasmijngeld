@@ -49,7 +49,7 @@ export default function RecentExpenses() {
 
         <div className="flex w-full flex-col">
           {expenses.map(exp => (
-            <ExpenseRow expense={exp} categories={categories} />
+            <ExpenseRow expense={exp} categories={categories} key={exp.id} />
           ))}
         </div>
 
