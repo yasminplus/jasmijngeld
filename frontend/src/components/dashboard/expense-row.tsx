@@ -26,11 +26,12 @@ export default function ExpenseRow({ expense, categories }: Props) {
       <div className="basis-1/10">
         <div style={{
             borderRadius: '50%', width: '43px', height: '43px', 
-            backgroundColor: catColor
-          }} 
-          className="pt-1.5 pl-1.5"
+            backgroundColor: catColor,
+            paddingLeft: '7.3px', 
+            paddingTop: '7.3px', 
+          }}
         >
-          {IconObj ? <IconObj className="size-8" /> : null}
+          {IconObj ? <IconObj className="size-7" /> : null}
         </div>
       </div>
       <div className="flex flex-col basis-7/10">
