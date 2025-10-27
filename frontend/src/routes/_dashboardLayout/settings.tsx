@@ -24,7 +24,7 @@ const optionSchema = z.object({
 });
 
 const formSchema = z.object({
-  enabledCurrencies: z.array(optionSchema).min(1),
+  enabledCurrencies: z.array(optionSchema).min(1, "Please select at least one currency"),
   defaultCurrency: z.string()
 })
 
