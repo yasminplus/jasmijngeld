@@ -55,7 +55,12 @@ function SettingsComponent() {
   })
   const { errors, isSubmitting } = form.formState
   const watchEnabledCurr = form.watch('enabledCurrencies')
-  
+  /*
+  TODO: BUG: if enabledCurrencies doesn't contain IDR, 
+  it won't select the default currency automatically.
+  even if in the form it seems that the default currency is empty,
+  when submitted, it contains IDR.
+   */
 
   async function onSubmit(data: FormValues) {
     console.log(data)
