@@ -12,7 +12,7 @@ from rest_framework.permissions import IsAuthenticated
 from users.permissions import IsEmailVerified
 
 from .models import ExpenseCategory, Expense, Store
-from .serializers import ExpenseCategorySerializer, ExpenseSerializer, ExpenseSummaryLast12MonthsSerializer, ExpenseSummaryMonthlyByCategorySerializer, ExpenseSummaryMonthlyBySourceSerializer, StoreSerializer
+from .serializers import *
 
 class CategoryResultsSetPagination(PageNumberPagination):
     page_size = 25
@@ -136,3 +136,14 @@ class ExpenseSummaryMonthlyBySourceView(ListAPIView):
                     .annotate(amount=Sum('amount'))\
                     .order_by('source_name', 'currency')
         return qs
+
+
+class ExpenseMonthYearView(ListAPIView):
+    serializer_class = ExpenseMonthYearSerializer
+    pagination_class = None
+
+    def get_queryset(self):
+        qs = Expense.objects\
+                    .filter(user=self.request.user)\
+                    .dates("date", "month")
+        return [{"month": d} for d in qs]

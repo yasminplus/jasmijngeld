@@ -57,3 +57,7 @@ class ExpenseSummaryMonthlyBySourceSerializer(serializers.Serializer):
     source_name = serializers.CharField()
     amount = serializers.DecimalField(max_digits=None, decimal_places=2)
     currency = serializers.CharField()
+
+
+class ExpenseMonthYearSerializer(serializers.Serializer):
+    month = serializers.DateField(format='%Y-%m-%d', read_only=True)
