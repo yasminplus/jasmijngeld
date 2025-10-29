@@ -2,6 +2,7 @@ import {
   Card,
   CardContent,
 } from "@/components/ui/card"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useGlobalDataContext } from '@/context/globaldata';
 import type { MonthYear } from "@/services/expenses";
 import type { Proc12MoSummary } from "@/types/ExpenseSummaryType";
@@ -23,8 +24,24 @@ export default function CurrentExpense({ passedData, currency, distinctMonths }:
             <Card key={cur}>
               <CardContent>
                 <div className="flex flex-row space-x-2 justify-between">
-                  <div className="font-semibold self-end">
-                    Total expense this month
+                  <div className="font-semibold self-end flex flex-row gap-2">
+                    <div className="self-center">Total expense in</div>
+                    <div>
+                      <Select
+                        defaultValue={distinctMonths[0]?.dateStr} 
+                        // onValueChange={field.onChange}
+                        // TODO: manage the value 
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select month" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {distinctMonths.map( item => 
+                            <SelectItem key={item?.label} value={item?.dateStr}>{item?.label}</SelectItem>
+                          )}
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
                   <div className="">
                     <span className="text-sm">

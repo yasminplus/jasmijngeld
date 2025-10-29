@@ -308,6 +308,8 @@ export function getDistinctMonths(): Promise<MonthYear[]> {
   return axiosInstance.get(`api/expenses/dist-mo/`)
     .then(response => {
       const monthList = response['data']
+      // reverse so we get the most recent on top
+      monthList.reverse()
       const res = monthList.map((dtObj) => {
         const dt = parse(dtObj.month, 'yyyy-MM-dd', new Date())
         return {

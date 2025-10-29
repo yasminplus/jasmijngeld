@@ -34,11 +34,6 @@ function DashboardHome() {
   }, [globalDataContext.defaultCurrency])
 
   useEffect(() => {
-    /**
-     * TODO: we either need to pass the enabled currencies 
-     * to the getSummary function, or find a way to
-     * use the context from non-React component.
-     */
     Promise.all([
       getSummary12Months(globalDataContext.enabledCurrencies),
       getDistinctMonths()
