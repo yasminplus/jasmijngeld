@@ -8,7 +8,7 @@ import MonthlyCategoryPieChart from '@/components/dashboard/monthly-category-pie
 import MonthlySourcePieChart from '@/components/dashboard/monthly-source-pie-chart';
 import CurrentExpense from '@/components/dashboard/current-expense';
 import RecentExpenses from '@/components/dashboard/recent-expense';
-import { getSummary12Months } from '@/services/expenses';
+import { getDistinctMonths, getSummary12Months, type MonthYear } from '@/services/expenses';
 import type { Proc12MoSummary } from '@/types/ExpenseSummaryType';
 import CurrencyRadioGroup from '@/components/currency-radio-group';
 import { useGlobalDataContext } from '@/context/globaldata';
@@ -25,6 +25,7 @@ function DashboardHome() {
     {month: '', IDR: 0, EUR: 0, USD: 0}
   )
   const [currency, setCurrency] = useState('')
+  const [distinctMonths, setDistinctMonths] = useState<MonthYear[]>([])
   
   useEffect(() => {
     if (globalDataContext.defaultCurrency !== '') {
@@ -38,8 +39,13 @@ function DashboardHome() {
      * to the getSummary function, or find a way to
      * use the context from non-React component.
      */
-    getSummary12Months(globalDataContext.enabledCurrencies)
-    .then(res => {
+    Promise.all([
+      getSummary12Months(globalDataContext.enabledCurrencies),
+      getDistinctMonths()
+    ])
+    .then(results => {
+      const res = results[0]
+      setDistinctMonths(results[1])
       setLast12MonthsData(res)
       const today = format( new Date(), 'MMM yyyy')
       const data = res.find(item => item.month === today)
@@ -57,7 +63,7 @@ function DashboardHome() {
       <CurrencyRadioGroup currency={currency} setCurrency={setCurrency} />
       {/* TODO: maybe we can place this part within the main grid. */}
         <div className="grid grid-cols-1 xl:grid-cols-3 lg:grid-cols-2 gap-4">
-          <CurrentExpense passedData={expThisMonth} currency={currency}  />
+          <CurrentExpense passedData={expThisMonth} currency={currency} distinctMonths={distinctMonths} />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 lg:grid-rows-[auto_1fr_1.2fr] xl:grid-rows-[auto_1fr] gap-4">
           <div className="col-start-1 row-start-1 ">

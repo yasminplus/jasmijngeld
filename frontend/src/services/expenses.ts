@@ -51,6 +51,12 @@ export interface ExpenseFormType {
   source?: string;
 }
 
+export interface MonthYear {
+  label: string;
+  date: Date;
+  dateStr: string;
+}
+
 export const expenseFormSchema = z.object({
   // amount: z.string().transform((val) => Number(val) || 0), 
   amount: z.preprocess((val) => {
@@ -294,3 +300,26 @@ export function getMonthlySourceSummary(): Promise<SummaryMonthlySource[]> {
     })
 }
 
+/**
+ * get distinct month-year to change the month-year in the dashboard
+ * @returns promise list of monthyear type
+ */
+export function getDistinctMonths(): Promise<MonthYear[]> {
+  return axiosInstance.get(`api/expenses/dist-mo/`)
+    .then(response => {
+      const monthList = response['data']
+      const res = monthList.map((dtObj) => {
+        const dt = parse(dtObj.month, 'yyyy-MM-dd', new Date())
+        return {
+          label: format(dt, 'MMM yyyy'),
+          date: dt,
+          dateStr: dtObj.month
+        }
+      })
+      return res
+    })
+    .catch(error => {
+      console.error(error)
+      throw error;
+    })
+}

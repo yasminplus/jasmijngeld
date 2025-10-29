@@ -3,14 +3,16 @@ import {
   CardContent,
 } from "@/components/ui/card"
 import { useGlobalDataContext } from '@/context/globaldata';
+import type { MonthYear } from "@/services/expenses";
 import type { Proc12MoSummary } from "@/types/ExpenseSummaryType";
 
 interface Props {
   passedData: Proc12MoSummary
   currency: string
+  distinctMonths: MonthYear[]
 }
 
-export default function CurrentExpense({ passedData, currency }: Props) {
+export default function CurrentExpense({ passedData, currency, distinctMonths }: Props) {
   const globalDataContext = useGlobalDataContext()
 
   return (
@@ -22,7 +24,7 @@ export default function CurrentExpense({ passedData, currency }: Props) {
               <CardContent>
                 <div className="flex flex-row space-x-2 justify-between">
                   <div className="font-semibold self-end">
-                    Expense this month
+                    Total expense this month
                   </div>
                   <div className="">
                     <span className="text-sm">
