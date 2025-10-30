@@ -17,6 +17,8 @@ export const Route = createFileRoute('/_dashboardLayout/dashboard')({
   component: DashboardHome,
 })
 
+const todayDate = new Date()
+
 function DashboardHome() {
   const authContext = useAuthContext()
   const globalDataContext = useGlobalDataContext()
@@ -26,6 +28,10 @@ function DashboardHome() {
   )
   const [currency, setCurrency] = useState('')
   const [distinctMonths, setDistinctMonths] = useState<MonthYear[]>([])
+  const [selectedMonth, setSelectedMonth] = useState<MonthYear>({
+    label: format(todayDate, "MMM yyyy"),
+    dateStr: format(todayDate, "yyyy-MM-01")
+  })
   
   useEffect(() => {
     if (globalDataContext.defaultCurrency !== '') {
@@ -40,11 +46,13 @@ function DashboardHome() {
     ])
     .then(results => {
       const res = results[0]
-      setDistinctMonths(results[1])
       setLast12MonthsData(res)
-      const today = format( new Date(), 'MMM yyyy')
+      const today = format(todayDate, 'MMM yyyy')
       const data = res.find(item => item.month === today)
       setExpThisMonth(data!)
+
+      setDistinctMonths(results[1])
+      setSelectedMonth(results[1][0])
     })
     .catch(err => {
       throw err
@@ -58,7 +66,13 @@ function DashboardHome() {
       <CurrencyRadioGroup currency={currency} setCurrency={setCurrency} />
       {/* TODO: maybe we can place this part within the main grid. */}
         <div className="grid grid-cols-1 xl:grid-cols-3 lg:grid-cols-2 gap-4">
-          <CurrentExpense passedData={expThisMonth} currency={currency} distinctMonths={distinctMonths} />
+          <CurrentExpense 
+            passedData={expThisMonth} 
+            currency={currency} 
+            distinctMonths={distinctMonths} 
+            selectedMonth={selectedMonth!}
+            setSelectedMonth={setSelectedMonth}
+          />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 lg:grid-rows-[auto_1fr_1.2fr] xl:grid-rows-[auto_1fr] gap-4">
           <div className="col-start-1 row-start-1 ">

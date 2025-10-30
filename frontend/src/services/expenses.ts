@@ -1,4 +1,4 @@
-import { addMonths, format, parse } from 'date-fns';
+import { addMonths, format, parse, parseISO } from 'date-fns';
 import { 
   BanknoteArrowDown, 
   Bus, 
@@ -53,7 +53,6 @@ export interface ExpenseFormType {
 
 export interface MonthYear {
   label: string;
-  date: Date;
   dateStr: string;
 }
 
@@ -311,10 +310,9 @@ export function getDistinctMonths(): Promise<MonthYear[]> {
       // reverse so we get the most recent on top
       monthList.reverse()
       const res = monthList.map((dtObj) => {
-        const dt = parse(dtObj.month, 'yyyy-MM-dd', new Date())
+        const dt = parseISO(dtObj.month)
         return {
           label: format(dt, 'MMM yyyy'),
-          date: dt,
           dateStr: dtObj.month
         }
       })

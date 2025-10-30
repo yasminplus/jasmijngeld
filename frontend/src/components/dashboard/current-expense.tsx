@@ -11,10 +11,19 @@ interface Props {
   passedData: Proc12MoSummary
   currency: string
   distinctMonths: MonthYear[]
+  selectedMonth: MonthYear
+  setSelectedMonth: (mo: MonthYear) => void
 }
 
-export default function CurrentExpense({ passedData, currency, distinctMonths }: Props) {
+export default function CurrentExpense({ 
+  passedData, currency, distinctMonths, selectedMonth, setSelectedMonth 
+}: Props) {
   const globalDataContext = useGlobalDataContext()
+
+  function onSelectValueChange(value: string) {
+    const obj = distinctMonths.find(mo => mo.dateStr === value)
+    setSelectedMonth(obj!)
+  }
 
   return (
     <div className="mb-4">
@@ -28,9 +37,8 @@ export default function CurrentExpense({ passedData, currency, distinctMonths }:
                     <div className="self-center">Total expense in</div>
                     <div>
                       <Select
-                        defaultValue={distinctMonths[0]?.dateStr} 
-                        // onValueChange={field.onChange}
-                        // TODO: manage the value 
+                        defaultValue={selectedMonth?.dateStr} 
+                        onValueChange={onSelectValueChange}
                       >
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="Select month" />
