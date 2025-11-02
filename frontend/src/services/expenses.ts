@@ -300,16 +300,28 @@ export function getMonthlySourceSummary(): Promise<SummaryMonthlySource[]> {
 }
 
 /**
- * get distinct month-year to change the month-year in the dashboard
+ * get distinct month-year to change the month-year in the dashboard.
+ * if today's month not in the list (i.e. no expense this month), 
+ * this function also adds today's month to the list
  * @returns promise list of monthyear type
  */
 export function getDistinctMonths(): Promise<MonthYear[]> {
   return axiosInstance.get(`api/expenses/dist-mo/`)
     .then(response => {
       const monthList = response['data']
+
+      const todayDate = new Date()
+      const todayStr = format(todayDate, 'yyyy-MM-dd')
+      const todayExist = monthList.some((el: { month: string; }) => el.month == todayStr)
+      if (!todayExist) {
+        monthList.push({
+          month: todayStr
+        })
+      }
       // reverse so we get the most recent on top
       monthList.reverse()
-      const res = monthList.map((dtObj) => {
+
+      const res = monthList.map((dtObj: { month: string; }) => {
         const dt = parseISO(dtObj.month)
         return {
           label: format(dt, 'MMM yyyy'),
