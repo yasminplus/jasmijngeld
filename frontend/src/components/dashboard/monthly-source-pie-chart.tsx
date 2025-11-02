@@ -31,9 +31,10 @@ const chartConfig = {
 
 interface Props {
   currency: string
+  date: string
 }
 
-export default function MonthlySourcePieChart({ currency } :Props) {
+export default function MonthlySourcePieChart({ currency, date } :Props) {
   const [chartData, setChartData] = useState<MonthlyWrapper[]>([])
   const [pieColors, setPieColors] = useState<string[]>([])
   const formatLabel = ({ amount }: PieLabelRenderProps) => {
@@ -42,7 +43,7 @@ export default function MonthlySourcePieChart({ currency } :Props) {
   const globalDataContext = useGlobalDataContext()
 
   useEffect(() => {
-    getMonthlySourceSummary()
+    getMonthlySourceSummary(date)
     .then(res => {
       let maxTemp = 0
       const wrapper: MonthlyWrapper[] = []
@@ -66,7 +67,7 @@ export default function MonthlySourcePieChart({ currency } :Props) {
     .catch(err => {
       throw err
     })
-  }, [globalDataContext.enabledCurrencies])
+  }, [globalDataContext.enabledCurrencies, date])
   
   return (
     <Card className=''>

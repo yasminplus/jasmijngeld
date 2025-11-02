@@ -275,8 +275,7 @@ function processSummary12Months(data: Summary12MonthsType[], enabledCurrencies: 
   return res
 }
 
-export function getMonthlyCategorySummary(): Promise<SummaryMonthlyCategory[]> {
-  const dateStr = format(new Date(), 'yyyy-MM-dd')
+export function getMonthlyCategorySummary(dateStr: string): Promise<SummaryMonthlyCategory[]> {
   return axiosInstance.get(`/api/expenses/monthly-cat/?date=${dateStr}`, )
     .then(response => {
       return response['data']
@@ -287,8 +286,7 @@ export function getMonthlyCategorySummary(): Promise<SummaryMonthlyCategory[]> {
     })
 }
 
-export function getMonthlySourceSummary(): Promise<SummaryMonthlySource[]> {
-  const dateStr = format(new Date(), 'yyyy-MM-dd')
+export function getMonthlySourceSummary(dateStr: string): Promise<SummaryMonthlySource[]> {
   return axiosInstance.get(`/api/expenses/monthly-src/?date=${dateStr}`, )
     .then(response => {
       return response['data']

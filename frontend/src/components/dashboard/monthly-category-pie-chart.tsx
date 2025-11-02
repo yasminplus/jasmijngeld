@@ -34,9 +34,10 @@ const chartConfig = {
 
 interface Props {
   currency: string
+  date: string
 }
 
-export default function MonthlyCategoryPieChart({ currency }: Props) {
+export default function MonthlyCategoryPieChart({ currency, date }: Props) {
   const [chartData, setChartData] = useState<MonthlyWrapper[]>([])
   const [catColors, setCatColors] = useState<Map<string, string>>()
   const formatLabel = ({ amount }: PieLabelRenderProps) => {
@@ -45,7 +46,7 @@ export default function MonthlyCategoryPieChart({ currency }: Props) {
   const globalDataContext = useGlobalDataContext()
 
   useEffect(() => {
-    getMonthlyCategorySummary()
+    getMonthlyCategorySummary(date)
     .then(res => {
       let maxTemp = 0
       const wrapper: MonthlyWrapper[] = []
@@ -67,7 +68,7 @@ export default function MonthlyCategoryPieChart({ currency }: Props) {
     .catch(err => {
       throw err
     })
-  }, [globalDataContext.enabledCurrencies])
+  }, [globalDataContext.enabledCurrencies, date])
 
   useEffect(() => {
     getExpenseCategories()

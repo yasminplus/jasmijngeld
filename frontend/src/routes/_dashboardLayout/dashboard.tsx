@@ -76,10 +76,10 @@ function DashboardHome() {
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 lg:grid-rows-[auto_1fr_1.2fr] xl:grid-rows-[auto_1fr] gap-4">
           <div className="col-start-1 row-start-1 ">
-            <MonthlyCategoryPieChart currency={currency} />
+            <MonthlyCategoryPieChart currency={currency} date={selectedMonth.dateStr} />
           </div>
           <div className="col-start-1 lg:col-start-2 row-start-2 lg:row-start-1 ">
-            <MonthlySourcePieChart currency={currency} />
+            <MonthlySourcePieChart currency={currency} date={selectedMonth.dateStr} />
           </div>
           <div className="col-start-1 lg:col-span-2 xl:row-start-2">
             <Last12MonthsBarChart passedData={last12MonthsData} currency={currency}  />

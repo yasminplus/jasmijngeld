@@ -24,6 +24,7 @@ export default function CurrentExpense({
     const obj = distinctMonths.find(mo => mo.dateStr === value)
     setSelectedMonth(obj!)
   }
+  // TODO: sometimes selectedMonth doesn't appear. debug if it still happens 
 
   return (
     <div className="mb-4">
@@ -45,7 +46,9 @@ export default function CurrentExpense({
                         </SelectTrigger>
                         <SelectContent>
                           {distinctMonths.map( item => 
-                            <SelectItem key={item?.label} value={item?.dateStr}>{item?.label}</SelectItem>
+                            <SelectItem key={item?.label} value={item?.dateStr}>
+                              {item?.label}
+                            </SelectItem>
                           )}
                         </SelectContent>
                       </Select>
