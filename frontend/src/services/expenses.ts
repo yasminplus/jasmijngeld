@@ -309,11 +309,12 @@ export function getDistinctMonths(): Promise<MonthYear[]> {
       const monthList = response['data']
 
       const todayDate = new Date()
-      const todayStr = format(todayDate, 'yyyy-MM-dd')
-      const todayExist = monthList.some((el: { month: string; }) => el.month == todayStr)
+      // -01 to get first day of the month
+      const firstDayInMonthStr = format(todayDate, 'yyyy-MM-01')
+      const todayExist = monthList.some((el: { month: string; }) => el.month == firstDayInMonthStr)
       if (!todayExist) {
         monthList.push({
-          month: todayStr
+          month: firstDayInMonthStr
         })
       }
       // reverse so we get the most recent on top
