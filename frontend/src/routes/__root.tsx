@@ -9,6 +9,7 @@ import { Toaster } from '@/components/ui/sonner';
 import { ThemeProvider } from "@/components/theme-provider"
 import { type AuthContextI } from '@/context/auth';
 import type { GlobalDataContextI } from '@/context/globaldata';
+import PageNotFound from '@/components/page-not-found';
 
 interface MyRouterContext {
   authContext: AuthContextI
@@ -17,6 +18,7 @@ interface MyRouterContext {
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: RootComponent,
+  notFoundComponent: PageNotFound
 })
 
 function RootComponent() {
