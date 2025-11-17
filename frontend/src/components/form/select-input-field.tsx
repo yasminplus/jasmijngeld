@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { type Control, type FieldPath, type FieldValues } from 'react-hook-form';
-
+import { CheckIcon } from "lucide-react";
 import { Button } from '@/components/ui/button';
 import {
-    Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList
+  Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList,
+  CommandSeparator
 } from '@/components/ui/command';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { cn } from "@/lib/utils";
 
 interface OptionType {
   id: string | number
@@ -55,20 +57,43 @@ export function SelectInputField<TFieldValues extends FieldValues>({
                   <CommandList>
                     <CommandEmpty>No results found.</CommandEmpty>
                     <CommandGroup>
-                      {options.map((option) => (
+                      {options.map((option) => {
+                        const isSelected = field.value === option.name
+                        return (
+                        <CommandItem
+                          key={option.name}
+                          value={option.name}
+                          onSelect={(val) => {
+                            field.onChange(val)
+                            setOpen(false)
+                          }}
+                          // TODO: how to add remove functionality?
+                        >
+                          <div
+                            className={cn(
+                              "mr-1 flex h-4 w-4 items-center justify-center",
+                              isSelected ? "text-primary" : "invisible"
+                            )}
+                          >
+                            <CheckIcon className="w-4 h-4" />
+                          </div>
+                          <span>
+                            {option.name}
+                          </span>
+                        </CommandItem>
+                      )}
+                    )}
+                  </CommandGroup>
+                  <CommandSeparator />
+                  <CommandGroup>
+                    <div className="flex items-center justify-between">
                       <CommandItem
-                        key={option.name}
-                        value={option.name}
-                        onSelect={(val) => {
-                          field.onChange(val)
-                          setOpen(false)
-                        }}
-                        // TODO: add Check icon on selected item in the list
-                        // TODO: how to add remove functionality?
+                        onSelect={() => setOpen(false)}
+                        className="justify-center flex-1 max-w-full cursor-pointer"
                       >
-                        {option.name}
+                        Close
                       </CommandItem>
-                    ))}
+                    </div>
                   </CommandGroup>
                   </CommandList>
                 </Command>
