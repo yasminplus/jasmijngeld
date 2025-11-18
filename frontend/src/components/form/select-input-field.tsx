@@ -9,6 +9,7 @@ import {
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from "@/lib/utils";
+import { Separator } from '@/components/ui/separator';
 
 interface OptionType {
   id: string | number
@@ -31,6 +32,10 @@ export function SelectInputField<TFieldValues extends FieldValues>({
   options,
 }: SelectInputFieldProps<TFieldValues>) {
   const [open, setOpen] = useState(false)
+  const onClearAllOptions = (fieldOnChange) => {
+    fieldOnChange('')
+    setOpen(false)
+  };
 
   return (
     <FormField
@@ -67,7 +72,6 @@ export function SelectInputField<TFieldValues extends FieldValues>({
                             field.onChange(val)
                             setOpen(false)
                           }}
-                          // TODO: how to add remove functionality?
                         >
                           <div
                             className={cn(
@@ -87,6 +91,20 @@ export function SelectInputField<TFieldValues extends FieldValues>({
                   <CommandSeparator />
                   <CommandGroup>
                     <div className="flex items-center justify-between">
+                      {field.value && (
+                        <>
+                          <CommandItem
+                            onSelect={() => onClearAllOptions(field.onChange)}
+                            className="justify-center flex-1 cursor-pointer"
+                          >
+                            Clear
+                          </CommandItem>
+                          <Separator
+                            orientation="vertical"
+                            className="flex h-full mx-2 min-h-6"
+                          />
+                        </>
+                      )}
                       <CommandItem
                         onSelect={() => setOpen(false)}
                         className="justify-center flex-1 max-w-full cursor-pointer"
