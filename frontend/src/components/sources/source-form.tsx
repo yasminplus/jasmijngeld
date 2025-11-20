@@ -53,13 +53,13 @@ export default function PaymentSourceForm({ account }: PaymentSourceFormProps) {
       await updatePaymentSource(account.id, data)
       navigate({
         to: '/accountscards',
-        search: { id: account.id, op_type: 'update' }
+        state: { message: 'Payment source has been updated' }
       })
     } else {
-      const newData = await createPaymentSource(data)
+      await createPaymentSource(data)
       navigate({
         to: '/accountscards',
-        search: { id: newData.id, op_type: 'create' }
+        state: { message: 'A new payment source has been created' }
       })
     }
   }
