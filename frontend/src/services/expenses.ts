@@ -43,7 +43,7 @@ export interface Store {
 
 export interface ExpenseFormType {
   amount: number;
-  currency: 'IDR' | 'EUR' | 'USD';
+  currency: string;
   date: string;
   description?: string;
   category: string;
@@ -57,14 +57,17 @@ export interface MonthYear {
 }
 
 export const expenseFormSchema = z.object({
-  // amount: z.string().transform((val) => Number(val) || 0), 
-  amount: z.preprocess((val) => {
-    if (typeof val === "string") {
-      return Number(val);
-    }
-    return val;
-  }, z.number()), 
-  currency: z.enum(['IDR', 'EUR', 'USD']).default("IDR"),
+  // react-hook-form ZodResolver resolves amount to unknown 
+  // if val is not typed. hacky but it works.
+  amount: z.preprocess(
+    (val: number ) => {
+      if (typeof val === "string") return Number(val);
+      return val;
+    }, z.number()
+  ), 
+  // TODO: currently we make it loose, later try to 
+  // restrict options using dynamic data from BE
+  currency: z.string(),
   date: z.date(),
   description: z.string().optional().or(z.literal('')),
   category: z.string(),

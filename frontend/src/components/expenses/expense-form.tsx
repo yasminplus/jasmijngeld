@@ -84,7 +84,7 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
         state: { message: 'Expense has been updated' }
       })
     } else {
-      const newData = await createExpense(payload)
+      await createExpense(payload)
       navigate({
         to: '/expenses',
         state: { message: 'A new expense has been created' }

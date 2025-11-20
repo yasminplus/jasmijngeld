@@ -27,9 +27,6 @@ export const Route = createFileRoute('/_authLayout/login')({
       throw redirect({ to: '/dashboard' })
     }
   },
-  loader: ({ context }) => {
-    // TODO may not need this, keep this for reference for now
-  },
 })
 
 const formSchema = z.object({

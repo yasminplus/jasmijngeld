@@ -38,7 +38,7 @@ export async function getCurrentSettings(): Promise<[UserSettings, SettingsId[]]
           'key': item.key
         })
       }
-      return [current, settingsIdList];
+      return [current, settingsIdList] as [UserSettings, SettingsId[]];
     })
     .catch(error => {
       console.error(error)

@@ -1,8 +1,6 @@
 import { 
   createFileRoute, 
   redirect,
-  useNavigate,
-  useRouter,
   Outlet
 } from '@tanstack/react-router'
 
@@ -10,7 +8,6 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
 
 import { Header } from '@/components/dashboard/Header'
-import { useAuthContext } from '@/context/auth'
 import { useGlobalDataContext } from '@/context/globaldata'
 
 export const Route = createFileRoute('/_dashboardLayout')({
@@ -35,8 +32,6 @@ export const Route = createFileRoute('/_dashboardLayout')({
 })
 
 function DashboardLayout() {
-  const router = useRouter()
-  const navigate = useNavigate()
   const globalDataContext = useGlobalDataContext()
 
   /* if we don't do a check here, 
@@ -49,7 +44,7 @@ function DashboardLayout() {
     <SidebarProvider style={{
       "--sidebar-width": "16rem",
       "--sidebar-width-mobile": "16rem"
-    }}>
+    } as React.CSSProperties}>
       <AppSidebar  />
       <div id="content" className='flex flex-col flex-grow w-screen' >
         <Header />

@@ -32,9 +32,14 @@ export function SelectInputField<TFieldValues extends FieldValues>({
   options,
 }: SelectInputFieldProps<TFieldValues>) {
   const [open, setOpen] = useState(false)
-  const onClearAllOptions = (fieldOnChange) => {
-    fieldOnChange('')
-    setOpen(false)
+
+  interface OnClearAllOptions {
+    (fieldOnChange: (value: string) => void): void;
+  }
+
+  const onClearAllOptions: OnClearAllOptions = (fieldOnChange) => {
+    fieldOnChange('');
+    setOpen(false);
   };
 
   return (

@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 import { format } from 'date-fns';
 
-import { useAuthContext } from '@/context/auth';
 import Last12MonthsBarChart from '@/components/dashboard/last-12months-bar-chart';
 import MonthlyCategoryPieChart from '@/components/dashboard/monthly-category-pie-chart';
 import MonthlySourcePieChart from '@/components/dashboard/monthly-source-pie-chart';
@@ -20,7 +19,6 @@ export const Route = createFileRoute('/_dashboardLayout/dashboard')({
 const todayDate = new Date()
 
 function DashboardHome() {
-  const authContext = useAuthContext()
   const globalDataContext = useGlobalDataContext()
   const [last12MonthsData, setLast12MonthsData] = useState<Proc12MoSummary[]>([])
   const [expThisMonth, setExpThisMonth] = useState<Proc12MoSummary>(
