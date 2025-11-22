@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import { getToken, setStoredUser } from '../context/auth';
 
-const BE_BASE_URL = 'http://localhost:8007'
+const BE_BASE_URL = import.meta.env.VITE_BE_BASE_URL
 
 const axiosInstance = axios.create({
   baseURL: BE_BASE_URL,

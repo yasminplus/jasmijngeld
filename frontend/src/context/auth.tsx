@@ -78,8 +78,6 @@ export function setStoredUser(token: Token | null) {
   }
 }
 
-export const BE_BASE_URL = 'http://localhost:8007'
-
 export function AuthProvider({ children}: {children: React.ReactNode}) {
   const [user, setUser] = React.useState<User | null>(getStoredUser());
   const isAuthenticated = !!user;
