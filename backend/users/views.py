@@ -16,6 +16,9 @@ from .models import User
 from .serializers import ChangePasswordSerializer, JGTokenObtainPairSerializer, UserAccountSerializer, UserSerializer
 from sources.models import *
 
+import logging
+
+logger = logging.getLogger(__name__)
 
 class RegistrationView(CreateAPIView):
     authentication_classes = []
@@ -58,7 +61,7 @@ def send_email(user, type):
     user_pk_bytes = force_bytes(User._meta.pk.value_to_string(user))
     uid = urlsafe_base64_encode(user_pk_bytes)
     url = settings.FRONTEND_URL + '/verify/' + uid + "/" + token
-    print(url)
+    logger.info(url)
 
     # convert expiration to human-readable language
     expiration = str(expiration // 3600) + " hour" + ("s" if expiration > 1 else "")
@@ -83,7 +86,7 @@ def send_email(user, type):
                 html_message=html_content
         )
     except Exception as e:
-        print(e)
+        logger.error(e)
 
 # copied from django.contrib.auth.PasswordResetConfirmView
 def get_user(uidb64):
@@ -140,7 +143,7 @@ class RequestVerifTokenView(GenericAPIView):
             send_verification_email(user)
         except ObjectDoesNotExist as e:
             # do not tell user that email is not found
-            print(e)
+            logger.error(e)
         return Response(status=status.HTTP_200_OK)
 
 
@@ -179,7 +182,7 @@ class VerifyAccountView(GenericAPIView):
         try:
             PaymentSource.objects.create(name="Cash", source_type="CA", user=user)
         except Exception as e:
-            print(e)
+            logger.error(e)
     
 
 class RUDUserView(RetrieveUpdateAPIView):
@@ -206,7 +209,7 @@ class ChangePasswordView(CreateAPIView):
                 user.save()
                 return Response(status=status.HTTP_200_OK)
             except Exception as e:
-                print(e)
+                logger.error(e)
                 return Response({
                     "message": gettext_lazy("Cannot save changes")
                 }, status=status.HTTP_400_BAD_REQUEST)

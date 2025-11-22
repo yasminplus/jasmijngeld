@@ -233,3 +233,51 @@ CURRENCIES = [
     ('EUR', 'Euro'),
     ('USD', 'US Dollar'),
 ]
+
+# Logging
+
+LOG_DIR = os.getenv("LOG_DIR", ".")
+LOG_FILE = "general.log"
+LOG_PATH = os.path.join(LOG_DIR, LOG_FILE)
+
+if not os.path.exists(LOG_DIR):
+    os.mkdir(LOG_DIR)
+if not os.path.exists(LOG_PATH):
+    f = open(LOG_PATH, 'a').close() #create empty log file
+
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(message)s',
+            'datefmt': '%Y-%m-%d %H:%M:%S'
+        },
+        'simple': {
+            'format': '%(message)s'
+        },
+        'general_verbose': {
+            'format': '%(levelname)s %(name)s %(asctime)s %(message)s',
+            'datefmt': '%Y-%m-%d %H:%M:%S'
+        },
+    },
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            'class': 'logging.StreamHandler',
+            "formatter": "simple"
+        },
+        "file": {
+            "class": "logging.FileHandler",
+            "filename": LOG_PATH,
+            "formatter": "general_verbose"
+        }
+    },
+    "loggers": {
+        "" : {
+            "handlers": ["file", "console"],
+            "level": "INFO",
+        }
+    }
+}
