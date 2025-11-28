@@ -17,6 +17,8 @@ import {
 import { cn } from "@/lib/utils"
 import { Link } from "@tanstack/react-router"
 import { sidebarItems } from "./sidebar-items"
+import { useAuthContext } from "@/context/auth"
+import { useNavigate } from "@tanstack/react-router"
 
 type MenuItem = {
   title: string
@@ -39,6 +41,7 @@ const MenuItemComponent: React.FC<{ item: MenuItem; depth?: number }> = ({ item,
               depth > 0 && "pl-4"
             )}
           >
+            {/* TODO: show icon here */}
             {item.title}
             {isOpen ? (
               <ChevronDown className="h-4 w-4" />
@@ -71,7 +74,14 @@ const MenuItemComponent: React.FC<{ item: MenuItem; depth?: number }> = ({ item,
 }
 
 export default function HamburgerMenu() {
+  const authContext = useAuthContext()
+  const navigate = useNavigate()
   const [open, setOpen] = React.useState(false)
+
+  function logout() {
+    authContext.logout_i()
+    navigate({to: '/'})
+  }
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -82,10 +92,27 @@ export default function HamburgerMenu() {
         </Button>
       </SheetTrigger>
       <SheetContent side="left" className="w-[240px] sm:w-[300px]">
-        <nav className="flex flex-col space-y-4">
-          {sidebarItems.map((item) => (
-            <MenuItemComponent key={item.title} item={item} />
-          ))}
+        <nav className="flex flex-col space-y-4 p-4">
+          <div>
+            <div className="font-bold text-xl">
+              { authContext.user?.first_name }
+            </div>
+            <Link to="/profile">
+              View Profile
+            </Link>
+          </div>
+          <hr/>
+          <div>
+            {sidebarItems.filter(item => item.title !== 'Profile').map((item) => (
+              <MenuItemComponent key={item.title} item={item} />
+            ))}
+          </div>
+          {/* TODO: drag Logout to the bottom of the sheet, use justify-between */}
+          <div>
+            <Link to="/" onClick={logout}>
+            Log out
+            </Link>
+          </div>
         </nav>
       </SheetContent>
     </Sheet>
