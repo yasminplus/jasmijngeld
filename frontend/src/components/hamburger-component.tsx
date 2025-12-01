@@ -2,7 +2,7 @@
 
 // originally from https://github.com/shadcn-ui/ui/issues/761#issuecomment-2401074153
 import * as React from "react"
-import { Menu, ChevronDown, ChevronRight, type LucideIcon } from "lucide-react"
+import { Menu, ChevronDown, ChevronRight, Plus, type LucideProps } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   Sheet,
@@ -23,7 +23,7 @@ import { useNavigate } from "@tanstack/react-router"
 type MenuItem = {
   title: string
   url?: string
-  icon?: LucideIcon
+  icon: React.ForwardRefExoticComponent<Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>>
   submenu?: MenuItem[]
 }
 
@@ -41,7 +41,6 @@ const MenuItemComponent: React.FC<{ item: MenuItem; depth?: number }> = ({ item,
               depth > 0 && "pl-4"
             )}
           >
-            {/* TODO: show icon here */}
             {item.title}
             {isOpen ? (
               <ChevronDown className="h-4 w-4" />
@@ -62,13 +61,11 @@ const MenuItemComponent: React.FC<{ item: MenuItem; depth?: number }> = ({ item,
   return (
     <Link
       to={item.url}
-      className={cn(
-        "block py-2 text-lg font-medium transition-colors hover:text-primary",
-        depth > 0 && "pl-4",
-        item.url === "/" && "text-primary"
-      )}
+      // className="block py-2 text-lg font-medium transition-colors hover:text-primary pl-4"
+      className="flex space-x-2 py-2 text-md font-medium"
     >
-      {item.title}
+      <item.icon />
+      <span>{item.title}</span>
     </Link>
   )
 }
@@ -108,6 +105,11 @@ export default function HamburgerMenu() {
             ))}
           </div>
           {/* TODO: drag Logout to the bottom of the sheet, use justify-between */}
+          <Link to={'/expenses/new'} >
+            <Button className='w-full'>
+              <Plus />Add Expense
+            </Button>
+          </Link>
           <div>
             <Link to="/" onClick={logout}>
             Log out
