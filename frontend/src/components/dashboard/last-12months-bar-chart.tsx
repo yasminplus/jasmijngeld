@@ -40,7 +40,7 @@ export default function Last12MonthsBarChart({ passedData = [], currency }: Prop
         </CardTitle>
 
         { passedData.length > 0 ?
-            <ChartContainer config={chartConfig} className="min-h-[200px]">
+            <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
               <BarChart accessibilityLayer data={chartData}>
                 <CartesianGrid vertical={false} />
                 <XAxis

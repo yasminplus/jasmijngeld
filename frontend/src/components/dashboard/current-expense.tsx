@@ -33,7 +33,8 @@ export default function CurrentExpense({
           return ( currency === cur && (
             <Card key={cur}>
               <CardContent>
-                <div className="flex flex-row space-x-2 justify-between">
+                <div className="flex flex-row space-x-2 justify-between flex-wrap">
+
                   <div className="font-semibold self-end flex flex-row gap-2">
                     <div className="self-center">Total expense in</div>
                     <div>
@@ -54,15 +55,18 @@ export default function CurrentExpense({
                       </Select>
                     </div>
                   </div>
+
                   <div className="">
                     <span className="text-sm">
                       {cur}
                     </span>
                     &nbsp;
+                    {/* TODO: BUG: total doesn't change when month is changed! */}
                     <span className="text-2xl font-semibold">
                       {passedData && cur in passedData? Number(passedData[cur]).toLocaleString() : 0}
                     </span>
                   </div>
+
                 </div>
               </CardContent>
             </Card>

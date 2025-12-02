@@ -3,6 +3,7 @@ import { Cell, Label as RCLabel, Pie, PieChart, type PieLabelRenderProps } from 
 import {
   Card,
   CardContent,
+  CardHeader,
   CardTitle
 } from '@/components/ui/card';
 import {
@@ -80,18 +81,19 @@ export default function MonthlyCategoryPieChart({ currency, date }: Props) {
   }, [])
   
   return (
-    <Card className='xl:w-[33rem]"'>
-      <CardContent>
+    <Card>
+      <CardHeader>
         <CardTitle>
           <h1 className="text-xl">
             Monthly expense by category
           </h1>
         </CardTitle>
-
+      </CardHeader>
+      <CardContent>
         { chartData.length > 0 ? 
           <ChartContainer 
             config={chartConfig}
-            className="[&_.recharts-pie-label-text]:fill-foreground aspect-square max-h-[250px] pb-0 min-h-[200px] w-96"
+            className="[&_.recharts-pie-label-text]:fill-foreground aspect-square max-h-[250px] pb-0 min-h-[200px] w-full"
           >
             <PieChart>
               <ChartTooltip content={<ChartTooltipContent hideLabel/>} />

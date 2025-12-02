@@ -3,6 +3,7 @@ import { Cell, Label as RCLabel, Pie, PieChart, type PieLabelRenderProps } from 
 import {
   Card,
   CardContent,
+  CardHeader,
   CardTitle
 } from '@/components/ui/card';
 import {
@@ -70,19 +71,20 @@ export default function MonthlySourcePieChart({ currency, date } :Props) {
   }, [globalDataContext.enabledCurrencies, date])
   
   return (
-    <Card className=''>
-      <CardContent>
+    <Card>
+      <CardHeader>
         <CardTitle>
           <h1 className="text-xl">
             Monthly expense by source
             </h1>
         </CardTitle>
-        
+      </CardHeader>
+      <CardContent>
         { chartData.length > 0 ?
 
           <ChartContainer 
             config={chartConfig}
-            className="[&_.recharts-pie-label-text]:fill-foreground aspect-square max-h-[250px] pb-0 min-h-[200px] w-96"
+            className="[&_.recharts-pie-label-text]:fill-foreground aspect-square max-h-[250px] pb-0 min-h-[200px] w-full"
           >
             <PieChart>
               <ChartTooltip content={<ChartTooltipContent hideLabel/>} />
