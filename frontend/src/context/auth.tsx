@@ -4,6 +4,7 @@ import { z } from 'zod';
 
 import login_service, { type Token } from '@/services/login';
 import { AxiosError } from 'axios';
+import { getUserAccountData, type UserAccount } from '@/services/users';
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -63,14 +64,21 @@ export function getToken(type: string) {
 export function setStoredUser(token: Token | null) {
   if (token) {
     const data = jwtDecode<UserPayload>(token.access)
-    localStorage.setItem(base_key + '.first_name', data.first_name)
-    localStorage.setItem(base_key + '.last_name', data.last_name)
+    getUserAccountData()
+    .then((response) => {
+      const userData: UserAccount = response.data;
+      // TODO: can we compare if old names are the same as new names?
+      localStorage.setItem(base_key + '.first_name', userData.first_name);
+      localStorage.setItem(base_key + '.last_name', userData.last_name || '');
+    })
+    .catch(err => {
+      console.error(err)
+    })
+
     localStorage.setItem(base_key + '.is_verified', data.is_verified.toString())
     localStorage.setItem(base_key + '.access', token.access)
     localStorage.setItem(base_key + '.refresh', token.refresh)
   } else {
-    localStorage.removeItem(base_key + '.first_name')
-    localStorage.removeItem(base_key + '.last_name')
     localStorage.removeItem(base_key + '.is_verified')
     localStorage.removeItem(base_key + '.access')
     localStorage.removeItem(base_key + '.refresh')
