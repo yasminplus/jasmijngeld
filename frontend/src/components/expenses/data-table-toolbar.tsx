@@ -145,7 +145,7 @@ export function DataTableToolbar<TData>({
         s_end = format(d_end, 'dd/MM/yyyy')
 
       } else if (newRangeType === 'last_month') {
-        year -= cur_mo !== 11? 0 : -1
+        year -= cur_mo !== 1? 0 : 1
         s_start = `01/` + `${cur_mo}`.padStart(2, '0') + `/${year}`
         d_start = parse(s_start, 'dd/MM/yyyy', d_start)
 
