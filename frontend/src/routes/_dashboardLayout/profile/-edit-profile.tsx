@@ -7,6 +7,7 @@ import { InputField } from '@/components/form/input-field'
 import { Button } from '@/components/ui/button'
 import { Form } from "@/components/ui/form"
 import { updateUserAccount, type UserAccount } from '@/services/users'
+import { useProfile } from '@/context/profile'
 
 const accountSchema = z
   .object({
@@ -20,6 +21,7 @@ interface Props {
   user: UserAccount
 }
 export default function ProfileForm({ user }: Props) {
+  const { setFirstName } = useProfile()
   const form = useForm<AccountValues>({
     resolver: zodResolver(accountSchema),
     defaultValues: {
@@ -32,9 +34,12 @@ export default function ProfileForm({ user }: Props) {
 
   function onSubmit(data: AccountValues) {
     updateUserAccount(data)
-    .then(() => 
+    .then(() => {
       toast.success("Profile successfully updated")
-    )
+      setFirstName(data.first_name)
+      // window.dispatchEvent(new CustomEvent('storage'));
+      // window.dispatchEvent(new CustomEvent('profile:changed'));
+    })
     .catch(error => {
       console.error(error)
       form.setError("root.serverError", { 

@@ -19,6 +19,7 @@ import { Link } from "@tanstack/react-router"
 import { sidebarItems } from "./sidebar-items"
 import { useAuthContext } from "@/context/auth"
 import { useNavigate } from "@tanstack/react-router"
+import { useProfile } from "@/context/profile"
 
 type MenuItem = {
   title: string
@@ -74,6 +75,7 @@ export default function HamburgerMenu() {
   const authContext = useAuthContext()
   const navigate = useNavigate()
   const [open, setOpen] = React.useState(false)
+  const { firstName } = useProfile()
 
   function logout() {
     authContext.logout_i()
@@ -92,7 +94,7 @@ export default function HamburgerMenu() {
         <nav className="flex flex-col space-y-4 p-4">
           <div>
             <div className="font-bold text-xl">
-              { authContext.user?.first_name }
+              { firstName }
             </div>
             <Link to="/profile">
               View Profile

@@ -70,6 +70,8 @@ export function setStoredUser(token: Token | null) {
       // TODO: can we compare if old names are the same as new names?
       localStorage.setItem(base_key + '.first_name', userData.first_name);
       localStorage.setItem(base_key + '.last_name', userData.last_name || '');
+      window.dispatchEvent(new CustomEvent('profile:changed'))
+      window.dispatchEvent(new CustomEvent('auth:user:changed'))
     })
     .catch(err => {
       console.error(err)

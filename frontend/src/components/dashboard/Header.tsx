@@ -12,12 +12,14 @@ import { sidebarItems } from "@/components/sidebar-items"
 import { ModeToggle } from "@/components/mode-toggle"
 import HamburgerMenu from "@/components/hamburger-component"
 import { Brand } from "@/components/Brand"
+import { useProfile } from "@/context/profile"
 
 
 export function Header() {
   const authContext = useAuthContext()
   const navigate = useNavigate()
   const routerState = useRouterState()
+  const { firstName } = useProfile()
 
   const currentMenu = sidebarItems.find(item => routerState.location.pathname.startsWith(item.url))
 
@@ -45,7 +47,7 @@ export function Header() {
             <ModeToggle />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="secondary">{ authContext.user?.first_name }</Button>
+                <Button variant="secondary">{ firstName }</Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-48">
                 <DropdownMenuItem>
