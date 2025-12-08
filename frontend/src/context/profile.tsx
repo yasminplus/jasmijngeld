@@ -16,7 +16,6 @@ const ProfileProviderContext = createContext<ProfileProviderState>(initialState)
 const PROFILE_KEY = base_key + ".first_name";
 
 function readStoredFirstName(): string {
-  console.log("in readStoredFirstName")
   return localStorage.getItem(PROFILE_KEY) ?? "";
 }
 
@@ -26,7 +25,6 @@ export function ProfileProvider({
   const [firstName, setFirstNameState] = useState(() => readStoredFirstName())
   
   const setFirstName = useCallback((name: string | null) => {
-    console.log("in useCallback")
     if (name == null || name === "") {
       localStorage.removeItem(PROFILE_KEY);
       setFirstNameState("");
@@ -34,29 +32,29 @@ export function ProfileProvider({
       localStorage.setItem(PROFILE_KEY, name);
       setFirstNameState(name);
     }
-    // notify same-tab listeners
-    window.dispatchEvent(new CustomEvent("profile:changed"));
+    // note: same-tab listener using the CustomEvent does not work.
+    // instead call this function directly after editing profile.
   }, []);
 
   useEffect(() => {
+    // handle different tab 
     function onStorage(e: StorageEvent) {
       if (!e.key || e.key === PROFILE_KEY || e.key.startsWith(base_key))
-      console.log("in onStorage")
-        setFirstNameState(readStoredFirstName)
-    }
-
-    function onProfileChanged() {
-      console.log("in onProfileChanged")
       setFirstNameState(readStoredFirstName)
     }
 
-    // not sure if this event is necessary. test again.
+    // note: not sure if it's necessary. may need to test for tabs that is not updated for long (?)
+    function onAuthUserChanged() {
+      console.log("in onAuthUserChanged")
+      setFirstNameState(readStoredFirstName());
+    }
+    
     window.addEventListener("storage", onStorage);
-    window.addEventListener("profile:changed", onProfileChanged as EventListener);
+    window.addEventListener("auth:user:changed", onAuthUserChanged as EventListener);
 
     return () => {
       window.removeEventListener("storage", onStorage);
-      window.removeEventListener("profile:changed", onProfileChanged as EventListener);
+      window.removeEventListener("auth:user:changed", onAuthUserChanged as EventListener);
     };
   }, [firstName])
 

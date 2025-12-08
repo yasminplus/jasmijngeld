@@ -36,9 +36,8 @@ export default function ProfileForm({ user }: Props) {
     updateUserAccount(data)
     .then(() => {
       toast.success("Profile successfully updated")
+      // explicitly calls setFirstName. dispatching CustomEvent doesn't work
       setFirstName(data.first_name)
-      // window.dispatchEvent(new CustomEvent('storage'));
-      // window.dispatchEvent(new CustomEvent('profile:changed'));
     })
     .catch(error => {
       console.error(error)
