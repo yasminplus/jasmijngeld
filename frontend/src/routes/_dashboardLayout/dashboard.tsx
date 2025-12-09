@@ -45,8 +45,8 @@ function DashboardHome() {
     .then(results => {
       const res = results[0]
       setLast12MonthsData(res)
-      const today = format(todayDate, 'MMM yyyy')
-      const data = res.find(item => item.month === today)
+      const todayMonth = format(todayDate, 'MMM yyyy')
+      const data = res.find(item => item.month === todayMonth)
       setExpThisMonth(data!)
 
       setDistinctMonths(results[1])
@@ -56,6 +56,14 @@ function DashboardHome() {
       throw err
     })
   }, [globalDataContext.enabledCurrencies])
+
+  useEffect(() => {
+    const data = last12MonthsData.find(item => item.month == selectedMonth.label)
+    if (data) {
+      setExpThisMonth(data)
+    }
+    // TODO: handle if selectedMonth is out of last 12 months range
+  }, [selectedMonth, last12MonthsData])
 
   return (
     <div>
