@@ -111,6 +111,10 @@ function LoginForm() {
       <p className="text-sm pt-2 text-center">
         Don't have an account? <Link to="/signup" className='font-semibold'>Sign up</Link>
       </p>
+
+      <div className='text-sm font-medium mb-0 mt-2'>
+        <Link to="/forgot-password" className="text-primary hover:underline">Forgot password?</Link>
+      </div>
     </>
   )
 }

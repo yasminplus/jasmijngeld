@@ -17,6 +17,7 @@ import { Route as DashboardLayoutSettingsRouteImport } from './routes/_dashboard
 import { Route as DashboardLayoutDashboardRouteImport } from './routes/_dashboardLayout/dashboard'
 import { Route as AuthLayoutSignupRouteImport } from './routes/_authLayout/signup'
 import { Route as AuthLayoutLoginRouteImport } from './routes/_authLayout/login'
+import { Route as AuthLayoutForgotPasswordRouteImport } from './routes/_authLayout/forgot-password'
 import { Route as AuthLayoutCheckEmailVerifyRouteImport } from './routes/_authLayout/check-email-verify'
 import { Route as DashboardLayoutProfileIndexRouteImport } from './routes/_dashboardLayout/profile/index'
 import { Route as DashboardLayoutExpensesIndexRouteImport } from './routes/_dashboardLayout/expenses/index'
@@ -66,6 +67,12 @@ const AuthLayoutLoginRoute = AuthLayoutLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => AuthLayoutRouteRoute,
 } as any)
+const AuthLayoutForgotPasswordRoute =
+  AuthLayoutForgotPasswordRouteImport.update({
+    id: '/forgot-password',
+    path: '/forgot-password',
+    getParentRoute: () => AuthLayoutRouteRoute,
+  } as any)
 const AuthLayoutCheckEmailVerifyRoute =
   AuthLayoutCheckEmailVerifyRouteImport.update({
     id: '/check-email-verify',
@@ -125,6 +132,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/unverif': typeof UnverifRoute
   '/check-email-verify': typeof AuthLayoutCheckEmailVerifyRoute
+  '/forgot-password': typeof AuthLayoutForgotPasswordRoute
   '/login': typeof AuthLayoutLoginRoute
   '/signup': typeof AuthLayoutSignupRoute
   '/dashboard': typeof DashboardLayoutDashboardRoute
@@ -142,6 +150,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/unverif': typeof UnverifRoute
   '/check-email-verify': typeof AuthLayoutCheckEmailVerifyRoute
+  '/forgot-password': typeof AuthLayoutForgotPasswordRoute
   '/login': typeof AuthLayoutLoginRoute
   '/signup': typeof AuthLayoutSignupRoute
   '/dashboard': typeof DashboardLayoutDashboardRoute
@@ -162,6 +171,7 @@ export interface FileRoutesById {
   '/_dashboardLayout': typeof DashboardLayoutRouteRouteWithChildren
   '/unverif': typeof UnverifRoute
   '/_authLayout/check-email-verify': typeof AuthLayoutCheckEmailVerifyRoute
+  '/_authLayout/forgot-password': typeof AuthLayoutForgotPasswordRoute
   '/_authLayout/login': typeof AuthLayoutLoginRoute
   '/_authLayout/signup': typeof AuthLayoutSignupRoute
   '/_dashboardLayout/dashboard': typeof DashboardLayoutDashboardRoute
@@ -181,6 +191,7 @@ export interface FileRouteTypes {
     | '/'
     | '/unverif'
     | '/check-email-verify'
+    | '/forgot-password'
     | '/login'
     | '/signup'
     | '/dashboard'
@@ -198,6 +209,7 @@ export interface FileRouteTypes {
     | '/'
     | '/unverif'
     | '/check-email-verify'
+    | '/forgot-password'
     | '/login'
     | '/signup'
     | '/dashboard'
@@ -217,6 +229,7 @@ export interface FileRouteTypes {
     | '/_dashboardLayout'
     | '/unverif'
     | '/_authLayout/check-email-verify'
+    | '/_authLayout/forgot-password'
     | '/_authLayout/login'
     | '/_authLayout/signup'
     | '/_dashboardLayout/dashboard'
@@ -296,6 +309,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLayoutLoginRouteImport
       parentRoute: typeof AuthLayoutRouteRoute
     }
+    '/_authLayout/forgot-password': {
+      id: '/_authLayout/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof AuthLayoutForgotPasswordRouteImport
+      parentRoute: typeof AuthLayoutRouteRoute
+    }
     '/_authLayout/check-email-verify': {
       id: '/_authLayout/check-email-verify'
       path: '/check-email-verify'
@@ -364,6 +384,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthLayoutRouteRouteChildren {
   AuthLayoutCheckEmailVerifyRoute: typeof AuthLayoutCheckEmailVerifyRoute
+  AuthLayoutForgotPasswordRoute: typeof AuthLayoutForgotPasswordRoute
   AuthLayoutLoginRoute: typeof AuthLayoutLoginRoute
   AuthLayoutSignupRoute: typeof AuthLayoutSignupRoute
   AuthLayoutVerifyUidb64TokenRoute: typeof AuthLayoutVerifyUidb64TokenRoute
@@ -371,6 +392,7 @@ interface AuthLayoutRouteRouteChildren {
 
 const AuthLayoutRouteRouteChildren: AuthLayoutRouteRouteChildren = {
   AuthLayoutCheckEmailVerifyRoute: AuthLayoutCheckEmailVerifyRoute,
+  AuthLayoutForgotPasswordRoute: AuthLayoutForgotPasswordRoute,
   AuthLayoutLoginRoute: AuthLayoutLoginRoute,
   AuthLayoutSignupRoute: AuthLayoutSignupRoute,
   AuthLayoutVerifyUidb64TokenRoute: AuthLayoutVerifyUidb64TokenRoute,
