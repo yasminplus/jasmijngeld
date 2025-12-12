@@ -18,12 +18,12 @@ import { Route as DashboardLayoutDashboardRouteImport } from './routes/_dashboar
 import { Route as AuthLayoutSignupRouteImport } from './routes/_authLayout/signup'
 import { Route as AuthLayoutLoginRouteImport } from './routes/_authLayout/login'
 import { Route as AuthLayoutForgotPasswordRouteImport } from './routes/_authLayout/forgot-password'
-import { Route as AuthLayoutCheckEmailVerifyRouteImport } from './routes/_authLayout/check-email-verify'
 import { Route as DashboardLayoutProfileIndexRouteImport } from './routes/_dashboardLayout/profile/index'
 import { Route as DashboardLayoutExpensesIndexRouteImport } from './routes/_dashboardLayout/expenses/index'
 import { Route as DashboardLayoutAccountscardsIndexRouteImport } from './routes/_dashboardLayout/accountscards/index'
 import { Route as DashboardLayoutExpensesNewRouteImport } from './routes/_dashboardLayout/expenses/new'
 import { Route as DashboardLayoutAccountscardsNewRouteImport } from './routes/_dashboardLayout/accountscards/new'
+import { Route as AuthLayoutCheckEmailEmailTypeRouteImport } from './routes/_authLayout/check-email.$emailType'
 import { Route as DashboardLayoutExpensesExpIdEditRouteImport } from './routes/_dashboardLayout/expenses/$expId.edit'
 import { Route as DashboardLayoutAccountscardsSourceIdEditRouteImport } from './routes/_dashboardLayout/accountscards/$sourceId.edit'
 import { Route as AuthLayoutVerifyUidb64TokenRouteImport } from './routes/_authLayout/verify.$uidb64.$token'
@@ -73,12 +73,6 @@ const AuthLayoutForgotPasswordRoute =
     path: '/forgot-password',
     getParentRoute: () => AuthLayoutRouteRoute,
   } as any)
-const AuthLayoutCheckEmailVerifyRoute =
-  AuthLayoutCheckEmailVerifyRouteImport.update({
-    id: '/check-email-verify',
-    path: '/check-email-verify',
-    getParentRoute: () => AuthLayoutRouteRoute,
-  } as any)
 const DashboardLayoutProfileIndexRoute =
   DashboardLayoutProfileIndexRouteImport.update({
     id: '/profile/',
@@ -109,6 +103,12 @@ const DashboardLayoutAccountscardsNewRoute =
     path: '/accountscards/new',
     getParentRoute: () => DashboardLayoutRouteRoute,
   } as any)
+const AuthLayoutCheckEmailEmailTypeRoute =
+  AuthLayoutCheckEmailEmailTypeRouteImport.update({
+    id: '/check-email/$emailType',
+    path: '/check-email/$emailType',
+    getParentRoute: () => AuthLayoutRouteRoute,
+  } as any)
 const DashboardLayoutExpensesExpIdEditRoute =
   DashboardLayoutExpensesExpIdEditRouteImport.update({
     id: '/expenses/$expId/edit',
@@ -131,12 +131,12 @@ const AuthLayoutVerifyUidb64TokenRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/unverif': typeof UnverifRoute
-  '/check-email-verify': typeof AuthLayoutCheckEmailVerifyRoute
   '/forgot-password': typeof AuthLayoutForgotPasswordRoute
   '/login': typeof AuthLayoutLoginRoute
   '/signup': typeof AuthLayoutSignupRoute
   '/dashboard': typeof DashboardLayoutDashboardRoute
   '/settings': typeof DashboardLayoutSettingsRoute
+  '/check-email/$emailType': typeof AuthLayoutCheckEmailEmailTypeRoute
   '/accountscards/new': typeof DashboardLayoutAccountscardsNewRoute
   '/expenses/new': typeof DashboardLayoutExpensesNewRoute
   '/accountscards': typeof DashboardLayoutAccountscardsIndexRoute
@@ -149,12 +149,12 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/unverif': typeof UnverifRoute
-  '/check-email-verify': typeof AuthLayoutCheckEmailVerifyRoute
   '/forgot-password': typeof AuthLayoutForgotPasswordRoute
   '/login': typeof AuthLayoutLoginRoute
   '/signup': typeof AuthLayoutSignupRoute
   '/dashboard': typeof DashboardLayoutDashboardRoute
   '/settings': typeof DashboardLayoutSettingsRoute
+  '/check-email/$emailType': typeof AuthLayoutCheckEmailEmailTypeRoute
   '/accountscards/new': typeof DashboardLayoutAccountscardsNewRoute
   '/expenses/new': typeof DashboardLayoutExpensesNewRoute
   '/accountscards': typeof DashboardLayoutAccountscardsIndexRoute
@@ -170,12 +170,12 @@ export interface FileRoutesById {
   '/_authLayout': typeof AuthLayoutRouteRouteWithChildren
   '/_dashboardLayout': typeof DashboardLayoutRouteRouteWithChildren
   '/unverif': typeof UnverifRoute
-  '/_authLayout/check-email-verify': typeof AuthLayoutCheckEmailVerifyRoute
   '/_authLayout/forgot-password': typeof AuthLayoutForgotPasswordRoute
   '/_authLayout/login': typeof AuthLayoutLoginRoute
   '/_authLayout/signup': typeof AuthLayoutSignupRoute
   '/_dashboardLayout/dashboard': typeof DashboardLayoutDashboardRoute
   '/_dashboardLayout/settings': typeof DashboardLayoutSettingsRoute
+  '/_authLayout/check-email/$emailType': typeof AuthLayoutCheckEmailEmailTypeRoute
   '/_dashboardLayout/accountscards/new': typeof DashboardLayoutAccountscardsNewRoute
   '/_dashboardLayout/expenses/new': typeof DashboardLayoutExpensesNewRoute
   '/_dashboardLayout/accountscards/': typeof DashboardLayoutAccountscardsIndexRoute
@@ -190,12 +190,12 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/unverif'
-    | '/check-email-verify'
     | '/forgot-password'
     | '/login'
     | '/signup'
     | '/dashboard'
     | '/settings'
+    | '/check-email/$emailType'
     | '/accountscards/new'
     | '/expenses/new'
     | '/accountscards'
@@ -208,12 +208,12 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/unverif'
-    | '/check-email-verify'
     | '/forgot-password'
     | '/login'
     | '/signup'
     | '/dashboard'
     | '/settings'
+    | '/check-email/$emailType'
     | '/accountscards/new'
     | '/expenses/new'
     | '/accountscards'
@@ -228,12 +228,12 @@ export interface FileRouteTypes {
     | '/_authLayout'
     | '/_dashboardLayout'
     | '/unverif'
-    | '/_authLayout/check-email-verify'
     | '/_authLayout/forgot-password'
     | '/_authLayout/login'
     | '/_authLayout/signup'
     | '/_dashboardLayout/dashboard'
     | '/_dashboardLayout/settings'
+    | '/_authLayout/check-email/$emailType'
     | '/_dashboardLayout/accountscards/new'
     | '/_dashboardLayout/expenses/new'
     | '/_dashboardLayout/accountscards/'
@@ -316,13 +316,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLayoutForgotPasswordRouteImport
       parentRoute: typeof AuthLayoutRouteRoute
     }
-    '/_authLayout/check-email-verify': {
-      id: '/_authLayout/check-email-verify'
-      path: '/check-email-verify'
-      fullPath: '/check-email-verify'
-      preLoaderRoute: typeof AuthLayoutCheckEmailVerifyRouteImport
-      parentRoute: typeof AuthLayoutRouteRoute
-    }
     '/_dashboardLayout/profile/': {
       id: '/_dashboardLayout/profile/'
       path: '/profile'
@@ -358,6 +351,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardLayoutAccountscardsNewRouteImport
       parentRoute: typeof DashboardLayoutRouteRoute
     }
+    '/_authLayout/check-email/$emailType': {
+      id: '/_authLayout/check-email/$emailType'
+      path: '/check-email/$emailType'
+      fullPath: '/check-email/$emailType'
+      preLoaderRoute: typeof AuthLayoutCheckEmailEmailTypeRouteImport
+      parentRoute: typeof AuthLayoutRouteRoute
+    }
     '/_dashboardLayout/expenses/$expId/edit': {
       id: '/_dashboardLayout/expenses/$expId/edit'
       path: '/expenses/$expId/edit'
@@ -383,18 +383,18 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthLayoutRouteRouteChildren {
-  AuthLayoutCheckEmailVerifyRoute: typeof AuthLayoutCheckEmailVerifyRoute
   AuthLayoutForgotPasswordRoute: typeof AuthLayoutForgotPasswordRoute
   AuthLayoutLoginRoute: typeof AuthLayoutLoginRoute
   AuthLayoutSignupRoute: typeof AuthLayoutSignupRoute
+  AuthLayoutCheckEmailEmailTypeRoute: typeof AuthLayoutCheckEmailEmailTypeRoute
   AuthLayoutVerifyUidb64TokenRoute: typeof AuthLayoutVerifyUidb64TokenRoute
 }
 
 const AuthLayoutRouteRouteChildren: AuthLayoutRouteRouteChildren = {
-  AuthLayoutCheckEmailVerifyRoute: AuthLayoutCheckEmailVerifyRoute,
   AuthLayoutForgotPasswordRoute: AuthLayoutForgotPasswordRoute,
   AuthLayoutLoginRoute: AuthLayoutLoginRoute,
   AuthLayoutSignupRoute: AuthLayoutSignupRoute,
+  AuthLayoutCheckEmailEmailTypeRoute: AuthLayoutCheckEmailEmailTypeRoute,
   AuthLayoutVerifyUidb64TokenRoute: AuthLayoutVerifyUidb64TokenRoute,
 }
 

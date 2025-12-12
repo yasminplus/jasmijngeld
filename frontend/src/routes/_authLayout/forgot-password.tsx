@@ -1,4 +1,11 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
+import { ArrowLeft } from 'lucide-react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+import { z } from 'zod'
+import { requestResetPassword } from '@/services/reset-pw'
+import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
@@ -7,13 +14,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { requestResetPassword } from '@/services/reset-pw'
 import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { ArrowLeft } from 'lucide-react'
 
 export const Route = createFileRoute('/_authLayout/forgot-password')({
   component: RouteComponent,
@@ -24,6 +25,7 @@ const formSchema = z.object({
 })
 
 function RouteComponent() {
+  const navigate = useNavigate()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -34,15 +36,17 @@ function RouteComponent() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     requestResetPassword(values)
     .then(() => {
-
+      navigate({to: '/check-email/$emailType', params: {'emailType': 'reset'}})
     })
     .catch(error => {
+      // technically the endpoint always send 200, but just in case.
       console.error(error)
+      toast.error("Uh oh, we could not send you the reset password link.")
     })
   }
   return (
     <>
-      <h1 className="text-2xl mb-3">Forgot password?</h1>
+      <h1 className="text-2xl mb-3">Forgot your password?</h1>
       <p className='text-sm mb-7'>No worries, we'll email reset instructions.</p>
       <Form {...form} >
         <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>

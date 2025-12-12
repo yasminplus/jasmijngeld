@@ -43,9 +43,10 @@ function SignUpForm() {
 
   function onSubmit(data: SignUpValues) {
     const { confirm, ...payload } = data
+    void confirm
     postSignupData(payload)
     .then(() => {
-      navigate({to: '/check-email-verify'})
+      navigate({to: '/check-email/$emailType', params: {'emailType': 'verify'}})
     })
     .catch(error => {
       const res = error['response']
