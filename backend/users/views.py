@@ -52,23 +52,32 @@ def send_email(user, type):
         expiration = settings.VERIFY_EMAIL_TIMEOUT
         plain_template = 'verify_email.txt'
         html_template = 'verify_email.html'
+        url_type = 'verify'
     else:
         expiration = settings.PASSWORD_RESET_TIMEOUT
         plain_template = 'reset_password.txt'
         html_template = 'reset_password.html'
+        url_type = 'reset-password'
 
     token = default_token_generator.make_token(user)
     user_pk_bytes = force_bytes(User._meta.pk.value_to_string(user))
     uid = urlsafe_base64_encode(user_pk_bytes)
-    url = settings.FRONTEND_URL + '/verify/' + uid + "/" + token
+    url = '{fe_url}/{type}/{uid}/{token}'.format(
+        fe_url=settings.FRONTEND_URL,
+        type=url_type,
+        uid=uid,
+        token=token
+    )
     logger.info(url)
 
     # convert expiration to human-readable language
-    expiration = str(expiration // 3600) + " hour" + ("s" if expiration > 1 else "")
+    num_hour = expiration // 3600
+    expiration = str(num_hour) + " hour" + ("s" if num_hour > 1 else "")
 
     data = {
         "expiration": expiration,
-        "url": url
+        "url": url,
+        "user": user
     }
     plain_content = render_to_string(plain_template, data)
     html_content = render_to_string(html_template, data)
@@ -104,8 +113,10 @@ def get_user(uidb64):
         user = None
     return user
 
+
 class JGTokenObtainPairView(TokenObtainPairView):
     serializer_class = JGTokenObtainPairSerializer
+
 
 class RequestVerifyView(GenericAPIView):    
     def get(self, request, *args, **kwargs):
@@ -133,14 +144,13 @@ class ResendVerifTokenView(GenericAPIView):
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
-# we can use this for reset pw
-class RequestVerifTokenView(GenericAPIView):
+class RequestResetTokenView(GenericAPIView):
     authentication_classes = []
     def post(self, request, *args, **kwargs):
         email = request.data.get('email')
         try:
             user = User.objects.get(email=email)
-            send_verification_email(user)
+            send_reset_password_email(user)
         except ObjectDoesNotExist as e:
             # do not tell user that email is not found
             logger.error(e)
@@ -183,7 +193,7 @@ class VerifyAccountView(GenericAPIView):
             PaymentSource.objects.create(name="Cash", source_type="CA", user=user)
         except Exception as e:
             logger.error(e)
-    
+
 
 class RUDUserView(RetrieveUpdateAPIView):
     serializer_class = UserAccountSerializer
@@ -219,5 +229,5 @@ class ChangePasswordView(CreateAPIView):
             }, status=status.HTTP_403_FORBIDDEN)
 
 
-class RequestResetPasswordView(GenericAPIView):
+class ResetPasswordView(GenericAPIView):
     pass
