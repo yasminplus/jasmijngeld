@@ -27,6 +27,7 @@ import { Route as AuthLayoutCheckEmailEmailTypeRouteImport } from './routes/_aut
 import { Route as DashboardLayoutExpensesExpIdEditRouteImport } from './routes/_dashboardLayout/expenses/$expId.edit'
 import { Route as DashboardLayoutAccountscardsSourceIdEditRouteImport } from './routes/_dashboardLayout/accountscards/$sourceId.edit'
 import { Route as AuthLayoutVerifyUidb64TokenRouteImport } from './routes/_authLayout/verify.$uidb64.$token'
+import { Route as AuthLayoutResetPasswordUidb64TokenRouteImport } from './routes/_authLayout/reset-password.$uidb64.$token'
 
 const UnverifRoute = UnverifRouteImport.update({
   id: '/unverif',
@@ -127,6 +128,12 @@ const AuthLayoutVerifyUidb64TokenRoute =
     path: '/verify/$uidb64/$token',
     getParentRoute: () => AuthLayoutRouteRoute,
   } as any)
+const AuthLayoutResetPasswordUidb64TokenRoute =
+  AuthLayoutResetPasswordUidb64TokenRouteImport.update({
+    id: '/reset-password/$uidb64/$token',
+    path: '/reset-password/$uidb64/$token',
+    getParentRoute: () => AuthLayoutRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -142,6 +149,7 @@ export interface FileRoutesByFullPath {
   '/accountscards': typeof DashboardLayoutAccountscardsIndexRoute
   '/expenses': typeof DashboardLayoutExpensesIndexRoute
   '/profile': typeof DashboardLayoutProfileIndexRoute
+  '/reset-password/$uidb64/$token': typeof AuthLayoutResetPasswordUidb64TokenRoute
   '/verify/$uidb64/$token': typeof AuthLayoutVerifyUidb64TokenRoute
   '/accountscards/$sourceId/edit': typeof DashboardLayoutAccountscardsSourceIdEditRoute
   '/expenses/$expId/edit': typeof DashboardLayoutExpensesExpIdEditRoute
@@ -160,6 +168,7 @@ export interface FileRoutesByTo {
   '/accountscards': typeof DashboardLayoutAccountscardsIndexRoute
   '/expenses': typeof DashboardLayoutExpensesIndexRoute
   '/profile': typeof DashboardLayoutProfileIndexRoute
+  '/reset-password/$uidb64/$token': typeof AuthLayoutResetPasswordUidb64TokenRoute
   '/verify/$uidb64/$token': typeof AuthLayoutVerifyUidb64TokenRoute
   '/accountscards/$sourceId/edit': typeof DashboardLayoutAccountscardsSourceIdEditRoute
   '/expenses/$expId/edit': typeof DashboardLayoutExpensesExpIdEditRoute
@@ -181,6 +190,7 @@ export interface FileRoutesById {
   '/_dashboardLayout/accountscards/': typeof DashboardLayoutAccountscardsIndexRoute
   '/_dashboardLayout/expenses/': typeof DashboardLayoutExpensesIndexRoute
   '/_dashboardLayout/profile/': typeof DashboardLayoutProfileIndexRoute
+  '/_authLayout/reset-password/$uidb64/$token': typeof AuthLayoutResetPasswordUidb64TokenRoute
   '/_authLayout/verify/$uidb64/$token': typeof AuthLayoutVerifyUidb64TokenRoute
   '/_dashboardLayout/accountscards/$sourceId/edit': typeof DashboardLayoutAccountscardsSourceIdEditRoute
   '/_dashboardLayout/expenses/$expId/edit': typeof DashboardLayoutExpensesExpIdEditRoute
@@ -201,6 +211,7 @@ export interface FileRouteTypes {
     | '/accountscards'
     | '/expenses'
     | '/profile'
+    | '/reset-password/$uidb64/$token'
     | '/verify/$uidb64/$token'
     | '/accountscards/$sourceId/edit'
     | '/expenses/$expId/edit'
@@ -219,6 +230,7 @@ export interface FileRouteTypes {
     | '/accountscards'
     | '/expenses'
     | '/profile'
+    | '/reset-password/$uidb64/$token'
     | '/verify/$uidb64/$token'
     | '/accountscards/$sourceId/edit'
     | '/expenses/$expId/edit'
@@ -239,6 +251,7 @@ export interface FileRouteTypes {
     | '/_dashboardLayout/accountscards/'
     | '/_dashboardLayout/expenses/'
     | '/_dashboardLayout/profile/'
+    | '/_authLayout/reset-password/$uidb64/$token'
     | '/_authLayout/verify/$uidb64/$token'
     | '/_dashboardLayout/accountscards/$sourceId/edit'
     | '/_dashboardLayout/expenses/$expId/edit'
@@ -379,6 +392,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLayoutVerifyUidb64TokenRouteImport
       parentRoute: typeof AuthLayoutRouteRoute
     }
+    '/_authLayout/reset-password/$uidb64/$token': {
+      id: '/_authLayout/reset-password/$uidb64/$token'
+      path: '/reset-password/$uidb64/$token'
+      fullPath: '/reset-password/$uidb64/$token'
+      preLoaderRoute: typeof AuthLayoutResetPasswordUidb64TokenRouteImport
+      parentRoute: typeof AuthLayoutRouteRoute
+    }
   }
 }
 
@@ -387,6 +407,7 @@ interface AuthLayoutRouteRouteChildren {
   AuthLayoutLoginRoute: typeof AuthLayoutLoginRoute
   AuthLayoutSignupRoute: typeof AuthLayoutSignupRoute
   AuthLayoutCheckEmailEmailTypeRoute: typeof AuthLayoutCheckEmailEmailTypeRoute
+  AuthLayoutResetPasswordUidb64TokenRoute: typeof AuthLayoutResetPasswordUidb64TokenRoute
   AuthLayoutVerifyUidb64TokenRoute: typeof AuthLayoutVerifyUidb64TokenRoute
 }
 
@@ -395,6 +416,8 @@ const AuthLayoutRouteRouteChildren: AuthLayoutRouteRouteChildren = {
   AuthLayoutLoginRoute: AuthLayoutLoginRoute,
   AuthLayoutSignupRoute: AuthLayoutSignupRoute,
   AuthLayoutCheckEmailEmailTypeRoute: AuthLayoutCheckEmailEmailTypeRoute,
+  AuthLayoutResetPasswordUidb64TokenRoute:
+    AuthLayoutResetPasswordUidb64TokenRoute,
   AuthLayoutVerifyUidb64TokenRoute: AuthLayoutVerifyUidb64TokenRoute,
 }
 

@@ -17,14 +17,14 @@ import {
 import { Input } from '@/components/ui/input'
 
 export const Route = createFileRoute('/_authLayout/forgot-password')({
-  component: RouteComponent,
+  component: ForgotPassword,
 })
 
 const formSchema = z.object({
   email: z.string()
 })
 
-function RouteComponent() {
+function ForgotPassword() {
   const navigate = useNavigate()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
