@@ -144,19 +144,6 @@ class ResendVerifTokenView(GenericAPIView):
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
-class RequestResetTokenView(GenericAPIView):
-    authentication_classes = []
-    def post(self, request, *args, **kwargs):
-        email = request.data.get('email')
-        try:
-            user = User.objects.get(email=email)
-            send_reset_password_email(user)
-        except ObjectDoesNotExist as e:
-            # do not tell user that email is not found
-            logger.error(e)
-        return Response(status=status.HTTP_200_OK)
-
-
 class VerifyAccountView(GenericAPIView):
     authentication_classes = []
     def get(self, request, *args, **kwargs):
@@ -229,5 +216,68 @@ class ChangePasswordView(CreateAPIView):
             }, status=status.HTTP_403_FORBIDDEN)
 
 
+class RequestResetTokenView(GenericAPIView):
+    authentication_classes = []
+    def post(self, request, *args, **kwargs):
+        email = request.data.get('email')
+        try:
+            user = User.objects.get(email=email)
+            send_reset_password_email(user)
+        except ObjectDoesNotExist as e:
+            # do not tell user that email is not found
+            logger.error(e)
+        return Response(status=status.HTTP_200_OK)
+
+
+class VerifyResetPasswordTokenView(GenericAPIView):
+    authentication_classes = []
+    def get(self, request, *args, **kwargs):
+        if "uidb64" not in kwargs or "token" not in kwargs:
+            raise ImproperlyConfigured(
+                "The URL path must contain 'uidb64' and 'token' parameters."
+            )
+
+        self.validlink = False
+        user = get_user(kwargs["uidb64"])
+
+        if user is not None:
+            token = kwargs['token']
+            if default_token_generator.check_token(user, token, 'PASSWORD'):
+                return Response(status=status.HTTP_200_OK)
+            else:
+                # expired or invalid
+                return Response({
+                    "message": gettext_lazy("Expired token")
+                }, status=status.HTTP_410_GONE)
+
+
 class ResetPasswordView(GenericAPIView):
-    pass
+    authentication_classes = []
+    def post(self, request, **kwargs):
+        if "uidb64" not in kwargs or "token" not in kwargs:
+            raise ImproperlyConfigured(
+                "The URL path must contain 'uidb64' and 'token' parameters."
+            )
+
+        self.validlink = False
+        user = get_user(kwargs["uidb64"])
+
+        if user is not None:
+            token = kwargs['token']
+            if default_token_generator.check_token(user, token, 'PASSWORD'):
+                # TODO: should we set the token to be invalid after successfully used?
+                data = request.data
+                try:
+                    user.set_password(data['new'])
+                    user.save()
+                    return Response(status=status.HTTP_200_OK)
+                except Exception as e:
+                    logger.error(e)
+                    return Response({
+                        "message": gettext_lazy("Cannot reset password")
+                    }, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                # expired or invalid
+                return Response({
+                    "message": gettext_lazy("Link is expired")
+                }, status=status.HTTP_410_GONE)
