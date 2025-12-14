@@ -18,6 +18,7 @@ import { Route as DashboardLayoutDashboardRouteImport } from './routes/_dashboar
 import { Route as AuthLayoutSignupRouteImport } from './routes/_authLayout/signup'
 import { Route as AuthLayoutLoginRouteImport } from './routes/_authLayout/login'
 import { Route as AuthLayoutForgotPasswordRouteImport } from './routes/_authLayout/forgot-password'
+import { Route as AuthLayoutFinishResetRouteImport } from './routes/_authLayout/finish-reset'
 import { Route as DashboardLayoutProfileIndexRouteImport } from './routes/_dashboardLayout/profile/index'
 import { Route as DashboardLayoutExpensesIndexRouteImport } from './routes/_dashboardLayout/expenses/index'
 import { Route as DashboardLayoutAccountscardsIndexRouteImport } from './routes/_dashboardLayout/accountscards/index'
@@ -74,6 +75,11 @@ const AuthLayoutForgotPasswordRoute =
     path: '/forgot-password',
     getParentRoute: () => AuthLayoutRouteRoute,
   } as any)
+const AuthLayoutFinishResetRoute = AuthLayoutFinishResetRouteImport.update({
+  id: '/finish-reset',
+  path: '/finish-reset',
+  getParentRoute: () => AuthLayoutRouteRoute,
+} as any)
 const DashboardLayoutProfileIndexRoute =
   DashboardLayoutProfileIndexRouteImport.update({
     id: '/profile/',
@@ -138,6 +144,7 @@ const AuthLayoutResetPasswordUidb64TokenRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/unverif': typeof UnverifRoute
+  '/finish-reset': typeof AuthLayoutFinishResetRoute
   '/forgot-password': typeof AuthLayoutForgotPasswordRoute
   '/login': typeof AuthLayoutLoginRoute
   '/signup': typeof AuthLayoutSignupRoute
@@ -157,6 +164,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/unverif': typeof UnverifRoute
+  '/finish-reset': typeof AuthLayoutFinishResetRoute
   '/forgot-password': typeof AuthLayoutForgotPasswordRoute
   '/login': typeof AuthLayoutLoginRoute
   '/signup': typeof AuthLayoutSignupRoute
@@ -179,6 +187,7 @@ export interface FileRoutesById {
   '/_authLayout': typeof AuthLayoutRouteRouteWithChildren
   '/_dashboardLayout': typeof DashboardLayoutRouteRouteWithChildren
   '/unverif': typeof UnverifRoute
+  '/_authLayout/finish-reset': typeof AuthLayoutFinishResetRoute
   '/_authLayout/forgot-password': typeof AuthLayoutForgotPasswordRoute
   '/_authLayout/login': typeof AuthLayoutLoginRoute
   '/_authLayout/signup': typeof AuthLayoutSignupRoute
@@ -200,6 +209,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/unverif'
+    | '/finish-reset'
     | '/forgot-password'
     | '/login'
     | '/signup'
@@ -219,6 +229,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/unverif'
+    | '/finish-reset'
     | '/forgot-password'
     | '/login'
     | '/signup'
@@ -240,6 +251,7 @@ export interface FileRouteTypes {
     | '/_authLayout'
     | '/_dashboardLayout'
     | '/unverif'
+    | '/_authLayout/finish-reset'
     | '/_authLayout/forgot-password'
     | '/_authLayout/login'
     | '/_authLayout/signup'
@@ -329,6 +341,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLayoutForgotPasswordRouteImport
       parentRoute: typeof AuthLayoutRouteRoute
     }
+    '/_authLayout/finish-reset': {
+      id: '/_authLayout/finish-reset'
+      path: '/finish-reset'
+      fullPath: '/finish-reset'
+      preLoaderRoute: typeof AuthLayoutFinishResetRouteImport
+      parentRoute: typeof AuthLayoutRouteRoute
+    }
     '/_dashboardLayout/profile/': {
       id: '/_dashboardLayout/profile/'
       path: '/profile'
@@ -403,6 +422,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthLayoutRouteRouteChildren {
+  AuthLayoutFinishResetRoute: typeof AuthLayoutFinishResetRoute
   AuthLayoutForgotPasswordRoute: typeof AuthLayoutForgotPasswordRoute
   AuthLayoutLoginRoute: typeof AuthLayoutLoginRoute
   AuthLayoutSignupRoute: typeof AuthLayoutSignupRoute
@@ -412,6 +432,7 @@ interface AuthLayoutRouteRouteChildren {
 }
 
 const AuthLayoutRouteRouteChildren: AuthLayoutRouteRouteChildren = {
+  AuthLayoutFinishResetRoute: AuthLayoutFinishResetRoute,
   AuthLayoutForgotPasswordRoute: AuthLayoutForgotPasswordRoute,
   AuthLayoutLoginRoute: AuthLayoutLoginRoute,
   AuthLayoutSignupRoute: AuthLayoutSignupRoute,

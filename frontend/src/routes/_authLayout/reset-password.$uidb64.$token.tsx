@@ -3,7 +3,6 @@ import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { AxiosError } from 'axios'
 import { CircleAlert } from 'lucide-react'
 import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
 import z from 'zod'
 
 import { Button } from '@/components/ui/button'
@@ -58,9 +57,9 @@ function ResetPassword() {
       new: data.new_password
     }
     resetPassword(params.uidb64, params.token, payload)
-      .then(() =>
-        toast.success("Password successfully changed")
-      )
+      .then(() => {
+        navigate({to: '/finish-reset'})
+      })
       .catch(error => {
         console.error(error)
         if (error instanceof AxiosError) {
@@ -112,7 +111,6 @@ function ResetPassword() {
       </div>
     )
   } else {
-
     // inform that token is expired. show component to send reset password token again.
     return (
       <>
