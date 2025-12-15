@@ -138,6 +138,7 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
               label="Amount"
               required
               type='number'
+              placeholder='Enter the expense amount'
             />
 
             <FormField
@@ -173,6 +174,7 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
               name="description"
               control={form.control}
               label="Description"
+              placeholder='Describe the expense'
             />
 
             <FormField

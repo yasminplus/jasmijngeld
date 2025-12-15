@@ -3,8 +3,8 @@ import { useNavigate } from "@tanstack/react-router"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
+import { InputField } from "@/components/form/input-field"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import {
   Form,
   FormControl,
@@ -65,28 +65,17 @@ export default function PaymentSourceForm({ account }: PaymentSourceFormProps) {
   }
   return (
     <>
-      <div className='w-52'> 
+      <div className='w-66'> 
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 max-w-3xl mx-auto py-5">
 
-          <FormField
+          <InputField
+            name='name'
             control={form.control}
-            name="name"
-            render={ ({ field }) => (
-              <FormItem className='text-left'>
-                <FormLabel>Name</FormLabel>
-                <FormControl>
-                  <Input
-                    value={field.value || ""}
-                    onChange={field.onChange}
-                    // can't use this
-                    // {...field}   
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            label='Name'
+            required
+            placeholder="Enter a name"
           />
 
           <FormField
@@ -94,7 +83,9 @@ export default function PaymentSourceForm({ account }: PaymentSourceFormProps) {
             name="source_type"
             render={({ field }) => (
               <FormItem className='text-left'>
-                <FormLabel>Source type</FormLabel>
+                <FormLabel>
+                  Source type <span className="text-destructive"> *</span>
+                </FormLabel>
                 <FormControl>
                   <Select
                     // either this or the line below that works
@@ -117,23 +108,13 @@ export default function PaymentSourceForm({ account }: PaymentSourceFormProps) {
             )}
           />
 
-          <FormField
+          <InputField
+            name='acc_identifier'
             control={form.control}
-            name="acc_identifier"
-            render={ ({field }) => (
-              <FormItem className='text-left'>
-                <FormLabel>Account identifier</FormLabel>
-                <FormControl>
-                  <Input 
-                    value={field.value || ""}
-                    onChange={field.onChange}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            label='Account identifier'
+            placeholder="E.g. last 4 digits of the card"
           />
-          
+
           <Button 
             type="submit" 
             className="w-full mt-5"

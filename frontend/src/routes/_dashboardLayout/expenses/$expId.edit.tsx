@@ -1,9 +1,9 @@
-import ExpenseForm from '@/components/expenses/expense-form'
-import { Button } from '@/components/ui/button'
-import { getExpense } from '@/services/expenses'
 import { createFileRoute, useCanGoBack, useRouter } from '@tanstack/react-router'
 import { AxiosError } from 'axios'
 import { ArrowLeft } from 'lucide-react'
+import ExpenseForm from '@/components/expenses/expense-form'
+import { Button } from '@/components/ui/button'
+import { getExpense } from '@/services/expenses'
 
 
 export const Route = createFileRoute(
@@ -39,7 +39,7 @@ function EditExpense() {
   } else if (typeof loaderData === 'object' && 'currency' in loaderData) {
     return (
       <div>
-        <h1 className='text-2xl font-semibold'>
+        <h1 className='text-2xl font-medium'>
           {canGoBack? (
             <Button onClick={() => router.history.back()} variant="ghost" size="icon">
               <ArrowLeft />
