@@ -1,6 +1,6 @@
-import { Button } from '@/components/ui/button'
-import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { CheckCircle } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 export const Route = createFileRoute('/_authLayout/finish-reset')({
   component: FinishReset,
