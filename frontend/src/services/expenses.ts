@@ -63,16 +63,16 @@ export const expenseFormSchema = z.object({
     (val: number ) => {
       if (typeof val === "string") return Number(val);
       return val;
-    }, z.number()
+    }, z.number("Please enter the expense amount")
   ), 
   // TODO: currently we make it loose, later try to 
   // restrict options using dynamic data from BE
-  currency: z.string(),
-  date: z.date(),
+  currency: z.string("Please select a curency"),
+  date: z.date("Please select a date"),
   description: z.string().optional().or(z.literal('')),
-  category: z.string(),
+  category: z.string("Please select a category"),
   store: z.string().optional().or(z.literal('')),
-  source: z.string().optional().or(z.literal('')),
+  source: z.string("Please select a payment source"),
 })
 
 

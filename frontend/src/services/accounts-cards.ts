@@ -14,13 +14,15 @@ export interface PaymentSource extends PaymentSourceForm {
 
 // TODO: decide if we're going with PaymentSourceForm or the zod schema
 export const sourceSchema = z.object({
-  name: z.string(),
-  source_type: z.enum(['Bank account', 'Credit card', 'Digital wallet', 'Prepaid card', 'Cash']),
+  name: z.string('Please enter a name of the payment source'),
+  source_type: z.enum(['Bank account', 'Cash', 'Credit card', 'Digital wallet', 'Prepaid card'], {
+    error: 'Please select a type of the payment source'
+  }),
   acc_identifier: z.string().optional().or(z.literal('')),
 })
 
 export const SOURCE_TYPE_CHOICES = [
-  'Bank account', 'Credit card', 'Digital wallet', 'Prepaid card', 'Cash'
+  'Bank account', 'Cash', 'Credit card', 'Digital wallet', 'Prepaid card'
 ]
 
 export function getPaymentSourceList(): Promise<PaymentSource[]> {
