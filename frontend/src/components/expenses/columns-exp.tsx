@@ -143,6 +143,7 @@ export const expensesColumns: ColumnDef<Expense>[] = [
   },
   {
     id: "edit_action",
+    header: '',
     cell: ({ row }) => {
       const expense = row.original
 

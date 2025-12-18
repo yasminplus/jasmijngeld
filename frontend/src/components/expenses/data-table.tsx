@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useMemo, useState } from "react"
 
 import {
   type ColumnDef,
@@ -17,6 +17,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table"
 
+import { Skeleton } from "@/components/ui/skeleton"
 import {
   Table,
   TableBody,
@@ -35,13 +36,15 @@ const DEFAULT_PAGE_SIZE = 20
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[],
-  totalData: number
+  totalData: number,
+  loading: boolean
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   totalData, 
+  loading
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]) // can set initial column filter state here
@@ -61,9 +64,26 @@ export function DataTable<TData, TValue>({
     edit_action: true,
   });
 
+  const tableData = useMemo(
+    () => (loading? Array(20).fill({}) : data),
+    [loading, data]
+  )
+
+  const tableColumns = useMemo(
+    () => 
+      loading
+        ? columns.map((column) => ({
+          ...column,
+          cell: () => <Skeleton className="h-[20px] m-2 rounded-xl" />,
+          accessorFn: () => ''
+        }))
+      : columns,
+    [loading, columns]
+  )
+
   const table = useReactTable({
-    data,
-    columns,
+    data: tableData,
+    columns: tableColumns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,

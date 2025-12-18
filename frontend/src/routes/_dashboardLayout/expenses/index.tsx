@@ -24,12 +24,14 @@ function ListExpenses() {
   const [expenses, setExpenses] = useState<Expense[]>([])
   const [cols, setCols] = useState(expensesColumns)
   const [totalData, setTotalData] = useState(0)
+  const [loading, setLoading] = useState(true)
 
   const fetchTableData = useCallback(() => {
     getExpenseList()
     .then(results => {
       setExpenses(results.rows)
       setTotalData(results.total)
+      setLoading(false)
     })
     .catch(err => {
       throw err
@@ -69,6 +71,7 @@ function ListExpenses() {
         ...prev,
         {
           id: "delete_action",
+          header: '',
           cell: ({ row }) => {
             const expense = row.original
             return (
@@ -91,6 +94,7 @@ function ListExpenses() {
         columns={cols} 
         data={expenses}
         totalData={totalData}
+        loading={loading}
       />
     </div>
   )
