@@ -1,5 +1,6 @@
 "use client"
 
+import { type RowData } from "@tanstack/react-table"
 import { parse } from 'date-fns';
 import { ArrowUpDown, Pencil } from 'lucide-react';
 
@@ -7,6 +8,12 @@ import { Button } from '@/components/ui/button';
 import { type Expense } from '@/services/expenses';
 import { Link } from '@tanstack/react-router';
 import type { ColumnDef, Row } from '@tanstack/react-table';
+
+declare module '@tanstack/react-table' {
+  interface ColumnMeta<TData extends RowData, TValue> {
+    className?: string;
+  }
+}
 
 export const expensesColumns: ColumnDef<Expense>[] = [
   {
