@@ -46,6 +46,10 @@ export const expensesColumns: ColumnDef<Expense>[] = [
     },
   },
   {
+    accessorKey: "description",
+    header: 'Description',
+  },
+  {
     id: 'amountCurrency',
     accessorFn: (row) => {
       return `${row.currency} ${row.amount.toLocaleString()}`
@@ -99,12 +103,11 @@ export const expensesColumns: ColumnDef<Expense>[] = [
     },
   },
   {
-    accessorKey: "description",
-    header: 'Description',
-  },
-  {
     accessorKey: "store",
     header: 'Store',
+    meta: {
+      className: "hidden sm:table-cell"
+    },
     filterFn: (row, columnId, filterValue) => {
       return filterValue.includes(row.getValue(columnId))
     },
@@ -121,6 +124,9 @@ export const expensesColumns: ColumnDef<Expense>[] = [
         </Button>
       )
     },
+    meta: {
+      className: "hidden sm:table-cell"
+    },
     filterFn: (row, columnId, filterValue) => {
       return filterValue.includes(row.getValue(columnId))
     },
@@ -136,6 +142,9 @@ export const expensesColumns: ColumnDef<Expense>[] = [
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )
+    },
+    meta: {
+      className: "hidden sm:table-cell"
     },
     filterFn: (row, columnId, filterValue) => {
       return filterValue.includes(row.getValue(columnId))
