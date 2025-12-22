@@ -11,6 +11,7 @@ import { type AuthContextI } from '@/context/auth';
 import type { GlobalDataContextI } from '@/context/globaldata';
 import PageNotFound from '@/components/page-not-found';
 import { ProfileProvider } from '@/context/profile';
+import { ExpenseStaticProvider } from '@/context/expense-static';
 
 interface MyRouterContext {
   authContext: AuthContextI
@@ -26,11 +27,13 @@ function RootComponent() {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <ProfileProvider>
-        <React.Fragment>
-          <Outlet />
-          <Toaster position="top-center"/>
-          <TanStackRouterDevtools position="top-left" />
-        </React.Fragment>
+        <ExpenseStaticProvider>
+          <React.Fragment>
+            <Outlet />
+            <Toaster position="top-center"/>
+            <TanStackRouterDevtools position="top-left" />
+          </React.Fragment>
+        </ExpenseStaticProvider>
       </ProfileProvider>
     </ThemeProvider>
   )
