@@ -1,13 +1,13 @@
 "use client"
 
-import { type RowData } from "@tanstack/react-table"
+import type { RowData, ColumnDef, Row } from "@tanstack/react-table"
+import { Link } from '@tanstack/react-router';
 import { parse } from 'date-fns';
 import { ArrowUpDown, Pencil } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
+import CategoryIcon from "@/components/category-icon";
 import { type Expense } from '@/services/expenses';
-import { Link } from '@tanstack/react-router';
-import type { ColumnDef, Row } from '@tanstack/react-table';
 
 declare module '@tanstack/react-table' {
   interface ColumnMeta<TData extends RowData, TValue> {
@@ -55,6 +55,25 @@ export const expensesColumns: ColumnDef<Expense>[] = [
   {
     accessorKey: "description",
     header: 'Description',
+    cell: ({ row }) => {
+      const expense = row.original
+      return (
+        <div className="flex flex-row gap-2">
+          {/* Handle mobile */}
+          <div className="sm:hidden">
+            <CategoryIcon 
+              category={expense.category}
+              iconSize="size-6"
+              circleDia="43px"
+            />
+          </div>
+          <div>
+            <div className="">{expense.description}</div>
+            <div className="sm:hidden text-muted-foreground">{expense.source}</div>
+          </div>
+        </div>
+      )
+    }
   },
   {
     id: 'amountCurrency',

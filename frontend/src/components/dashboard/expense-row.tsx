@@ -12,7 +12,9 @@ export default function ExpenseRow({ expense }: Props) {
     <div className="flex flex-row gap-2 text-sm my-2">
       <div className="basis-1/10">
         <CategoryIcon 
-          category={expense.category}  
+          category={expense.category}
+          iconSize="size-6"
+          circleDia="43px"
         />
       </div>
       <div className="flex flex-col basis-7/10">

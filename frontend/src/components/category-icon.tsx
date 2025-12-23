@@ -2,9 +2,13 @@ import { useExpenseStatic } from "@/context/expense-static";
 
 interface Props {
   category: string,
+  iconSize: string,
+  circleDia: string,
 }
 
-export default function CategoryIcon({ category }: Props) {
+export default function CategoryIcon({ 
+  category, iconSize, circleDia
+}: Props) {
   const expStatic = useExpenseStatic()
   const categories = expStatic.categories
 
@@ -25,13 +29,14 @@ export default function CategoryIcon({ category }: Props) {
   return (
     <>
       <div style={{
-          borderRadius: '50%', width: '43px', height: '43px', 
-          backgroundColor: catColor,
-          paddingLeft: '7.3px', 
-          paddingTop: '7.3px', 
+          borderRadius: '50%', 
+          width: circleDia, 
+          height: circleDia, 
+          backgroundColor: catColor
         }}
+        className="flex flex-row justify-center items-center"
       >
-        {IconObj ? <IconObj className="size-7" /> : null}
+        {IconObj ? <IconObj className={iconSize} /> : null}
       </div>
     </>
   )
