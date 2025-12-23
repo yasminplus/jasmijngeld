@@ -6,11 +6,10 @@ import {
   CardTitle
 } from '@/components/ui/card';
 import ExpenseRow from "@/components/dashboard/expense-row";
-import { type Expense, type ExpenseCategory, getExpenseCategories, getExpenseListPaginated } from "@/services/expenses"
+import { type Expense, getExpenseListPaginated } from "@/services/expenses"
 
 export default function RecentExpenses() {
   const [expenses, setExpenses] = useState<Expense[]>([])
-  const [categories, setCategories] = useState<ExpenseCategory[]>([])
 
   const dashboardLinkOptions = linkOptions({
     to: '/expenses',
@@ -18,13 +17,9 @@ export default function RecentExpenses() {
   })
 
   const fetchData = useCallback(() => {
-    Promise.all([
-      getExpenseCategories(), 
-      getExpenseListPaginated({pageIndex: 0, pageSize: 10})
-    ])
-    .then(results => {
-      setCategories(results[0])
-      setExpenses(results[1].rows)
+    getExpenseListPaginated({pageIndex: 0, pageSize: 10})
+    .then(res => {
+      setExpenses(res.rows)
     })
     .catch(err => {
       throw err
@@ -49,7 +44,7 @@ export default function RecentExpenses() {
 
         <div className="flex w-full flex-col">
           {expenses.map(exp => (
-            <ExpenseRow expense={exp} categories={categories} key={exp.id} />
+            <ExpenseRow expense={exp} key={exp.id} />
           ))}
         </div>
 

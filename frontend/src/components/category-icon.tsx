@@ -1,11 +1,13 @@
-import { type ExpenseCategory } from "@/services/expenses";
+import { useExpenseStatic } from "@/context/expense-static";
 
 interface Props {
   category: string,
-  categories: ExpenseCategory[]
 }
 
-export default function CategoryIcon({ category, categories }: Props) {
+export default function CategoryIcon({ category }: Props) {
+  const expStatic = useExpenseStatic()
+  const categories = expStatic.categories
+
   const IconObj = getIcon(category)
   const catColor = getColor(category)
 
