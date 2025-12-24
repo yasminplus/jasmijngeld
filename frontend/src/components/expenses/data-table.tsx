@@ -150,14 +150,16 @@ export function DataTable<TData, TValue>({
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                 >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell 
-                      key={cell.id}
-                      className={cn(cell.column.columnDef.meta?.className)}
-                    >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
-                  ))}
+                  {row.getVisibleCells().map((cell) => {
+                    return (
+                      <TableCell 
+                        key={cell.id}
+                        className={cn(cell.column.columnDef.meta?.className)}
+                      >
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                      )
+                  })}
                 </TableRow>
               ))
             ) : (
@@ -171,16 +173,20 @@ export function DataTable<TData, TValue>({
           <TableFooter>
             {table.getFooterGroups().map(footerGroup => (
               <TableRow key={footerGroup.id}>
-                {footerGroup.headers.map(header => (
-                  <TableHead key={header.id} colSpan={header.colSpan}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.footer,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                ))}
+                {footerGroup.headers.map(header => {
+                  return (
+                    <TableHead key={header.id} colSpan={header.colSpan}
+                    className={header.column.columnDef.meta?.has_footer? 'px-2' : 'px-0'}
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.footer,
+                            header.getContext()
+                      )}
+                    </TableHead>
+                  )
+                })}
               </TableRow>
             ))}
           </TableFooter>

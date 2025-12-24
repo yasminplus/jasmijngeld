@@ -12,6 +12,7 @@ import { type Expense } from '@/services/expenses';
 declare module '@tanstack/react-table' {
   interface ColumnMeta<TData extends RowData, TValue> {
     className?: string;
+    has_footer?: boolean;
   }
 }
 
@@ -51,6 +52,9 @@ export const expensesColumns: ColumnDef<Expense>[] = [
         }
       }
     },
+    meta: {
+      has_footer: true
+    }
   },
   {
     accessorKey: "description",
@@ -120,6 +124,9 @@ export const expensesColumns: ColumnDef<Expense>[] = [
         }
       }
     },
+    meta: {
+      has_footer: true
+    }
   },
   {
     accessorKey: "currency",
