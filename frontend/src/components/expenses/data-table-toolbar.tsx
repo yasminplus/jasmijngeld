@@ -16,12 +16,12 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { DatePickerInput } from "@/components/date-picker-input"
 
+import { useExpenseStatic } from "@/context/expense-static"
 import { useGlobalDataContext } from "@/context/globaldata"
+import { getPaymentSourceList } from "@/services/accounts-cards"
 import { 
-  getExpenseCategories,
   getStoreList
 } from '@/services/expenses'
-import { getPaymentSourceList } from "@/services/accounts-cards"
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>
@@ -63,12 +63,13 @@ export function DataTableToolbar<TData>({
   const globalDataContext = useGlobalDataContext()
   const currency_options = arr_to_options(globalDataContext.enabledCurrencies)
 
+  const expStatic = useExpenseStatic()
+
   const fetchSelectOptions = useCallback(() => {
-    Promise.all([getExpenseCategories(), getStoreList(), getPaymentSourceList()])
+    Promise.all([getStoreList(), getPaymentSourceList()])
     .then(results => {
-      setCategoryOptions(arr_to_options_typed(results[0]))
-      setStoreOptions(arr_to_options_typed(results[1]))
-      setSourceOptions(arr_to_options_typed(results[2]))
+      setStoreOptions(arr_to_options_typed(results[0]))
+      setSourceOptions(arr_to_options_typed(results[1]))
     })
     .catch(err => {
       throw err
@@ -77,7 +78,11 @@ export function DataTableToolbar<TData>({
 
   useEffect(() => {
     fetchSelectOptions()
-  }, [fetchSelectOptions]) 
+  }, [fetchSelectOptions])
+
+  useEffect(() => {
+    setCategoryOptions(arr_to_options_typed(expStatic.categories))
+  }, [expStatic.categories])
 
   function clearFilters() {
     table.resetColumnFilters()

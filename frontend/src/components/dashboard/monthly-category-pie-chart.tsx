@@ -12,11 +12,11 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
+import { useExpenseStatic } from '@/context/expense-static';
+import { useGlobalDataContext } from '@/context/globaldata';
 import {
-  getExpenseCategories,
   getMonthlyCategorySummary
 } from '@/services/expenses';
-import { useGlobalDataContext } from '@/context/globaldata';
 import { type SummaryMonthlyCategory } from '@/types/ExpenseSummaryType';
 
 
@@ -45,7 +45,8 @@ export default function MonthlyCategoryPieChart({ currency, date }: Props) {
     return amount.toLocaleString()
   }
   const globalDataContext = useGlobalDataContext()
-
+  const expStatic = useExpenseStatic()
+  
   useEffect(() => {
     getMonthlyCategorySummary(date)
     .then(res => {
@@ -72,13 +73,10 @@ export default function MonthlyCategoryPieChart({ currency, date }: Props) {
   }, [globalDataContext.enabledCurrencies, date])
 
   useEffect(() => {
-    getExpenseCategories()
-    .then(res => {
-      const categoryHues = new Map()
-      res.map(cat => categoryHues.set(cat.name, `hsl(${cat.hue} 100% 55%)`))
-      setCatColors(categoryHues)
-    })
-  }, [])
+    const categoryHues = new Map()
+    expStatic.categories.map(cat => categoryHues.set(cat.name, `hsl(${cat.hue} 100% 55%)`))
+    setCatColors(categoryHues)
+  }, [expStatic.categories])
   
   return (
     <Card>

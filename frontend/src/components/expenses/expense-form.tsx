@@ -17,6 +17,7 @@ import { DatePickerInputField } from '@/components/form/date-picker-input-field'
 import { InputField } from '@/components/form/input-field';
 import { SelectInputField } from '@/components/form/select-input-field';
 
+import { useExpenseStatic } from '@/context/expense-static';
 import { useGlobalDataContext } from '@/context/globaldata';
 
 import { getPaymentSourceList, type PaymentSource } from '@/services/accounts-cards';
@@ -26,7 +27,6 @@ import {
   type ExpenseCategory, 
   expenseFormSchema, 
   type ExpenseFormType,
-  getExpenseCategories, 
   getStoreList, 
   type Store, updateExpense
 } from '@/services/expenses';
@@ -44,6 +44,7 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
   const [sourceList, setSourceList] = useState<PaymentSource[]>([])
   const [stringDate, setStringDate] = useState<string>("")
   const globalDataContext = useGlobalDataContext()
+  const expStatic = useExpenseStatic()
 
   const form = useForm<ExpenseFormValues>({
     defaultValues: expense 
@@ -93,11 +94,10 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
   }
 
   const fetchSelectOptions = useCallback(() => {
-    Promise.all([getExpenseCategories(), getStoreList(), getPaymentSourceList()])
+    Promise.all([getStoreList(), getPaymentSourceList()])
     .then(results => {
-      setCategories(results[0])
-      setStoreList(results[1])
-      setSourceList(results[2])
+      setStoreList(results[0])
+      setSourceList(results[1])
     })
     .catch(err => {
       throw err
@@ -107,6 +107,10 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
   useEffect(() => {
     fetchSelectOptions()
   }, [fetchSelectOptions])
+
+  useEffect(() => {
+    setCategories(expStatic.categories)
+  }, [expStatic.categories])
 
   useEffect(() => {
     if (expense) {
