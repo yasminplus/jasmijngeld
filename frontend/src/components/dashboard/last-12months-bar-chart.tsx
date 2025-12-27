@@ -18,6 +18,14 @@ interface Props {
   passedData: Proc12MoSummary[]
   currency: string
 }
+
+function formatMonthTick(val: string) {
+  if (val == '')
+    return ''
+  const [month, yr] = val.split(" ")
+  return `${month} ${yr.slice(2)}`
+}
+
 export default function Last12MonthsBarChart({ passedData = [], currency }: Props) {
   const chartData: Proc12MoSummary[] = passedData
   const globalDataContext = useGlobalDataContext()
@@ -48,9 +56,9 @@ export default function Last12MonthsBarChart({ passedData = [], currency }: Prop
                   tickLine={false}
                   tickMargin={10}
                   axisLine={false}
-                  tickFormatter={(value) => value.slice(0, 3)}
+                  tickFormatter={formatMonthTick}
                 />
-                <ChartTooltip  
+                <ChartTooltip
                   content={<ChartTooltipContent hideIndicator={true} indicator="dot" />} 
                 />
                 { globalDataContext.enabledCurrencies.map(cur => cur == currency && <Bar dataKey={cur} fill={`var(--color-${cur})`} radius={5} />)}

@@ -45,7 +45,6 @@ export function ExpenseStaticProvider({
 
   const fetchCategoriesCallback = useCallback(async () => {
     const cats = await getExpenseCategories();
-    console.log("in fetchCategoriesCallback")
     setCategoriesState(cats);
   }, [setCategoriesState])
 
