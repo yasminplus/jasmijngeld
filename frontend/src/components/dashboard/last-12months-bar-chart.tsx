@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
 import {
   Card,
@@ -19,16 +19,49 @@ interface Props {
   currency: string
 }
 
-function formatMonthTick(val: string) {
-  if (val == '')
-    return ''
-  const [month, yr] = val.split(" ")
-  return `${month} ${yr.slice(2)}`
-}
+const mobileBreakpoint = 640
 
 export default function Last12MonthsBarChart({ passedData = [], currency }: Props) {
   const chartData: Proc12MoSummary[] = passedData
   const globalDataContext = useGlobalDataContext()
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    function handleResize() {
+      setWindowWidth(window.innerWidth);
+    }
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  function formatMonthTick(val: string) {
+    if (val == '')
+      return []
+    const month_year = val.split(" ")
+    let yr_sliced = month_year[1]
+    if (windowWidth < mobileBreakpoint) {
+      yr_sliced = month_year[1].slice(2)
+    }
+    return [month_year[0], yr_sliced]
+  }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const CustomXAxisTick = ({x, y, payload} : any) => {
+  const labels = formatMonthTick(payload.value)
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <text x={0} y={16} textAnchor="middle">
+        {labels.map((item, i) => (
+          <tspan key={i} x="0" dy={`${i === 0 ? 0 : 16}`}>
+            {item}
+          </tspan>
+        ))}
+      </text>
+    </g>
+  )
+}
 
   const chartConfig: { [key: string]: { label?: ReactNode; color?: string } } = {} satisfies ChartConfig
   globalDataContext.enabledCurrencies.forEach(cur => {
@@ -48,15 +81,15 @@ export default function Last12MonthsBarChart({ passedData = [], currency }: Prop
         </CardTitle>
 
         { passedData.length > 0 ?
-            <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+            <ChartContainer config={chartConfig} className="min-h-[200px] h-full w-full ">
               <BarChart accessibilityLayer data={chartData}>
                 <CartesianGrid vertical={false} />
                 <XAxis
                   dataKey="month"
                   tickLine={false}
-                  tickMargin={10}
+                  height={40}
                   axisLine={false}
-                  tickFormatter={formatMonthTick}
+                  tick={<CustomXAxisTick />}
                 />
                 <ChartTooltip
                   content={<ChartTooltipContent hideIndicator={true} indicator="dot" />} 
