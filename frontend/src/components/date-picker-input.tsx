@@ -8,13 +8,16 @@ import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 interface DatePickerInputProps {
+  placeholder?: string
   date: Date | undefined
   onDateChange: (param: Date | undefined) => void
   stringDate: string
   setStringDate: (param: string) => void
 }
 
-export function DatePickerInput({ date, onDateChange, stringDate, setStringDate}: DatePickerInputProps) {
+export function DatePickerInput({ 
+  placeholder, date, onDateChange, stringDate, setStringDate
+}: DatePickerInputProps) {
   const [errorMessage, setErrorMessage] = useState<string>("")
   const [open, setOpen] = useState<boolean>(false);
 
@@ -36,6 +39,7 @@ export function DatePickerInput({ date, onDateChange, stringDate, setStringDate}
               onDateChange(parsedDate)
             }
           }}
+          placeholder={placeholder}
         />
         {errorMessage !== "" && (
           <div className="absolute bottom-[-1.75rem] left-0 text-red-400 text-sm">

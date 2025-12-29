@@ -229,10 +229,12 @@ export function DataTableToolbar<TData>({
           Last month
         </Button>
         <DatePickerInput 
+          placeholder="From date"
           onDateChange={setStartDate} date={startDate} 
           stringDate={stringStartDate} setStringDate={setStringStartDate} />
         {/* TODO: validate that endDate >= startDate */}
         <DatePickerInput 
+          placeholder="To date"
           onDateChange={setEndDate} date={endDate} 
           stringDate={stringEndDate} setStringDate={setStringEndDate} />
       </div>
