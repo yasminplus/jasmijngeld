@@ -94,8 +94,12 @@ export const expensesColumns: ColumnDef<Expense>[] = [
         </Button>
       )
     },
-    sortingFn: (rowA: Row<Expense>, rowB: Row<Expense>) => {
-      return rowA.original.amount - rowB.original.amount
+    filterFn: (row, _columnId, filterValue) => {
+      const minOk = 'min' in filterValue && filterValue['min'] ?
+        row.original.amount >= filterValue['min'] : true
+      const maxOk = 'max' in filterValue && filterValue['max'] ?
+        row.original.amount <= filterValue['max'] : true
+      return minOk && maxOk
     },
     footer: ({ table }) => {
       const filteredData = table.getFilteredRowModel().rows
@@ -123,6 +127,9 @@ export const expensesColumns: ColumnDef<Expense>[] = [
           return `${cur} ${total}`
         }
       }
+    },
+    sortingFn: (rowA: Row<Expense>, rowB: Row<Expense>) => {
+      return rowA.original.amount - rowB.original.amount
     },
     meta: {
       has_footer: true

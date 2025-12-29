@@ -36,6 +36,8 @@ interface DTFacetedFilterPropsOption {
 type DateRange = { start?: Date | null; end?: Date | null }
 type RangeType = "this_month" | "last_month" | ""
 
+type AmountRange = { min?: number | null; max?: number | null }
+
 function arr_to_options(arr: string[]) {
   return arr.map(val => ({ label: val, value: val }));
 }
@@ -57,6 +59,8 @@ export function DataTableToolbar<TData>({
   const [stringStartDate, setStringStartDate] = useState<string>("")
   const [stringEndDate, setStringEndDate] = useState<string>("")
   const [rangeType, setRangeType] = useState<RangeType>("")
+  const [minAmount, setMinAmount] = useState<string>()
+  const [maxAmount, setMaxAmount] = useState<string>()
 
   const isFiltered = table.getState().columnFilters.length > 0
 
@@ -90,6 +94,8 @@ export function DataTableToolbar<TData>({
     setEndDate(undefined)
     setStringStartDate("")
     setStringEndDate("")
+    setMinAmount(undefined)
+    setMaxAmount(undefined)
   }
 
   const updateRangeType = useCallback(() => {
@@ -164,6 +170,18 @@ export function DataTableToolbar<TData>({
     }
   }
 
+  useEffect(() => {
+    const currentRange: AmountRange = (table.getColumn("amountCurrency")?.getFilterValue() as AmountRange) ?? {}
+    currentRange.min = minAmount ? Number(minAmount) : undefined
+    table.getColumn("amountCurrency")?.setFilterValue(currentRange)
+  }, [minAmount, table])
+
+  useEffect(() => {
+    const currentRange: AmountRange = (table.getColumn("amountCurrency")?.getFilterValue() as AmountRange) ?? {}
+    currentRange.max = maxAmount ? Number(maxAmount) : undefined
+    table.getColumn("amountCurrency")?.setFilterValue(currentRange)
+  }, [maxAmount, table])
+
   return (
     <div>
       <div className="flex items-center gap-2 flex-wrap">
@@ -175,13 +193,6 @@ export function DataTableToolbar<TData>({
           }
           className="h-8 w-[150px] lg:w-[250px] text-sm"
         />
-        {table.getColumn('currency') && (
-          <DataTableFacetedFilter
-            column={table.getColumn("currency")}
-            title="Currency"
-            options={currency_options}
-          />
-        )}
         {table.getColumn("category") && (
           <DataTableFacetedFilter
             column={table.getColumn("category")}
@@ -202,16 +213,6 @@ export function DataTableToolbar<TData>({
             title="Source"
             options={sourceOptions}
           />
-        )}
-        {isFiltered && (
-          <Button
-            variant="ghost"
-            onClick={() => clearFilters()}
-            className="h-8 px-2 lg:px-3"
-          >
-            Reset
-            <X />
-          </Button>
         )}
       </div>
       <div className="flex items-center gap-2 mt-2 flex-wrap">
@@ -235,7 +236,43 @@ export function DataTableToolbar<TData>({
           onDateChange={setEndDate} date={endDate} 
           stringDate={stringEndDate} setStringDate={setStringEndDate} />
       </div>
+      <div className="flex items-center gap-2 mt-2 flex-wrap">
+        <Input
+          type="number"
+          placeholder="Min amount"
+          value={minAmount? minAmount : ""}
+          onChange={(event) =>
+            setMinAmount(event.target.value)
+          }
+          className="h-9 w-[125px] text-sm"
+        />
+        <Input
+          type="number"
+          placeholder="Max amount"
+          value={maxAmount? maxAmount : ""}
+          onChange={(event) =>
+            setMaxAmount(event.target.value)
+          }
+          className="h-9 w-[125px] text-sm"
+        />
+        {table.getColumn('currency') && (
+          <DataTableFacetedFilter
+            column={table.getColumn("currency")}
+            title="Currency"
+            options={currency_options}
+          />
+        )}
+        {isFiltered && (
+          <Button
+            variant="ghost"
+            onClick={() => clearFilters()}
+            className="h-8 px-2 lg:px-3"
+          >
+            Reset
+            <X />
+          </Button>
+        )}
+      </div>
     </div>
   )
-
 }
