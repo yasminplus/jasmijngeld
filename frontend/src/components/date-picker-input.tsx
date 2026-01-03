@@ -29,7 +29,7 @@ export function DatePickerInput({
           value={stringDate}
           onChange={(e) => {
             setStringDate(e.target.value)
-            const parsedDate = parse(e.target.value, 'dd/MM/yyyy', new Date())
+            const parsedDate = parse(e.target.value, 'yyyy-MM-dd', new Date())
             onDateChange(parsedDate)
             if (parsedDate.toString() === "Invalid Date") {
               setErrorMessage("Invalid Date")
@@ -65,7 +65,7 @@ export function DatePickerInput({
           selected={date!}
           onSelect={(selectedDate) => {
             if (!selectedDate) return
-            setStringDate(format(selectedDate, "dd/MM/yyyy"))
+            setStringDate(format(selectedDate, "yyyy-MM-dd"))
             onDateChange(selectedDate)
             setErrorMessage("")
             setOpen(false)
