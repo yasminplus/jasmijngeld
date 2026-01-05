@@ -19,7 +19,7 @@ import { DatePickerInput } from "@/components/date-picker-input"
 import { useExpenseStatic } from "@/context/expense-static"
 import { useGlobalDataContext } from "@/context/globaldata"
 import { getPaymentSourceList } from "@/services/accounts-cards"
-import { 
+import {
   getStoreList
 } from '@/services/expenses'
 
@@ -45,6 +45,7 @@ function arr_to_options_typed<T extends { name: string }>(arr: T[]) {
   return arr.map(val => ({ label: val.name, value: val.name }));
 }
 
+const DATE_FORMAT = 'yyyy-MM-dd'
 
 export function DataTableToolbar<TData>({
   table,
@@ -141,32 +142,29 @@ export function DataTableToolbar<TData>({
       setEndDate(undefined)
     }
     else {
-      let s_start = '', s_end = ''
-      let d_start = new Date(), d_end = new Date()
+      let strStart = '', strEnd = ''
+      let dateStart = new Date(), dateEnd = new Date()
       setRangeType(newRangeType)
       const today = new Date()
-      const cur_mo = today.getMonth()
+      let mo = today.getMonth() + 1     // today.getMonth() is 0-based
       let year = today.getFullYear()
 
-      if (newRangeType === 'this_month') {
-        s_start = `01/` + `${cur_mo + 1}`.padStart(2, '0') + `/${year}`
-        d_start = parse(s_start, 'dd/MM/yyyy', d_start)
-
-        d_end = lastDayOfMonth(d_start)
-        s_end = format(d_end, 'dd/MM/yyyy')
-
-      } else if (newRangeType === 'last_month') {
-        year -= cur_mo !== 1? 0 : 1
-        s_start = `01/` + `${cur_mo}`.padStart(2, '0') + `/${year}`
-        d_start = parse(s_start, 'dd/MM/yyyy', d_start)
-
-        d_end = lastDayOfMonth(d_start)
-        s_end = format(d_end, 'dd/MM/yyyy')
+      if (newRangeType) {
+        if (newRangeType === 'last_month') {
+          year -= mo !== 1? 0 : 1
+          mo = mo - 1 > 0 ? mo - 1 : 12
+        }
+        const moPadded = `${mo}`.padStart(2, '0')
+        strStart = `${year}-${moPadded}-01`
+        dateStart = parse(strStart, DATE_FORMAT, dateStart)
+        dateEnd = lastDayOfMonth(dateStart)
+        strEnd = format(dateEnd, DATE_FORMAT)
       }
-      setStringStartDate(s_start)
-      setStartDate(d_start)
-      setStringEndDate(s_end)
-      setEndDate(d_end)
+
+      setStringStartDate(strStart)
+      setStartDate(dateStart)
+      setStringEndDate(strEnd)
+      setEndDate(dateEnd)
     }
   }
 
