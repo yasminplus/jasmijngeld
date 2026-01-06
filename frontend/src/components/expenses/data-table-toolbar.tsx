@@ -107,13 +107,19 @@ export function DataTableToolbar<TData>({
     }
     else if (startDate && endDate) {
       const today = new Date()
-      // kalo bulan start&end beda, dan bulannya bukan today's month
+      const yesterMonth = today.getMonth() - 1 >= 0 ? today.getMonth() - 1 : 11
+
+      // basically check if the selected dates falls into "this month" & "last month" or not
+      // if the start & end month already differs, then for sure not the same month
+      // also check if start & end has the same month as today or last month
+      // but this might be redundant bc changing the month the first time
+      // will already reset the range type
       if ( (startDate.getMonth() != endDate.getMonth()) ||
-        (today.getMonth() != startDate.getMonth() &&
-        today.getMonth() - 1 != startDate.getMonth()) ) {
-          setRangeType('')
+          (today.getMonth() != startDate.getMonth() && yesterMonth != startDate.getMonth()) ) {
+        setRangeType('')
       }
       else if (!isFirstDayOfMonth(startDate) || !isLastDayOfMonth(endDate)) {
+        console.log("emptying rangeType C")
         setRangeType('')
       }
     }
@@ -244,7 +250,7 @@ export function DataTableToolbar<TData>({
           onChange={(event) =>
             setMinAmount(event.target.value)
           }
-          className="h-9 w-[125px] text-sm"
+          className="h-8 w-[125px] text-sm"
         />
         <Input
           type="number"
@@ -253,7 +259,7 @@ export function DataTableToolbar<TData>({
           onChange={(event) =>
             setMaxAmount(event.target.value)
           }
-          className="h-9 w-[125px] text-sm"
+          className="h-8 w-[125px] text-sm"
         />
         {table.getColumn('currency') && (
           <DataTableFacetedFilter
