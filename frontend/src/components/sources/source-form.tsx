@@ -1,26 +1,15 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useNavigate } from "@tanstack/react-router"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
 import { InputField } from "@/components/form/input-field"
+import { type OptionType, SelectField } from "@/components/form/select-field"
 import { Button } from "@/components/ui/button"
+import { Form } from "@/components/ui/form"
+
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { 
   type PaymentSource,
   SOURCE_TYPE_CHOICES,
   createPaymentSource,
@@ -36,6 +25,8 @@ type FormValues = z.infer<typeof sourceSchema>;
 
 export default function PaymentSourceForm({ account }: PaymentSourceFormProps) {
   const navigate = useNavigate()
+  const [sourceTypeList, setSourceTypeList] = useState<OptionType[]>([])
+
   const form = useForm<FormValues>({
     defaultValues: account 
     ? {
@@ -63,12 +54,25 @@ export default function PaymentSourceForm({ account }: PaymentSourceFormProps) {
       })
     }
   }
+
+  useEffect(() => {
+    setSourceTypeList(SOURCE_TYPE_CHOICES.map(choice => {
+      return {
+        id: choice,
+        name: choice
+      }
+    }))
+  }, [])
+
   return (
     <>
       <div className='w-66'> 
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 max-w-3xl mx-auto py-5">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)} 
+          className="space-y-3 max-w-3xl mx-auto py-5"
+        >
 
           <InputField
             name='name'
@@ -78,34 +82,12 @@ export default function PaymentSourceForm({ account }: PaymentSourceFormProps) {
             placeholder="Enter a name"
           />
 
-          <FormField
-            control={form.control}
+          <SelectField
             name="source_type"
-            render={({ field }) => (
-              <FormItem className='text-left'>
-                <FormLabel>
-                  Source type <span className="text-destructive"> *</span>
-                </FormLabel>
-                <FormControl>
-                  <Select
-                    // either this or the line below that works
-                    // defaultValue={account? account.source_type : undefined} 
-                    value={field.value || ""}
-                    onValueChange={field.onChange}
-                  >
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {SOURCE_TYPE_CHOICES.map( choice => 
-                        <SelectItem key={choice} value={choice}>{choice}</SelectItem>
-                      )}
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            control={form.control}
+            label="Source type"
+            placeholder="Select type"
+            options={sourceTypeList}
           />
 
           <InputField
@@ -115,7 +97,7 @@ export default function PaymentSourceForm({ account }: PaymentSourceFormProps) {
             placeholder="E.g. last 4 digits of the card"
           />
 
-          <Button 
+          <Button
             type="submit" 
             className="w-full mt-5"
             disabled={isSubmitting}

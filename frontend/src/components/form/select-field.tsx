@@ -1,10 +1,14 @@
+import type { LucideIcon } from 'lucide-react';
 import { type Control, type FieldPath, type FieldValues } from 'react-hook-form';
 
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import type { LucideIcon } from 'lucide-react';
+import {
+  FormControl, FormField, FormItem, FormLabel, FormMessage
+} from '@/components/ui/form';
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue
+} from '@/components/ui/select';
 
-interface OptionType {
+export interface OptionType {
   id: string | number
   name: string
   iconObj?: LucideIcon
@@ -42,8 +46,7 @@ export function SelectField<TFieldValues extends FieldValues>({
             }
             <FormControl>
               <Select
-                // try either this or the line below
-                // defaultValue={expense? expense.source_type : undefined} 
+                // if below does not work, try with defaultValue=x ? x : undefined
                 value={field.value || ""}
                 onValueChange={field.onChange}
               >

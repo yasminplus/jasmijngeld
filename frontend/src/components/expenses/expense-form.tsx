@@ -6,15 +6,10 @@ import { useNavigate } from '@tanstack/react-router';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { Button } from '@/components/ui/button';
-import {
-    Form, FormControl, FormField, FormItem, FormLabel, FormMessage
-} from '@/components/ui/form';
-import {
-    Select, SelectContent, SelectItem, SelectTrigger, SelectValue
-} from '@/components/ui/select';
-
+import { Form } from '@/components/ui/form';
 import { DatePickerInputField } from '@/components/form/date-picker-input-field';
 import { InputField } from '@/components/form/input-field';
+import { type OptionType, SelectField } from "@/components/form/select-field"
 import { SelectInputField } from '@/components/form/select-input-field';
 
 import { useExpenseStatic } from '@/context/expense-static';
@@ -40,8 +35,9 @@ type ExpenseFormValues =  z.infer<typeof expenseFormSchema>;
 export default function ExpenseForm({ expense }: ExpenseFormProps) {
   const navigate = useNavigate()
   const [categories, setCategories] = useState<ExpenseCategory[]>([])
-  const [storeList, setStoreList] = useState<Store[]>([])
+  const [currencyList, setCurrencyList] = useState<OptionType[]>([])
   const [sourceList, setSourceList] = useState<PaymentSource[]>([])
+  const [storeList, setStoreList] = useState<Store[]>([])
   const [stringDate, setStringDate] = useState<string>("")
   const globalDataContext = useGlobalDataContext()
   const expStatic = useExpenseStatic()
@@ -93,6 +89,16 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
     }
   }
 
+  useEffect(() => {
+    const list = globalDataContext.enabledCurrencies.map(curr => {
+      return {
+        id: curr,
+        name: curr
+      }
+    })
+    setCurrencyList(list)
+  }, [globalDataContext.enabledCurrencies])
+
   const fetchSelectOptions = useCallback(() => {
     Promise.all([getStoreList(), getPaymentSourceList()])
     .then(results => {
@@ -125,7 +131,9 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
       <div className='w-66'> 
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 mx-auto pt-5">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-3 mx-auto pt-5">
 
             <DatePickerInputField 
               stringDate={stringDate} 
@@ -145,74 +153,27 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
               placeholder='Enter the expense amount'
             />
 
-            <FormField
-              control={form.control}
+            <SelectField
               name="currency"
-              render={({ field }) => (
-                <FormItem className='text-left'>
-                  <FormLabel>
-                    Currency
-                    <span className="text-destructive"> *</span>
-                  </FormLabel>
-                  <FormControl>
-                    <Select
-                      defaultValue={expense? expense.currency : 'IDR'} 
-                      onValueChange={field.onChange}
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select currency" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {globalDataContext.enabledCurrencies.map( choice => 
-                          <SelectItem key={choice} value={choice}>{choice}</SelectItem>
-                        )}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              control={form.control}
+              label="Currency"
+              placeholder="Select currency"
+              options={currencyList}
             />
 
-            <InputField 
+            <InputField
               name="description"
               control={form.control}
               label="Description"
               placeholder='Describe the expense'
             />
 
-            <FormField
-              control={form.control}
+            <SelectField
               name="category"
-              render={({ field }) => (
-                <FormItem className='text-left'>
-                  <FormLabel>
-                    Category
-                    <span className="text-destructive"> *</span>
-                  </FormLabel>
-                  <FormControl>
-                    <Select
-                      // try either this or the line below
-                      // defaultValue={expense? expense.source_type : undefined} 
-                      value={field.value || ""}
-                      onValueChange={field.onChange}
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select category" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {categories.map( choice => 
-                          <SelectItem key={choice.id} value={choice.name}>
-                            {choice.iconObj ? <choice.iconObj className="inline mr-2" /> : null}
-                            {choice.name}
-                          </SelectItem>
-                        )}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              control={form.control}
+              label="Category"
+              placeholder="Select category"
+              options={categories}
             />
 
             <SelectInputField
@@ -222,37 +183,15 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
               options={storeList}
             />
 
-            <FormField
-              control={form.control}
+            <SelectField
               name="source"
-              render={({ field }) => (
-                <FormItem className='text-left'>
-                  <FormLabel>
-                    Source <span className="text-destructive"> *</span>
-                  </FormLabel> 
-                  <FormControl>
-                    <Select
-                      // try either this or the line below
-                      // defaultValue={expense? expense.source_type : undefined} 
-                      value={field.value || ""}
-                      onValueChange={field.onChange}
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select payment source" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {sourceList.map( choice => 
-                          <SelectItem key={choice.id} value={choice.name}>{choice.name}</SelectItem>
-                        )}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              control={form.control}
+              label="Source"
+              placeholder='Select payment source'
+              options={sourceList}
             />
-            
-            <Button 
+
+            <Button
               type="submit" 
               className="w-full mt-5"
               disabled={isSubmitting}
