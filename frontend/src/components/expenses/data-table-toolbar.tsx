@@ -127,17 +127,14 @@ export function DataTableToolbar<TData>({
 
   useEffect(() => {
     const currentRange: DateRange = (table.getColumn("date")?.getFilterValue() as DateRange) ?? {}
+    if (Object.keys(currentRange).length == 0 && !startDate && !endDate) {
+      return
+    }
     currentRange.start = startDate
-    table.getColumn("date")?.setFilterValue(currentRange)
-    updateRangeType()
-  }, [startDate, table, updateRangeType])
-
-  useEffect(() => {
-    const currentRange: DateRange = (table.getColumn("date")?.getFilterValue() as DateRange) ?? {}
     currentRange.end = endDate
     table.getColumn("date")?.setFilterValue(currentRange)
     updateRangeType()
-  }, [endDate, table, updateRangeType])
+  }, [startDate, endDate, table, updateRangeType])
 
   function changeRangeType(newRangeType: RangeType) {
     if (rangeType == newRangeType) {
@@ -176,15 +173,13 @@ export function DataTableToolbar<TData>({
 
   useEffect(() => {
     const currentRange: AmountRange = (table.getColumn("amountCurrency")?.getFilterValue() as AmountRange) ?? {}
+    if (Object.keys(currentRange).length == 0 && !minAmount && !maxAmount) {
+      return
+    }
     currentRange.min = minAmount ? Number(minAmount) : undefined
-    table.getColumn("amountCurrency")?.setFilterValue(currentRange)
-  }, [minAmount, table])
-
-  useEffect(() => {
-    const currentRange: AmountRange = (table.getColumn("amountCurrency")?.getFilterValue() as AmountRange) ?? {}
     currentRange.max = maxAmount ? Number(maxAmount) : undefined
     table.getColumn("amountCurrency")?.setFilterValue(currentRange)
-  }, [maxAmount, table])
+  }, [minAmount, maxAmount, table])
 
   return (
     <div>
