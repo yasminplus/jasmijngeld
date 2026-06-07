@@ -1,16 +1,12 @@
 import { jwtDecode, type JwtPayload } from 'jwt-decode';
 import * as React from 'react';
-import { z } from 'zod';
+import type { z } from 'zod';
 
 import login_service, { type Token } from '@/services/login';
+import { loginSchema } from '@/schemas/auth';
 import { AxiosError } from 'axios';
 import { getUserAccountData, type UserAccount } from '@/services/users';
 import { useNavigate } from '@tanstack/react-router';
-
-const formSchema = z.object({
-  email: z.string().email(),
-  password: z.string().trim().min(8),
-})
 
 type UserPayload = JwtPayload & {
   first_name: string,
@@ -28,7 +24,7 @@ export interface User {
 
 // export interface AuthContextI extends Partial<User> {
 export interface AuthContextI {
-  login_i: (credentials: z.infer<typeof formSchema>) => Promise<void>
+  login_i: (credentials: z.infer<typeof loginSchema>) => Promise<void>
   logout_i: () => Promise<void>
   isAuthenticated: boolean
   user: User | null
@@ -93,7 +89,7 @@ export function AuthProvider({ children}: {children: React.ReactNode}) {
   const isAuthenticated = !!user;
   const navigate = useNavigate()
 
-  const login_i = async function(credentials: z.infer<typeof formSchema>): Promise<void> {
+  const login_i = async function(credentials: z.infer<typeof loginSchema>): Promise<void> {
     try {
       const response = await login_service(credentials)
       setStoredUser(response)

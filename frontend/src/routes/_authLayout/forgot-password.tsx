@@ -3,8 +3,9 @@ import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { ArrowLeft } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
-import { z } from 'zod'
+import type { z } from 'zod'
 import { requestResetPassword } from '@/services/reset-pw'
+import { insertEmailSchema } from '@/schemas/auth'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -20,20 +21,16 @@ export const Route = createFileRoute('/_authLayout/forgot-password')({
   component: ForgotPassword,
 })
 
-const formSchema = z.object({
-  email: z.string()
-})
-
 function ForgotPassword() {
   const navigate = useNavigate()
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof insertEmailSchema>>({
+    resolver: zodResolver(insertEmailSchema),
     defaultValues: {
       email: ""
     }
   })
   
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof insertEmailSchema>) {
     requestResetPassword(values)
     .then(() => {
       navigate({to: '/check-email/$emailType', params: {'emailType': 'reset'}})

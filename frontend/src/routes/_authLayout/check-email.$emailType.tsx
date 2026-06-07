@@ -1,16 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Mail } from 'lucide-react'
-import z from 'zod'
 import { Button } from '@/components/ui/button'
-
-const emailTypes = z.object({
-  emailType: z.enum(['verify', 'reset'])
-})
+import { emailTypeSchema } from '@/schemas/auth'
 
 export const Route = createFileRoute('/_authLayout/check-email/$emailType')({
   component: CheckEmail,
   params: {
-    parse: emailTypes.parse
+    parse: emailTypeSchema.parse
   }
 })
 

@@ -1,18 +1,14 @@
 // import { useNavigate } from "@tanstack/react-router"
 import { useForm } from "react-hook-form"
-import { z } from "zod"
+import type { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { InputField } from '@/components/form/input-field'
 import { sendVerificationLink } from "@/services/signup"
+import { insertEmailSchema } from "@/schemas/auth"
 
-const formSchema = z
-  .object({
-    email: z.string().email().min(15),
-  })
-
-type EmailValue = z.infer<typeof formSchema>
+type EmailValue = z.infer<typeof insertEmailSchema>
 
 interface Props {
   resetPassword: boolean
@@ -25,7 +21,7 @@ the UX. Maybe we can reuse this for Password Resets.
 export default function InsertEmailVerify({ resetPassword }: Props) {
   // const navigate = useNavigate()
   const form = useForm<EmailValue>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(insertEmailSchema),
     defaultValues: {
       email: "",
     }

@@ -2,29 +2,19 @@ import { AxiosError } from "axios"
 import { CircleAlert } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
-import { z } from "zod"
+import type { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { InputField } from "@/components/form/input-field"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { changePassword, type ChangePwType } from "@/services/users"
+import { changePasswordSchema } from "@/schemas/profile"
 
-const formSchema = z
-  .object({
-    old_password: z.string().trim().min(8).trim(),
-    new_password: z.string().trim().min(8).trim(),
-    new_confirm: z.string().trim().min(8).trim(),
-  })
-  .refine((data) => data.new_password === data.new_confirm, {
-    message: "Passwords do not match",
-    path: ["confirm"],
-  })
-
-type ChangePassValues = z.infer<typeof formSchema>
+type ChangePassValues = z.infer<typeof changePasswordSchema>
 
 export default function ChangePassword() {
   const form = useForm<ChangePassValues>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(changePasswordSchema),
     defaultValues: {
       old_password: "",
       new_password: "",

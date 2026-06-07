@@ -2,36 +2,24 @@ import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { z } from "zod"
+import type { z } from "zod"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { InputField } from '@/components/form/input-field'
 import { postSignupData } from '@/services/signup'
+import { signupSchema } from '@/schemas/auth'
 
 export const Route = createFileRoute('/_authLayout/signup')({
   component: SignUpForm,
 })
 
 
-const formSchema = z
-  .object({
-    first_name: z.string().min(3),
-    last_name: z.string().optional().or(z.literal('')),
-    email: z.string().email().min(15),
-    password: z.string().trim().min(8).trim(),
-    confirm: z.string().trim().min(8).trim(),
-  })
-  .refine((data) => data.password === data.confirm, {
-    message: "Passwords do not match",
-    path: ["confirm"],
-  })
-
-type SignUpValues = z.infer<typeof formSchema>
+type SignUpValues = z.infer<typeof signupSchema>
 
 function SignUpForm() {
   const navigate = useNavigate()
   const form = useForm<SignUpValues>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(signupSchema),
     defaultValues: {
       first_name: "",
       last_name: "",
@@ -109,7 +97,7 @@ function SignUpForm() {
             type='password'
             placeholder="Reenter your password"
           />
-          
+
           <Button type="submit" className="w-full">Sign Up</Button>
         </form>
       </Form>

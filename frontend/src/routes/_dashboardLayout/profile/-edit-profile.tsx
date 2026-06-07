@@ -1,21 +1,16 @@
 import { CircleAlert } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { toast } from "sonner"
-import { z } from 'zod'
+import type { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { InputField } from '@/components/form/input-field'
 import { Button } from '@/components/ui/button'
 import { Form } from "@/components/ui/form"
 import { updateUserAccount, type UserAccount } from '@/services/users'
 import { useProfile } from '@/context/profile'
+import { editProfileSchema } from '@/schemas/profile'
 
-const accountSchema = z
-  .object({
-    email: z.string().min(15),
-    first_name: z.string().min(3),
-    last_name: z.string().optional().or(z.literal('')),
-  })
-type AccountValues = z.infer<typeof accountSchema>
+type AccountValues = z.infer<typeof editProfileSchema>
 
 interface Props {
   user: UserAccount
@@ -23,7 +18,7 @@ interface Props {
 export default function ProfileForm({ user }: Props) {
   const { setFirstName } = useProfile()
   const form = useForm<AccountValues>({
-    resolver: zodResolver(accountSchema),
+    resolver: zodResolver(editProfileSchema),
     defaultValues: {
       email: user.email,
       first_name: user.first_name,

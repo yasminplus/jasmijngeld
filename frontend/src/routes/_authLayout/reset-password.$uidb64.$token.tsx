@@ -3,12 +3,13 @@ import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { AxiosError } from 'axios'
 import { CircleAlert } from 'lucide-react'
 import { useForm } from 'react-hook-form'
-import z from 'zod'
+import type { z } from 'zod'
 
 import { Button } from '@/components/ui/button'
 import { Form } from '@/components/ui/form'
 import { InputField } from '@/components/form/input-field'
 import { resetPassword, verifyResetPasswordToken, type ResetPwType } from '@/services/reset-pw'
+import { resetPasswordSchema } from '@/schemas/auth'
 
 export const Route = createFileRoute('/_authLayout/reset-password/$uidb64/$token')({
   component: ResetPassword,
@@ -26,17 +27,7 @@ export const Route = createFileRoute('/_authLayout/reset-password/$uidb64/$token
     },
 })
 
-const formSchema = z
-  .object({
-    new_password: z.string().trim().min(8).trim(),
-    new_confirm: z.string().trim().min(8).trim(),
-  })
-  .refine((data) => data.new_password === data.new_confirm, {
-    message: "Passwords do not match",
-    path: ["confirm"],
-  })
-
-type ResetPassValues = z.infer<typeof formSchema>
+type ResetPassValues = z.infer<typeof resetPasswordSchema>
 
 function ResetPassword() {
   const { status } = Route.useLoaderData()
@@ -44,7 +35,7 @@ function ResetPassword() {
   const navigate = useNavigate()
 
   const form = useForm<ResetPassValues>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
       new_password: "",
       new_confirm: ""

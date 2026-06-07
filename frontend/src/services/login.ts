@@ -1,11 +1,6 @@
-import { z } from "zod"
+import type { z } from "zod"
 import axiosInstance from "./axios"
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const loginSchema = z.object({
-  email: z.string().email(),
-  password: z.string().trim().min(8),
-})
+import { loginSchema } from "@/schemas/auth"
 
 export interface Token {
   access: string;

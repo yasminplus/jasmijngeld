@@ -3,7 +3,7 @@ import { CircleAlert } from "lucide-react"
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from "sonner"
-import z from 'zod'
+import type { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { createFileRoute } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
@@ -11,26 +11,16 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import MultipleSelector from '@/components/multiple-selector'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { getAllCurrencies, getCurrentSettings, updateSettings, type UserSettings } from '@/services/settings'
+import { settingsOptionSchema, settingsFormSchema } from '@/schemas/settings'
 
 export const Route = createFileRoute('/_dashboardLayout/settings')({
   component: SettingsComponent,
   loader: async () => await getCurrentSettings()
 })
 
-const optionSchema = z.object({
-  label: z.string(),
-  value: z.string(),
-  disable: z.boolean().optional(),
-});
+type OptionValue = z.infer<typeof settingsOptionSchema>
 
-const formSchema = z.object({
-  enabledCurrencies: z.array(optionSchema).min(1, "Please select at least one currency"),
-  defaultCurrency: z.string()
-})
-
-type OptionValue = z.infer<typeof optionSchema>
-
-type FormValues = z.infer<typeof formSchema>
+type FormValues = z.infer<typeof settingsFormSchema>
 
 function convertToLabelValue(arr: string[]) {
   return arr.map(val => {
@@ -51,7 +41,7 @@ function SettingsComponent() {
       enabledCurrencies: current.enabledCurrencies,
       defaultCurrency : current.defaultCurrency
     },
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(settingsFormSchema),
   })
   const { errors, isSubmitting } = form.formState
   const watchEnabledCurr = form.watch('enabledCurrencies')
