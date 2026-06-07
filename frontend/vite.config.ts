@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import path from 'path';
 import { defineConfig } from 'vite';
 
@@ -15,6 +16,9 @@ export default defineConfig({
     react(), 
     tailwindcss(),
   ],
+  test: {
+    globals: true
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
