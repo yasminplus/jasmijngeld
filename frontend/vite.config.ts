@@ -17,7 +17,8 @@ export default defineConfig({
     tailwindcss(),
   ],
   test: {
-    globals: true
+    globals: true,
+    environment: 'jsdom',
   },
   resolve: {
     alias: {
