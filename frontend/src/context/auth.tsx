@@ -120,6 +120,15 @@ export function AuthProvider({ children}: {children: React.ReactNode}) {
     return () => window.removeEventListener('auth:session:expired', handleSessionExpired)
   }, [navigate])
 
+  React.useEffect(() => {
+    const handleSessionExpired = () => {
+      setUser(null)
+      navigate({to: '/login'})
+    }
+    window.addEventListener('auth:session:expired', handleSessionExpired)
+    return () => window.removeEventListener('auth:session:expired', handleSessionExpired)
+  }, [navigate])
+
   return (
     <AuthContext.Provider value={{ isAuthenticated, user, login_i, logout_i }}>
       {children}
