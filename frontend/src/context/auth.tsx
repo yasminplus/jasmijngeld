@@ -116,10 +116,6 @@ export function AuthProvider({ children}: {children: React.ReactNode}) {
   }
 
   React.useEffect(() => {
-    setUser(getStoredUser())
-  }, [])
-
-  React.useEffect(() => {
     const handleSessionExpired = () => {
       setUser(null)
       navigate({to: '/login'})
