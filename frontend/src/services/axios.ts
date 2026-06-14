@@ -74,6 +74,8 @@ axiosInstance.interceptors.response.use(
           resolve(axiosInstance(originalRequest));
         } catch (err) {
           processQueue(err, null)
+          setStoredUser(null)
+          window.dispatchEvent(new CustomEvent('auth:session:expired'))
           reject(err)
         } finally {
           isRefreshing = false

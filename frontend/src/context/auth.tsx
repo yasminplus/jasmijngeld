@@ -5,6 +5,7 @@ import { z } from 'zod';
 import login_service, { type Token } from '@/services/login';
 import { AxiosError } from 'axios';
 import { getUserAccountData, type UserAccount } from '@/services/users';
+import { useNavigate } from '@tanstack/react-router';
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -90,6 +91,7 @@ export function setStoredUser(token: Token | null) {
 export function AuthProvider({ children}: {children: React.ReactNode}) {
   const [user, setUser] = React.useState<User | null>(getStoredUser());
   const isAuthenticated = !!user;
+  const navigate = useNavigate()
 
   const login_i = async function(credentials: z.infer<typeof formSchema>): Promise<void> {
     try {
@@ -116,6 +118,15 @@ export function AuthProvider({ children}: {children: React.ReactNode}) {
   React.useEffect(() => {
     setUser(getStoredUser())
   }, [])
+
+  React.useEffect(() => {
+    const handleSessionExpired = () => {
+      setUser(null)
+      navigate({to: '/login'})
+    }
+    window.addEventListener('auth:session:expired', handleSessionExpired)
+    return () => window.removeEventListener('auth:session:expired', handleSessionExpired)
+  }, [navigate])
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, user, login_i, logout_i }}>
