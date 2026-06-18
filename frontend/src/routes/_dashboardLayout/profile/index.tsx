@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { getUserAccountData } from '@/services/users'
-import ChangePassword from './-change-pw'
-import ProfileForm from './-edit-profile'
+import ChangePasswordForm from '@/components/profile/ChangePasswordForm'
+import ProfileForm from '@/components/profile/ProfileForm'
 
 export const Route = createFileRoute('/_dashboardLayout/profile/')({
   component: ProfileIndex,
@@ -16,7 +16,7 @@ function ProfileIndex() {
 
       <ProfileForm user={user} />
 
-      <ChangePassword />
+      <ChangePasswordForm />
 
     </div>
   )

@@ -116,6 +116,12 @@ describe('SignupForm', () => {
       await user.type(screen.getByLabelText(/confirm password/i), 'huntsauron123')
       await user.click(screen.getByRole('button', { name: /sign up/i }))
       expect(onSuccess).toHaveBeenCalledTimes(1)
+      expect(mockPostSignup).toHaveBeenCalledWith({
+        first_name: 'Galadriel',
+        last_name: '',
+        email: 'galadriel@lorien.me',
+        password: 'huntsauron123',
+      })
     })
 
     it('shows error when email is already used', async () => {

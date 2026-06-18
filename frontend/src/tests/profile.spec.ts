@@ -111,14 +111,14 @@ describe('changePasswordSchema', () => {
       }).success).toBe(false)
     })
 
-    it('puts the error on the confirm field', () => {
+    it('puts the error on the new confirm field', () => {
       const result = changePasswordSchema.safeParse({
         ...valid,
         new_confirm: 'gotothewest',
       })
       if (result.success) throw new Error('expected failure')
       const paths = result.error.issues.map(i => i.path[0])
-      expect(paths).toContain('confirm')
+      expect(paths).toContain('new_confirm')
     })
   })
 })

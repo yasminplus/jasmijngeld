@@ -1,4 +1,4 @@
-import { AxiosError } from "axios"
+import axios from "axios"
 import { CircleAlert } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -34,17 +34,22 @@ export default function ChangePassword() {
       )
       .catch(error => {
         console.error(error)
-        if (error instanceof AxiosError) {
-          if (error.status == 403) {
+        if (axios.isAxiosError(error)) {
+          if (error.response?.status === 403) {
             form.setError("old_password",
               { type: "custom", message: error.response?.data.message }
             )
           } else {
-            form.setError("root.serverError", { 
-              type: "custom", 
-              message: error.response?.data.message 
+            form.setError("root.serverError", {
+              type: "custom",
+              message: error.response?.data.message
             })
           }
+        } else {
+          form.setError("root.serverError", {
+            type: "custom",
+            message: "An unexpected error occurred"
+          })
         }
       })
   }
