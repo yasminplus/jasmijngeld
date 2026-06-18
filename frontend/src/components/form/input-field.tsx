@@ -38,8 +38,8 @@ export function InputField<TFieldValues extends FieldValues>({
             }
             <FormControl>
               <Input
+                {...field}
                 value={field.value || ""}
-                onChange={field.onChange}
                 type={type}
                 placeholder={placeholder}
                 readOnly={readonly}

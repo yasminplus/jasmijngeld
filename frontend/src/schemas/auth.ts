@@ -7,11 +7,11 @@ export const loginSchema = z.object({
 
 export const signupSchema = z
   .object({
-    first_name: z.string().min(3),
+    first_name: z.string().min(3, "Expected first name to have >= 3 characters"),
     last_name: z.string().optional().or(z.literal('')),
     email: z.email(),
-    password: z.string().trim().min(8).trim(),
-    confirm: z.string().trim().min(8).trim(),
+    password: z.string().trim().min(8, "Expected password to have >= 8 characters").trim(),
+    confirm: z.string().trim().min(8, "Expected confirm password to have >= 8 characters").trim(),
   })
   .refine((data) => data.password === data.confirm, {
     message: "Passwords do not match",
