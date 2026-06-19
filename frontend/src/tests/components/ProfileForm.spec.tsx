@@ -1,6 +1,7 @@
-import ProfileForm from '@/components/profile/ProfileForm'
+import { AxiosError } from 'axios'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import ProfileForm from '@/components/profile/ProfileForm'
 
 const mockUpdateUserAccount = vi.hoisted(() => vi.fn().mockResolvedValue(undefined))
 const mockSetFirstName = vi.hoisted(() => vi.fn())
@@ -14,6 +15,12 @@ vi.mock('@/context/profile', () => ({
     setFirstName: mockSetFirstName,
   }),
 }))
+
+function makeAxiosError(message: string) {
+  const error = new AxiosError(message)
+  error.response = { status: 400, data: { message } } as AxiosError['response']
+  return error
+}
 
 const mockUser = {
   email: 'galadriel@lorien.me',
@@ -86,21 +93,24 @@ describe('ProfileForm', () => {
     })
 
     it('shows server error message when update fails', async () => {
-      mockUpdateUserAccount.mockRejectedValueOnce({
-        response: { data: { message: 'Something went wrong' } }
-      })
+      mockUpdateUserAccount.mockRejectedValueOnce(makeAxiosError('Something went wrong'))
       const user = userEvent.setup()
       await user.click(screen.getByRole('button', { name: /update profile/i }))
       expect(screen.getByText('Something went wrong')).toBeInTheDocument()
     })
 
     it('does not call setFirstName when update fails', async () => {
-      mockUpdateUserAccount.mockRejectedValueOnce({
-        response: { data: { message: 'Something went wrong' } }
-      })
+      mockUpdateUserAccount.mockRejectedValueOnce(makeAxiosError('Something went wrong'))
       const user = userEvent.setup()
       await user.click(screen.getByRole('button', { name: /update profile/i }))
       expect(mockSetFirstName).not.toHaveBeenCalled()
+    })
+
+    it('shows fallback error message for non-Axios errors', async () => {
+      mockUpdateUserAccount.mockRejectedValueOnce(new Error('Network failure'))
+      const user = userEvent.setup()
+      await user.click(screen.getByRole('button', { name: /update profile/i }))
+      expect(screen.getByText('An unexpected error occurred')).toBeInTheDocument()
     })
   })
 })

@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { CircleAlert } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { toast } from "sonner"
@@ -36,10 +37,17 @@ export default function ProfileForm({ user }: Props) {
     })
     .catch(error => {
       console.error(error)
-      form.setError("root.serverError", { 
-        type: "custom", 
-        message: error.response?.data.message 
-      })
+      if (axios.isAxiosError(error)) {
+        form.setError("root.serverError", {
+          type: "custom",
+          message: error.response?.data.message
+        })
+      } else {
+        form.setError("root.serverError", {
+          type: "custom",
+          message: "An unexpected error occurred"
+        })
+      }
     })
   }
 
