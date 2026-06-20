@@ -19,6 +19,8 @@ class ExpenseCategory(models.Model):
 class Store(models.Model):
     name = models.CharField(max_length=30, unique=True)
     # decided not to couple Store to a user, as store name can be shareable among different users
+    # update: 2026-06 decided to couple with user, but will still be visible to other users
+    user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
     # maybe consider to couple store with currency, 
     # e.g. shopee with IDR or amazon.de with EUR
 

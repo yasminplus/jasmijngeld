@@ -41,10 +41,9 @@ class StoreListCreateView(StoreView, ListCreateAPIView):
     filter_backends = [filters.OrderingFilter]
     ordering_fields = '__all__'
     ordering = ['name']
-    
-    # do we need this?
+
     def perform_create(self, serializer):
-        serializer.save()
+        serializer.save(user=self.request.user)
 
 
 class ExpenseCategoryListView(ListAPIView):
@@ -138,6 +137,24 @@ class ExpenseSummaryMonthlyBySourceView(ListAPIView):
         return qs
 
 
+class TotalExpenseMonthlyView(ListAPIView):
+    serializer_class = TotalExpenseMonthlySerializer
+    pagination_class = None
+
+    def get_queryset(self):
+        date_str = self.request.query_params.get('date')
+        date = parse(date_str)
+        first_day_of_the_month = date.replace(day=1)
+        last_day_of_the_month = first_day_of_the_month + relativedelta(day=31)
+        qs = Expense.objects\
+                    .filter(user=self.request.user)\
+                    .filter(date__gte=first_day_of_the_month)\
+                    .filter(date__lte=last_day_of_the_month)\
+                    .values('currency')\
+                    .annotate(total=Sum('amount'))\
+                    .values('currency', 'total')
+        return qs
+
 class ExpenseMonthYearView(ListAPIView):
     serializer_class = ExpenseMonthYearSerializer
     pagination_class = None
@@ -147,3 +164,5 @@ class ExpenseMonthYearView(ListAPIView):
                     .filter(user=self.request.user)\
                     .dates("date", "month")
         return [{"month": d} for d in qs]
+
+
