@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { type Control, type FieldPath, type FieldValues } from 'react-hook-form';
-import { CheckIcon } from "lucide-react";
+import { useCommandState } from 'cmdk';
+import { CheckIcon, Loader2, PlusIcon } from "lucide-react";
 import { Button } from '@/components/ui/button';
 import {
   Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList,
@@ -22,25 +23,74 @@ interface SelectInputFieldProps<TFieldValues extends FieldValues> {
   label: string,
   required?: boolean,
   options: OptionType[],
+  onCreateOption?: (name: string) => Promise<boolean>
 }
 
-export function SelectInputField<TFieldValues extends FieldValues>({ 
+function CommandInputWithCreate({
+  searchValue,
+  onSearchChange,
+  onCreateOption,
+  loadingCreateOption,
+  onCreate,
+}: {
+  searchValue: string
+  onSearchChange: (val: string) => void
+  onCreateOption?: (name: string) => Promise<boolean>
+  loadingCreateOption: boolean
+  onCreate: () => void
+}) {
+  const count = useCommandState(state => state.filtered.count)
+
+  return (
+    <CommandInput
+      placeholder="Search..."
+      onValueChange={onSearchChange}
+      onKeyDown={(e) => {
+        if (
+          e.key === 'Enter' &&
+          count === 0 &&
+          searchValue &&
+          onCreateOption &&
+          !loadingCreateOption
+        ) {
+          e.preventDefault()
+          onCreate()
+        }
+      }}
+    />
+  )
+}
+
+export function SelectInputField<TFieldValues extends FieldValues>({
   name,
   control,
   label,
   required = false,
   options,
+  onCreateOption
 }: SelectInputFieldProps<TFieldValues>) {
   const [open, setOpen] = useState(false)
+  const [searchValue, setSearchValue] = useState("")
+  const [loadingCreateOption, setLoadingCreateOption] = useState(false)
 
-  interface OnClearAllOptions {
-    (fieldOnChange: (value: string) => void): void;
-  }
-
-  const onClearAllOptions: OnClearAllOptions = (fieldOnChange) => {
+  const onClearAllOptions = (fieldOnChange: (value: string) => void) => {
     fieldOnChange('');
     setOpen(false);
   };
+
+  async function handleCreate() {
+    if (loadingCreateOption) return
+    setLoadingCreateOption(true)
+    try {
+      const success = await onCreateOption!(searchValue)
+      if (success) {
+        setOpen(false)
+        setSearchValue('')
+      }
+    } finally {
+      setLoadingCreateOption(false)
+    }
+  }
 
   return (
     <FormField
@@ -63,9 +113,33 @@ export function SelectInputField<TFieldValues extends FieldValues>({
               </PopoverTrigger>
               <PopoverContent className="w-max p-0" align="start">
                 <Command>
-                  <CommandInput placeholder="Search..."  />
+                  <CommandInputWithCreate
+                    searchValue={searchValue}
+                    onSearchChange={setSearchValue}
+                    onCreateOption={onCreateOption}
+                    loadingCreateOption={loadingCreateOption}
+                    onCreate={handleCreate}
+                  />
                   <CommandList>
-                    <CommandEmpty>No results found.</CommandEmpty>
+                    <CommandEmpty>
+                      {searchValue && onCreateOption ? (
+                        <div
+                          className={cn(
+                            "flex items-center gap-2 px-2 py-1.5 mx-1 text-sm rounded-sm cursor-pointer hover:bg-accent hover:text-accent-foreground",
+                            loadingCreateOption && 'hover:bg-muted hover:text-muted-foreground cursor-wait'
+                          )}
+                          onClick={handleCreate}
+                        >
+                          {loadingCreateOption
+                            ? <Loader2 className="size-4 shrink-0 animate-spin" />
+                            : <PlusIcon className="size-4 shrink-0" />
+                          }
+                          <span>Add "<span className="font-medium">{searchValue}</span>"</span>
+                        </div>
+                      ) : (
+                        'No results found.'
+                      )}
+                    </CommandEmpty>
                     <CommandGroup>
                       {options.map((option) => {
                         const isSelected = field.value === option.name

@@ -1,6 +1,7 @@
 import { format } from 'date-fns';
 import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { z } from 'zod';
 import { useNavigate } from '@tanstack/react-router';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -18,6 +19,7 @@ import { useGlobalDataContext } from '@/context/globaldata';
 import { getPaymentSourceList, type PaymentSource } from '@/services/accounts-cards';
 import {
   createExpense, 
+  createStore, 
   type Expense, 
   type ExpenseCategory, 
   expenseFormSchema, 
@@ -73,7 +75,7 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
       store: data.store? data.store : "",
       source: data.source? data.source : ""
     };
-    
+
     if (expense) {
       await updateExpense(expense.id, payload)
       navigate({
@@ -125,6 +127,19 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
       setStringDate(format(new Date(), "dd/MM/yyyy"))
     }
   }, [expense])
+
+  async function onCreateStoreOption(name: string): Promise<boolean> {
+    try {
+      const newStore = await createStore(name)
+      setStoreList(prev => [...prev, newStore].sort((a, b) => a.name.localeCompare(b.name)))
+      form.setValue('store', newStore.name)
+      toast.success(`Store "${name}" added`)
+      return true
+    } catch {
+      toast.error(`Could not add store "${name}"`)
+      return false
+    }
+  }
 
   return (
     <>
@@ -181,6 +196,7 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
               control={form.control}
               label="Store"
               options={storeList}
+              onCreateOption={onCreateStoreOption}
             />
 
             <SelectField

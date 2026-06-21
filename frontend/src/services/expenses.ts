@@ -337,3 +337,14 @@ export function getDistinctMonths(): Promise<MonthYear[]> {
       throw error;
     })
 }
+
+export function createStore(name: string): Promise<Store> {
+  return axiosInstance.post(`api/expenses/stores/`, {
+    name
+  })
+  .then(response => response['data'])
+  .catch(error => {
+    console.error(error)
+    throw error
+  })
+}
