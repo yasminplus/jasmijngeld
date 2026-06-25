@@ -4,15 +4,20 @@ from django.utils import timezone
 from datetime import timedelta
 from dateutil.parser import parse
 from dateutil.relativedelta import relativedelta
-from rest_framework import filters
+from rest_framework import filters, status
 from rest_framework.generics import GenericAPIView, ListAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+import os
 
 from users.permissions import IsEmailVerified
 
 from .models import ExpenseCategory, Expense, Store
 from .serializers import *
+from .services import parse_expense_with_llm
 
 class CategoryResultsSetPagination(PageNumberPagination):
     page_size = 25
@@ -166,3 +171,13 @@ class ExpenseMonthYearView(ListAPIView):
         return [{"month": d} for d in qs]
 
 
+class ParseExpenseTextView(APIView):
+    permission_classes = (IsAuthenticated, IsEmailVerified)
+
+    def post(self, request, *args, **kwargs):
+        api_key = os.getenv('LLM_API_KEY')
+        if not api_key:
+            return Response(status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        
+        # parsed = parse_expense_with_llm()
+        return Response(status=status.HTTP_200_OK)
