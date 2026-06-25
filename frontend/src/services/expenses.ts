@@ -348,3 +348,14 @@ export function createStore(name: string): Promise<Store> {
     throw error
   })
 }
+
+export function parseExpenseText(text: string): Promise<ExpenseFormType> {
+  return axiosInstance.post(`api/expenses/ai-parse/`, {
+    text
+  })
+  .then(response => response['data'])
+  .catch(error => {
+    console.error(error)
+    throw error
+  })
+}
