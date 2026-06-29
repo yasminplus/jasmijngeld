@@ -11,6 +11,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+import json
 import os
 
 from users.permissions import IsEmailVerified
@@ -178,6 +179,8 @@ class ParseExpenseTextView(APIView):
         api_key = os.getenv('LLM_API_KEY')
         if not api_key:
             return Response(status=status.HTTP_503_SERVICE_UNAVAILABLE)
-        
-        # parsed = parse_expense_with_llm()
-        return Response(status=status.HTTP_200_OK)
+        text = request.data.get('text')
+        user = request.user
+        exp_json = parse_expense_with_llm(text, user)
+        parsed = json.loads(exp_json)
+        return Response(parsed)
