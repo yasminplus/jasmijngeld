@@ -9,10 +9,16 @@ from rest_framework.generics import GenericAPIView, ListAPIView, ListCreateAPIVi
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.throttling import UserRateThrottle
 from rest_framework.views import APIView
 
 import json
+import logging
 import os
+
+import openai
+
+logger = logging.getLogger(__name__)
 
 from users.permissions import IsEmailVerified
 
@@ -172,15 +178,40 @@ class ExpenseMonthYearView(ListAPIView):
         return [{"month": d} for d in qs]
 
 
+class AiParseThrottle(UserRateThrottle):
+    scope = 'ai_parse'
+
+
 class ParseExpenseTextView(APIView):
     permission_classes = (IsAuthenticated, IsEmailVerified)
+    throttle_classes = [AiParseThrottle]
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         api_key = os.getenv('LLM_API_KEY')
         if not api_key:
             return Response(status=status.HTTP_503_SERVICE_UNAVAILABLE)
-        text = request.data.get('text')
+
+        serializer = ParseExpenseTextSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        text = serializer.validated_data['text']
         user = request.user
-        exp_json = parse_expense_with_llm(text, user)
-        parsed = json.loads(exp_json)
+        try:
+            exp_json = parse_expense_with_llm(text, user)
+        except openai.RateLimitError as e:
+            logger.error('OpenAI rate limit exceeded: %s', e)
+            return Response({'error': 'AI service rate limit exceeded, please try again later'}, status=status.HTTP_429_TOO_MANY_REQUESTS)
+        except openai.APIConnectionError as e:
+            logger.error('OpenAI connection error: %s', e)
+            return Response({'error': 'Failed to connect to AI service'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        except openai.APIError as e:
+            logger.error('OpenAI API error: %s', e)
+            return Response({'error': 'AI service error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+
+        try:
+            parsed = json.loads(exp_json)
+        except json.JSONDecodeError:
+            return Response({'error': 'Failed to parse AI response'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
         return Response(parsed)

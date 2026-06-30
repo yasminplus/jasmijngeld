@@ -66,3 +66,7 @@ class TotalExpenseMonthlySerializer(serializers.Serializer):
 
 class ExpenseMonthYearSerializer(serializers.Serializer):
     month = serializers.DateField(format='%Y-%m-%d', read_only=True)
+
+
+class ParseExpenseTextSerializer(serializers.Serializer):
+    text = serializers.CharField()

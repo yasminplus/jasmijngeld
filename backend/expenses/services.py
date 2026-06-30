@@ -8,16 +8,13 @@ def parse_expense_with_llm(text: str, user: User):
     cats = ExpenseCategory.objects.values_list('name', flat=True).order_by('name')
     cats_str = ', '.join(cats)
 
-    currencies = Settings.objects\
+    curr_str = Settings.objects\
                     .filter(user=user, key='currency_enabled')\
                     .values_list('value', flat=True)\
                     .first()
-    curr_str = ''
-    if not currencies:
-        # create settings, use IDR only
+    if not curr_str:
         curr_str = 'IDR'
-    curr_str = currencies
-    
+
     prompt = f'''
     Parse this text that describe an expense:
     ---
@@ -47,4 +44,3 @@ def parse_expense_with_llm(text: str, user: User):
     return output
 
     # TODO fuzzy-search the merchant against the list of stores before returning
-    # TODO guard against errors 
