@@ -198,7 +198,7 @@ class ParseExpenseTextView(APIView):
         text = serializer.validated_data['text']
         user = request.user
         try:
-            exp_json = parse_expense_with_llm(text, user)
+            parsed = parse_expense_with_llm(text, user)
         except openai.RateLimitError as e:
             logger.error('OpenAI rate limit exceeded: %s', e)
             return Response({'error': 'AI service rate limit exceeded, please try again later'}, status=status.HTTP_429_TOO_MANY_REQUESTS)
@@ -208,9 +208,6 @@ class ParseExpenseTextView(APIView):
         except openai.APIError as e:
             logger.error('OpenAI API error: %s', e)
             return Response({'error': 'AI service error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
-
-        try:
-            parsed = json.loads(exp_json)
         except json.JSONDecodeError:
             return Response({'error': 'Failed to parse AI response'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 

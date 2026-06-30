@@ -1,6 +1,9 @@
+import json
+
+from django.db.models.functions import Lower
 from openai import OpenAI
 
-from .models import ExpenseCategory
+from .models import ExpenseCategory, Store
 from settings.models import Settings
 from users.models import User
 
@@ -41,6 +44,29 @@ def parse_expense_with_llm(text: str, user: User):
     )
 
     output = response.output_text
-    return output
+    parsed = json.loads(output)
+
+    merchant_name = parsed['merchant']
+    store_name = find_merchant(merchant_name)
+
+    if store_name:
+        parsed['store'] = store_name
+    else:
+        parsed['store'] = None
+    del parsed['merchant']
+
+    return parsed
+
+
+def find_merchant(merchant_name):
+    norm_merchant = merchant_name.strip().lower()
+
+    exact = Store.objects.annotate(lname=Lower('name')).filter(lname=norm_merchant).first()
+    if exact:
+        return exact.name
+
+    contains = list(Store.objects.filter(name__icontains=norm_merchant))
+    if len(contains) == 1:
+        return contains[0].name
 
     # TODO fuzzy-search the merchant against the list of stores before returning
