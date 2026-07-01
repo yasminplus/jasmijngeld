@@ -2,6 +2,7 @@ import json
 
 from django.db.models.functions import Lower
 from openai import OpenAI
+from rapidfuzz import process, fuzz
 
 from .models import ExpenseCategory, Store
 from settings.models import Settings
@@ -25,11 +26,13 @@ def parse_expense_with_llm(text: str, user: User):
     ---
     Return only a valid JSON object. Do not wrap it in markdown code blocks. Do not include any explanation.
     The JSON keys:
-    date (format yyyy-MM-dd), amount (float with 2 decimal points), currency (3 letter string), 
+    date (format YYYY-MM-DD), amount (float with 2 decimal points), currency (3 letter string), 
     description (string), category (string), merchant (string).
     Pick the categories from {cats_str} and the currency from {curr_str}.
-    If the text mentions a date or description of a date, parse it and use it for the "date" field
-    and remove this part from the field "description".
+    If the text mentions a date or description of a date, parse it and use it for the "date" field and remove this part from the field "description".
+    If no date is mentioned, assume it is today's date.
+    If only date and month is mentioned, use today's year.
+    If only date is mentioned, use today's month and year.
     '''
     print(prompt)
 
@@ -55,6 +58,9 @@ def parse_expense_with_llm(text: str, user: User):
         parsed['store'] = None
     del parsed['merchant']
 
+    parsed['source'] = None
+    print(parsed)
+
     return parsed
 
 
@@ -65,8 +71,16 @@ def find_merchant(merchant_name):
     if exact:
         return exact.name
 
-    contains = list(Store.objects.filter(name__icontains=norm_merchant))
-    if len(contains) == 1:
-        return contains[0].name
+    # fuzzy-search the merchant against the list of stores before returning
+    store_names = list(Store.objects.values_list('name', flat=True))
+    _, score, idx = process.extractOne(
+        merchant_name,
+        store_names,
+        scorer=fuzz.WRatio
+    )
+    if score >= 85:
+        matched_store = store_names[idx]
+    else:
+        matched_store = None
 
-    # TODO fuzzy-search the merchant against the list of stores before returning
+    return matched_store
