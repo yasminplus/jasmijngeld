@@ -29,12 +29,13 @@ import {
 } from '@/services/expenses';
 
 type ExpenseFormProps = {
-  expense?: Expense
+  expense?: Expense,
+  initialValues?: Partial<ExpenseFormType>
 }
 
 type ExpenseFormValues =  z.infer<typeof expenseFormSchema>;
 
-export default function ExpenseForm({ expense }: ExpenseFormProps) {
+export default function ExpenseForm({ expense, initialValues }: ExpenseFormProps) {
   const navigate = useNavigate()
   const [categories, setCategories] = useState<ExpenseCategory[]>([])
   const [currencyList, setCurrencyList] = useState<OptionType[]>([])
@@ -54,8 +55,7 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
       category: expense.category,
       store: expense.store? expense.store : undefined,
       source: expense.source
-    } 
-    : {
+    } : {
       amount: undefined,
       currency: 'IDR',
       date: new Date(),
@@ -121,12 +121,28 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
   }, [expStatic.categories])
 
   useEffect(() => {
+    if (initialValues) {
+      form.reset({
+        amount: initialValues.amount,
+        currency: initialValues.currency,
+        date: initialValues.date ? new Date(initialValues.date) : new Date(),
+        description: initialValues.description,
+        category: initialValues.category,
+        store: initialValues.store !== null? initialValues.store : undefined,
+        source: initialValues.source
+      })
+    }
+  }, [initialValues, form])
+
+  useEffect(() => {
     if (expense) {
       setStringDate(format(expense.date, "dd/MM/yyyy"))
+    } else if (initialValues && initialValues.date) {
+      setStringDate(format(initialValues.date!, "dd/MM/yyyy"))
     } else {
       setStringDate(format(new Date(), "dd/MM/yyyy"))
     }
-  }, [expense])
+  }, [expense, initialValues])
 
   async function onCreateStoreOption(name: string): Promise<boolean> {
     try {
@@ -143,7 +159,7 @@ export default function ExpenseForm({ expense }: ExpenseFormProps) {
 
   return (
     <>
-      <div className='w-66'> 
+      <div className='w-80'> 
 
         <Form {...form}>
           <form

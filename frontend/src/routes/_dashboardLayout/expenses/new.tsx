@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/field"
 import { Textarea } from '@/components/ui/textarea'
 import ExpenseForm from '@/components/expenses/expense-form'
-import { parseExpenseText } from '@/services/expenses'
+import { type ExpenseFormType, parseExpenseText } from '@/services/expenses'
 
 export const Route = createFileRoute('/_dashboardLayout/expenses/new')({
   component: AddExpense,
@@ -20,6 +20,7 @@ function AddExpense() {
   const canGoBack = useCanGoBack()
   const [expText, setExpText] = useState('')
   const [parseLoading, setParseLoading] = useState(false)
+  const [parsedExpense, setParsedExpense] = useState<Partial<ExpenseFormType>>()
 
   function onExpTextChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
     setExpText(e.target.value)
@@ -27,8 +28,8 @@ function AddExpense() {
   async function sendExpenseText() {
     try {
       setParseLoading(true)
-      const parsedExpense = await parseExpenseText(expText)
-      // TODO: pass the expense object to the expense form
+      const exp = await parseExpenseText(expText)
+      setParsedExpense(exp)
     } catch {
       toast.error('Could not parse expense, please try again later')
       return false
@@ -60,14 +61,14 @@ function AddExpense() {
             rows={4}
           />
         </Field>
-        <Button type="button" className="w-full mt-2" disabled={parseLoading}
+        <Button type="button" className="w-full mt-2" disabled={parseLoading || !expText}
           onClick={sendExpenseText}
         >
           Parse expense
         </Button>
       </div>
 
-      <ExpenseForm />
+      <ExpenseForm initialValues={parsedExpense}/>
     </div>
   )
 }
