@@ -5,9 +5,12 @@ import { toast } from 'sonner';
 import { z } from 'zod';
 import { useNavigate } from '@tanstack/react-router';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Loader2, WandSparkles } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
+import { Textarea } from '@/components/ui/textarea';
+import { Field, FieldLabel } from '@/components/ui/field';
 import { DatePickerInputField } from '@/components/form/date-picker-input-field';
 import { InputField } from '@/components/form/input-field';
 import { type OptionType, SelectField } from "@/components/form/select-field"
@@ -18,30 +21,33 @@ import { useGlobalDataContext } from '@/context/globaldata';
 
 import { getPaymentSourceList, type PaymentSource } from '@/services/accounts-cards';
 import {
-  createExpense, 
-  createStore, 
-  type Expense, 
-  type ExpenseCategory, 
-  expenseFormSchema, 
+  createExpense,
+  createStore,
+  type Expense,
+  type ExpenseCategory,
+  expenseFormSchema,
   type ExpenseFormType,
-  getStoreList, 
+  getStoreList,
+  parseExpenseText,
   type Store, updateExpense
 } from '@/services/expenses';
 
 type ExpenseFormProps = {
   expense?: Expense,
-  initialValues?: Partial<ExpenseFormType>
+  showAiInput?: boolean
 }
 
 type ExpenseFormValues =  z.infer<typeof expenseFormSchema>;
 
-export default function ExpenseForm({ expense, initialValues }: ExpenseFormProps) {
+export default function ExpenseForm({ expense, showAiInput }: ExpenseFormProps) {
   const navigate = useNavigate()
   const [categories, setCategories] = useState<ExpenseCategory[]>([])
   const [currencyList, setCurrencyList] = useState<OptionType[]>([])
   const [sourceList, setSourceList] = useState<PaymentSource[]>([])
   const [storeList, setStoreList] = useState<Store[]>([])
   const [stringDate, setStringDate] = useState<string>("")
+  const [expText, setExpText] = useState('')
+  const [parseLoading, setParseLoading] = useState(false)
   const globalDataContext = useGlobalDataContext()
   const expStatic = useExpenseStatic()
 
@@ -121,28 +127,46 @@ export default function ExpenseForm({ expense, initialValues }: ExpenseFormProps
   }, [expStatic.categories])
 
   useEffect(() => {
-    if (initialValues) {
-      form.reset({
-        amount: initialValues.amount,
-        currency: initialValues.currency,
-        date: initialValues.date ? new Date(initialValues.date) : new Date(),
-        description: initialValues.description,
-        category: initialValues.category,
-        store: initialValues.store !== null? initialValues.store : undefined,
-        source: initialValues.source
-      })
-    }
-  }, [initialValues, form])
-
-  useEffect(() => {
     if (expense) {
       setStringDate(format(expense.date, "dd/MM/yyyy"))
-    } else if (initialValues && initialValues.date) {
-      setStringDate(format(initialValues.date!, "dd/MM/yyyy"))
     } else {
       setStringDate(format(new Date(), "dd/MM/yyyy"))
     }
-  }, [expense, initialValues])
+  }, [expense])
+
+  async function sendExpenseText() {
+    try {
+      setParseLoading(true)
+      const exp = await parseExpenseText(expText)
+      const parsedDate = exp.date ? new Date(exp.date) : new Date()
+      form.reset({
+        amount: exp.amount,
+        currency: exp.currency ?? 'IDR',
+        date: parsedDate,
+        description: exp.description,
+        category: exp.category,
+        store: exp.store ?? undefined,
+        source: exp.source
+      })
+      setStringDate(format(parsedDate, 'dd/MM/yyyy'))
+      toast.success('Form filled in. Please review before saving.')
+      setExpText('')
+    } catch {
+      toast.error('Could not parse expense, please try again later')
+    } finally {
+      setParseLoading(false)
+    }
+  }
+
+  function parseExpenseClicked() {
+    if (form.formState.isDirty) {
+      toast('Form already filled. Parse again and overwrite with new result?', {
+        action: <Button onClick={() => sendExpenseText()}>Overwrite</Button>,
+      })
+    } else {
+      sendExpenseText()
+    }
+  }
 
   async function onCreateStoreOption(name: string): Promise<boolean> {
     try {
@@ -159,7 +183,30 @@ export default function ExpenseForm({ expense, initialValues }: ExpenseFormProps
 
   return (
     <>
-      <div className='w-80'> 
+      <div className='w-80'>
+
+        {showAiInput && (
+          <div className='border-2 rounded-md grid gap-1 px-2 py-2 mt-2'>
+            <Field>
+              <FieldLabel htmlFor="expense-text">
+                <WandSparkles size={14} /> <span> Add expense using AI </span>
+              </FieldLabel>
+              <Textarea
+                id="expense-text"
+                placeholder="Write your expense here to prefill the form, one at a time"
+                value={expText}
+                onChange={e => setExpText(e.target.value)}
+                rows={4}
+              />
+            </Field>
+            <Button type="button" className="w-full mt-2" disabled={parseLoading || !expText}
+              onClick={parseExpenseClicked}
+            >
+              {parseLoading && <Loader2 className='animate-spin'/>}
+              Parse expense
+            </Button>
+          </div>
+        )}
 
         <Form {...form}>
           <form
