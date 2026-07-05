@@ -1,0 +1,214 @@
+from django.db.models.functions import TruncMonth
+from django.db.models import Sum, F
+from django.utils import timezone
+from datetime import timedelta
+from dateutil.parser import parse
+from dateutil.relativedelta import relativedelta
+from rest_framework import filters, status
+from rest_framework.generics import GenericAPIView, ListAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.throttling import UserRateThrottle
+from rest_framework.views import APIView
+
+import json
+import logging
+import os
+
+import openai
+
+logger = logging.getLogger(__name__)
+
+from users.permissions import IsEmailVerified
+
+from .models import ExpenseCategory, Expense, Store
+from .serializers import *
+from .services import parse_expense_with_llm
+
+class CategoryResultsSetPagination(PageNumberPagination):
+    page_size = 25
+    max_page_size = 25
+
+
+# when we have > 1000 records for a user, 
+# we'll have to think again about the pagination
+# as now we use client-side pagination.
+class ExpenseResultsSetPagination(PageNumberPagination):
+    page_size = 1000
+    page_size_query_param = 'page_size'
+    max_page_size = 10000
+
+
+class StoreView(GenericAPIView):
+    permission_classes = (IsAuthenticated, IsEmailVerified)
+    serializer_class = StoreSerializer
+    lookup_field = "id"
+
+    def get_queryset(self):
+        return Store.objects.order_by('id')
+
+
+class StoreListCreateView(StoreView, ListCreateAPIView):
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = '__all__'
+    ordering = ['name']
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class ExpenseCategoryListView(ListAPIView):
+    permission_classes = (IsAuthenticated, IsEmailVerified)
+    serializer_class = ExpenseCategorySerializer
+    lookup_field = "id"
+    queryset = ExpenseCategory.objects.all().order_by('name')
+    pagination_class = CategoryResultsSetPagination
+
+
+class ExpenseView(GenericAPIView):
+    permission_classes = (IsAuthenticated, IsEmailVerified)
+    serializer_class = ExpenseSerializer
+    lookup_field = "id"
+
+    def get_queryset(self):
+        return Expense.objects.filter(user=self.request.user).order_by('id')
+
+
+class ExpenseListCreateView(ExpenseView, ListCreateAPIView):
+    filter_backends = [filters.OrderingFilter]
+    ordering = ['-date']
+    pagination_class = ExpenseResultsSetPagination
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class ExpenseRetrieveUpdateDeleteView(ExpenseView, RetrieveUpdateDestroyAPIView):
+    pass
+
+
+class ExpenseSummaryLast12MonthsView(ListAPIView):
+    serializer_class = ExpenseSummaryLast12MonthsSerializer
+    pagination_class = None
+
+    def get_queryset(self):
+        first_day_of_this_month = timezone.now().replace(day=1)
+        first_day_of_next_month = (
+            first_day_of_this_month + timedelta(days=32)
+        ).replace(day=1)
+        one_year_ago = first_day_of_next_month - timedelta(days=365)
+
+        qs = Expense.objects\
+                    .filter(user=self.request.user)\
+                    .filter(date__gte=one_year_ago)\
+                    .annotate(month=TruncMonth('date'))\
+                    .values('month', 'currency')\
+                    .annotate(total=Sum('amount'))\
+                    .values('month', 'currency', 'total')
+        return qs
+
+
+class ExpenseSummaryMonthlyByCategoryView(ListAPIView):
+    serializer_class = ExpenseSummaryMonthlyByCategorySerializer
+    pagination_class = None
+
+    def get_queryset(self):
+        date_str = self.request.query_params.get('date')
+        date = parse(date_str)
+        first_day_of_the_month = date.replace(day=1)
+        last_day_of_the_month = first_day_of_the_month + relativedelta(day=31)
+
+        qs = Expense.objects\
+                    .filter(user=self.request.user)\
+                    .filter(date__gte=first_day_of_the_month)\
+                    .filter(date__lte=last_day_of_the_month)\
+                    .values('currency', category_name=F('category__name'))\
+                    .annotate(amount=Sum('amount'))\
+                    .order_by('category_name', 'currency')
+        return qs
+
+
+class ExpenseSummaryMonthlyBySourceView(ListAPIView):
+    serializer_class = ExpenseSummaryMonthlyBySourceSerializer
+    pagination_class = None
+
+    def get_queryset(self):
+        date_str = self.request.query_params.get('date')
+        date = parse(date_str)
+        first_day_of_the_month = date.replace(day=1)
+        last_day_of_the_month = first_day_of_the_month + relativedelta(day=31)
+
+        qs = Expense.objects\
+                    .filter(user=self.request.user)\
+                    .filter(date__gte=first_day_of_the_month)\
+                    .filter(date__lte=last_day_of_the_month)\
+                    .values('currency', source_name=F('source__name'))\
+                    .annotate(amount=Sum('amount'))\
+                    .order_by('source_name', 'currency')
+        return qs
+
+
+class TotalExpenseMonthlyView(ListAPIView):
+    serializer_class = TotalExpenseMonthlySerializer
+    pagination_class = None
+
+    def get_queryset(self):
+        date_str = self.request.query_params.get('date')
+        date = parse(date_str)
+        first_day_of_the_month = date.replace(day=1)
+        last_day_of_the_month = first_day_of_the_month + relativedelta(day=31)
+        qs = Expense.objects\
+                    .filter(user=self.request.user)\
+                    .filter(date__gte=first_day_of_the_month)\
+                    .filter(date__lte=last_day_of_the_month)\
+                    .values('currency')\
+                    .annotate(total=Sum('amount'))\
+                    .values('currency', 'total')
+        return qs
+
+class ExpenseMonthYearView(ListAPIView):
+    serializer_class = ExpenseMonthYearSerializer
+    pagination_class = None
+
+    def get_queryset(self):
+        qs = Expense.objects\
+                    .filter(user=self.request.user)\
+                    .dates("date", "month")
+        return [{"month": d} for d in qs]
+
+
+class AiParseThrottle(UserRateThrottle):
+    scope = 'ai_parse'
+
+
+class ParseExpenseTextView(APIView):
+    permission_classes = (IsAuthenticated, IsEmailVerified)
+    throttle_classes = [AiParseThrottle]
+
+    def post(self, request):
+        api_key = os.getenv('LLM_API_KEY')
+        if not api_key:
+            return Response(status=status.HTTP_503_SERVICE_UNAVAILABLE)
+
+        serializer = ParseExpenseTextSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        text = serializer.validated_data['text']
+        user = request.user
+        try:
+            parsed = parse_expense_with_llm(text, user)
+        except openai.RateLimitError as e:
+            logger.error('OpenAI rate limit exceeded: %s', e)
+            return Response({'error': 'AI service rate limit exceeded, please try again later'}, status=status.HTTP_429_TOO_MANY_REQUESTS)
+        except openai.APIConnectionError as e:
+            logger.error('OpenAI connection error: %s', e)
+            return Response({'error': 'Failed to connect to AI service'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        except openai.APIError as e:
+            logger.error('OpenAI API error: %s', e)
+            return Response({'error': 'AI service error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        except json.JSONDecodeError:
+            return Response({'error': 'Failed to parse AI response'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        return Response(parsed)
