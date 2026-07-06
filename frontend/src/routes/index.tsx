@@ -1,23 +1,18 @@
-import { 
-  createFileRoute,
-  redirect
- } from '@tanstack/react-router'
-import { Brand } from '@/components/Brand'
-import { buttonVariants } from "@/components/ui/button"
-import '@/App.css'
+import { createFileRoute, redirect } from '@tanstack/react-router'
+import { Hero } from '@/components/landing/Hero'
+import { CurrencySection } from '@/components/landing/CurrencySection'
+import { ExpensesSection } from '@/components/landing/ExpensesSection'
+import { MonthlyChartsSection } from '@/components/landing/MonthlyChartsSection'
+import { HowItReadsSection } from '@/components/landing/HowItReadsSection'
+import { UnderTheHoodSection } from '@/components/landing/UnderTheHoodSection'
+import { CtaSection } from '@/components/landing/CtaSection'
+import { LandingFooter } from '@/components/landing/LandingFooter'
 
 export const Route = createFileRoute('/')({
-  beforeLoad: ({ context, location }) => {
-    if (!context.authContext.isAuthenticated) {
+  beforeLoad: ({ context }) => {
+    if (context.authContext.isAuthenticated) {
       throw redirect({
-        to: '/login',
-        search: {
-          redirect: location.href,
-        },
-      })
-    } else {
-      throw redirect({
-        to: '/dashboard'
+        to: '/dashboard',
       })
     }
   },
@@ -26,12 +21,15 @@ export const Route = createFileRoute('/')({
 
 function RouteComponent() {
   return (
-    <div className="container mx-auto p-4">
-      <Brand />
-      <div className="flex gap-4 mb-4">
-        <a className={buttonVariants({ variant: "default" }) + " basis-full"} href="/login">Log In</a>
-        <a className={buttonVariants({ variant: "outline" })+ " basis-full"} href="/signup">Sign Up</a>
-      </div>
+    <div>
+      <Hero />
+      <CurrencySection />
+      <ExpensesSection />
+      <MonthlyChartsSection />
+      <HowItReadsSection />
+      <UnderTheHoodSection />
+      <CtaSection />
+      <LandingFooter />
     </div>
   )
 }

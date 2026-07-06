@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lexend:wght@100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Serif+Display:ital@0;1&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lexend:wght@100..900&display=swap");
 /* @import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap"); */
 
 @import "tailwindcss";
@@ -44,6 +44,28 @@
   --color-sidebar-ring: var(--sidebar-ring);
   --font-display: 'DM Serif Display' ;
   --default-font-family: Inter, sans-serif, system-ui, Helvetica, Arial;
+}
+
+/* Landing page brand palette — scoped to marketing sections, independent of the
+   dashboard's oklch theme above. */
+@theme {
+  --font-mono: 'DM Mono', ui-monospace, monospace;
+  --color-ink: #11201A;
+  --color-ink-soft: #1B2E26;
+  --color-celadon: #E7EBDF;
+  --color-celadon-deep: #DBE1D2;
+  --color-cream: #F3F0E4;
+  --color-cream-dim: #C4C9B7;
+  --color-gold: #CB9433;
+  --color-gold-deep: #916312;
+  --color-plum: #7E4B58;
+  --animate-blink: blink 1s steps(2) infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
 }
 
 :root {
