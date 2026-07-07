@@ -187,10 +187,6 @@ class ParseExpenseTextView(APIView):
     throttle_classes = [AiParseThrottle]
 
     def post(self, request):
-        api_key = os.getenv('LLM_API_KEY')
-        if not api_key:
-            return Response(status=status.HTTP_503_SERVICE_UNAVAILABLE)
-
         serializer = ParseExpenseTextSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -199,16 +195,35 @@ class ParseExpenseTextView(APIView):
         user = request.user
         try:
             parsed = parse_expense_with_llm(text, user)
-        except openai.RateLimitError as e:
-            logger.error('OpenAI rate limit exceeded: %s', e)
-            return Response({'error': 'AI service rate limit exceeded, please try again later'}, status=status.HTTP_429_TOO_MANY_REQUESTS)
-        except openai.APIConnectionError as e:
-            logger.error('OpenAI connection error: %s', e)
-            return Response({'error': 'Failed to connect to AI service'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
-        except openai.APIError as e:
-            logger.error('OpenAI API error: %s', e)
-            return Response({'error': 'AI service error'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        except openai.OpenAIError as e:
+            llm_error = self.classify_upstream(e)
+            logger.error(e)
+            logger.error("Expense parse failed, kind=%s req_id=%s",
+                           llm_error, getattr(llm_error, "request_id", None))
+            return Response(
+                {'error': 'AI service unavailable'}, 
+                status=status.HTTP_503_SERVICE_UNAVAILABLE)
         except json.JSONDecodeError:
-            return Response({'error': 'Failed to parse AI response'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                {'error': 'Failed to parse AI response'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response(parsed)
+
+    def classify_upstream(self, exc: Exception) -> str:
+        if isinstance(exc, (openai.APITimeoutError, openai.APIConnectionError)):
+            return "transient_network"
+        if isinstance(exc, openai.RateLimitError):
+            return "rate_limited"
+        if isinstance(exc, openai.InternalServerError):
+            return "upstream_5xx"
+        if isinstance(exc, openai.AuthenticationError):
+            return "bad_key"
+        if isinstance(exc, openai.BadRequestError):
+            return "bad_request_bug"
+        if isinstance(exc, openai.OpenAIError):
+            return "OpenAIError"
+        if isinstance(exc, (openai.LengthFinishReasonError,
+                            openai.ContentFilterFinishReasonError)):
+            return "unparseable_output"
+        return "unknown"
