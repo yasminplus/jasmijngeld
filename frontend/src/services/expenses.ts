@@ -307,7 +307,7 @@ export function getMonthlySourceSummary(dateStr: string): Promise<SummaryMonthly
  * @returns promise list of monthyear type
  */
 export function getDistinctMonths(): Promise<MonthYear[]> {
-  return axiosInstance.get(`api/expenses/dist-mo/`)
+  return axiosInstance.get(`/api/expenses/dist-mo/`)
     .then(response => {
       const monthList = response['data']
 
@@ -339,7 +339,7 @@ export function getDistinctMonths(): Promise<MonthYear[]> {
 }
 
 export function createStore(name: string): Promise<Store> {
-  return axiosInstance.post(`api/expenses/stores/`, {
+  return axiosInstance.post(`/api/expenses/stores/`, {
     name
   })
   .then(response => response['data'])
@@ -350,7 +350,7 @@ export function createStore(name: string): Promise<Store> {
 }
 
 export function parseExpenseText(text: string): Promise<ExpenseFormType> {
-  return axiosInstance.post(`api/expenses/ai-parse/`, {
+  return axiosInstance.post(`/api/expenses/ai-parse/`, {
     text
   })
   .then(response => response['data'])
