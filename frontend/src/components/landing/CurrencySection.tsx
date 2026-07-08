@@ -1,5 +1,5 @@
 import { Container } from './Container'
-import { Eyebrow } from './Eyebrow'
+import { SectionHead } from './SectionHead'
 
 export function CurrencySection() {
   const items = [{
@@ -32,18 +32,13 @@ export function CurrencySection() {
   return (
     <section id="currency" className='bg-ink text-cream py-[96px]'>
       <Container>
-        {/* sec-head */}
-        <div className='max-w-[640px] mb-[52px]'>
-          <Eyebrow className='text-gold mb-[16px]'>
-            Built for more than one currency
-          </Eyebrow>
-          <h2 className='font-display font-normal leading-[1.06] tracking-[-0.01em] mb-[16px] text-[clamp(2rem,4vw,3rem)]'>
-            Every currency, kept as itself.
-          </h2>
-          <p className='text-cream-dim font-normal leading-[1.6] text-[1.08rem]'>
-            If your money lives in a few places at once, a single-currency tracker quietly lies to you. Jasmijngeld keeps each entry in the currency you spent it in, and shows you the whole picture.
-          </p>
-        </div>
+        <SectionHead
+          eyebrow='Built for more than one currency'
+          eyebrowClassName='text-gold'
+          title='Every currency, kept as itself.'
+          description='If your money lives in a few places at once, a single-currency tracker quietly lies to you. Jasmijngeld keeps each entry in the currency you spent it in, and shows you the whole picture.'
+          descriptionClassName='text-cream-dim'
+        />
         {/* grid */}
         <div className='grid grid-cols-[1fr_1fr] gap-[56px] items-center'>
           <ul>
