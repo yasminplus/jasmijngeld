@@ -57,7 +57,7 @@ function GridCell({ data }: { data: ReadCell }) {
 
 export function HowItReadsSection() {
   return (
-    <section id="how" className='bg-celadon text-ink py-[96px]'>
+    <section id="how" className='bg-celadon text-ink py-[96px] max-[860px]:py-[70px]'>
       <Container>
         <SectionHead
           eyebrow='Natural-language entry · one way in'
@@ -66,7 +66,7 @@ export function HowItReadsSection() {
           description="Adding an expense shouldn't be a form. You write a phrase; the parser pulls out the parts that matter and leaves you to confirm. Once you do, it's filed to the right account like everything else."
           descriptionClassName='text-ink/72'
         />
-        <div className='grid grid-cols-[1fr_1fr_1fr] gap-px overflow-hidden rounded-[14px] border border-ink/14 bg-ink/14'>
+        <div className='grid grid-cols-[1fr_1fr_1fr] gap-px overflow-hidden rounded-[14px] border border-ink/14 bg-ink/14 max-[860px]:grid-cols-1'>
           {cells.map((item) => (
             <GridCell key={item.num} data={item} />
           ))}

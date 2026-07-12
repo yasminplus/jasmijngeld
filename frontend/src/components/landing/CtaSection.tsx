@@ -2,7 +2,7 @@ import { Container } from './Container'
 
 export function CtaSection() {
   return (
-    <section id="access" className='bg-ink text-center py-[96px]'>
+    <section id="access" className='bg-ink text-center py-[96px] max-[860px]:py-[70px]'>
       <Container>
         <h2 className='mb-[18px] font-display text-[clamp(2.2rem,5vw,3.4rem)] leading-[1.04]'>
           Take a look <em className='italic text-gold'>inside</em>.

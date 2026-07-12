@@ -83,7 +83,7 @@ function ChartCard({
 
 export function MonthlyChartsSection() {
   return (
-    <section id="month" className='bg-ink text-cream py-[96px]'>
+    <section id="month" className='bg-ink text-cream py-[96px] max-[860px]:py-[70px]'>
       <Container>
         <SectionHead
           eyebrow='The month, at a glance'
@@ -92,7 +92,7 @@ export function MonthlyChartsSection() {
           description='Two views of the same month: what you spent it on, and which account it left from. Everything is computed in the app, so no data leaves your database.'
           descriptionClassName='text-cream-dim'
         />
-        <div className="grid grid-cols-[1fr_1fr] items-stretch gap-[24px]">
+        <div className="grid grid-cols-[1fr_1fr] items-stretch gap-[24px] max-[860px]:grid-cols-1 max-[860px]:gap-[20px]">
           <ChartCard title="By category · June" data={categoryData} centerBig="Rp 3,7M" centerLabel="spent" />
           <ChartCard title="By source · June" data={sourceData} centerBig="Rp 3,7M" centerLabel="total" />
         </div>

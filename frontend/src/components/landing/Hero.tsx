@@ -18,13 +18,13 @@ export function Hero() {
           </span>
 
           <span className='flex flex-row items-center gap-[26px]'>
-            <a href="#currency" className='text-[0.9rem] text-cream-dim hover:text-cream transition-colors duration-200 '>
+            <a href="#currency" className='text-[0.9rem] text-cream-dim hover:text-cream transition-colors duration-200 max-[860px]:hidden'>
               Currencies
             </a>
-            <a href="#expenses" className='text-[0.9rem] text-cream-dim hover:text-cream transition-colors duration-200 '>
+            <a href="#expenses" className='text-[0.9rem] text-cream-dim hover:text-cream transition-colors duration-200 max-[860px]:hidden'>
               Expenses
             </a>
-            <a href="#month" className='text-[0.9rem] text-cream-dim hover:text-cream transition-colors duration-200 '>
+            <a href="#month" className='text-[0.9rem] text-cream-dim hover:text-cream transition-colors duration-200 max-[860px]:hidden'>
               Monthly
             </a>
             <Link to="/login" className='text-[0.9rem] ml-[4px] text-cream-dim hover:text-cream transition-colors duration-200 '>
@@ -38,7 +38,7 @@ export function Hero() {
           </span>
         </nav>
 
-        <div className='grid grid-cols-[1.05fr_0.95fr] items-center gap-[56px] pt-[68px] pb-[92px] relative z-2'>
+        <div className='grid grid-cols-[1.05fr_0.95fr] items-center gap-[56px] pt-[68px] pb-[92px] relative z-2 max-[860px]:grid-cols-1 max-[860px]:gap-[40px] max-[860px]:pt-[44px] max-[860px]:pb-[64px]'>
           <div>
             <Eyebrow className='text-gold mb-[22px]'>
               Side project · Multi-Currency Expense Tracker

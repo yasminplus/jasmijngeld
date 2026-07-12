@@ -91,7 +91,7 @@ export function ParseDemo() {
         <div>id · en · nl</div>
       </div>
 
-      <div className="flex min-h-[62px] items-center rounded-[10px] border border-cream/15 bg-black/28 px-[18px] py-[16px] font-display text-[1.5rem] text-cream">
+      <div className="flex min-h-[62px] items-center rounded-[10px] border border-cream/15 bg-black/28 px-[18px] py-[16px] font-display text-[1.5rem] text-cream max-[860px]:text-[1.25rem]">
         <span>{typedText}</span>
         <span className="animate-blink motion-reduce:animate-none ml-0.5 inline-block h-[1.4em] w-[2px] bg-gold align-middle" />
       </div>
@@ -100,7 +100,7 @@ export function ParseDemo() {
         ↓ &nbsp; parsed &nbsp; ↓
       </div>
 
-      <div className="grid grid-cols-2 gap-px overflow-hidden rounded-[10px] border border-cream/15 bg-cream/15">
+      <div className="grid grid-cols-2 gap-px overflow-hidden rounded-[10px] border border-cream/15 bg-cream/15 max-[480px]:grid-cols-1">
         <Field label="Amount" value={fields.amt} fading={fading} accent />
         <Field label="Currency" value={fields.cur} fading={fading} />
         <Field label="Category" value={fields.cat} fading={fading} />

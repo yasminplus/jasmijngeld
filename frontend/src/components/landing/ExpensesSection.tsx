@@ -51,7 +51,7 @@ export function ExpensesSection() {
   const current = months.find((m) => m.key === active)!
 
   return (
-    <section id="expenses" className='bg-celadon text-ink py-[96px]'>
+    <section id="expenses" className='bg-celadon text-ink py-[96px] max-[860px]:py-[70px]'>
       <Container>
         <SectionHead 
           eyebrow="Filter by month"
@@ -80,14 +80,17 @@ export function ExpensesSection() {
           {current.rows.map((row) => (
             <div
               key={row.date + row.desc}
-              className="grid grid-cols-[66px_1fr_auto_auto_auto] gap-[14px] items-center px-[20px] py-[14px] border-b border-ink/14 last:border-b-0"
+              className="grid grid-cols-[66px_1fr_auto_auto_auto] gap-[14px] items-center px-[20px] py-[14px] border-b border-ink/14 last:border-b-0 max-[620px]:grid-cols-[1fr_auto_auto] max-[620px]:gap-[10px]"
             >
-              <span className='font-mono text-[0.72rem] tracking-[0.04em] text-ink/50'>{row.date}</span>
+              <span className='font-mono text-[0.72rem] tracking-[0.04em] text-ink/50 max-[620px]:hidden'>{row.date}</span>
               <span className='text-[0.96rem]'>{row.desc}</span>
-              {row.tags.map((t) => (
+              {row.tags.map((t, i) => (
                 <span
                   key={t}
-                  className='font-mono uppercase text-[0.62rem] text-ink/70 tracking-[0.06em] rounded-[6px] px-[8px] py-[3px] border border-ink/14 whitespace-nowrap'
+                  className={cn(
+                    'font-mono uppercase text-[0.62rem] text-ink/70 tracking-[0.06em] rounded-[6px] px-[8px] py-[3px] border border-ink/14 whitespace-nowrap',
+                    i === 1 && 'max-[620px]:hidden',
+                  )}
                 >
                   {t}
                 </span>)

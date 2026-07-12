@@ -21,7 +21,7 @@ const steps: Step[] = [
       <>
         {'{ '}
         <span className='text-plum'>amount</span>: 32000, <span className='text-plum'>currency</span>: "IDR",{' '}
-        <span className='text-plum'>category</span>: "Transportation", <span className='text-plum'>store</span>: "Grab"
+        <span className='text-plum'>category</span>: "Transportation", <span className='text-plum'>merchant</span>: "Grab"
         {' }'}
       </>
     ),
@@ -71,8 +71,8 @@ const stack = ['React · TypeScript', 'Django', 'DRF', 'PostgreSQL', 'LLM API', 
 
 function StepRow({ data }: {data: Step}) {
   return (
-    <div className='grid grid-cols-[72px_1fr] gap-[14px] items-start py-[24px] border-t border-ink/14 first:border-t-0 first:pt-[2px]'>
-      <div className='font-display text-[2.6rem] leading-[0.8] text-gold-deep'>
+    <div className='grid grid-cols-[72px_1fr] gap-[14px] items-start py-[24px] border-t border-ink/14 first:border-t-0 first:pt-[2px] max-[480px]:grid-cols-[50px_1fr] max-[480px]:gap-[10px]'>
+      <div className='font-display text-[2.6rem] leading-[0.8] text-gold-deep max-[480px]:text-[2.1rem]'>
         {data.num}
       </div>
       <div>
@@ -92,7 +92,7 @@ function StepRow({ data }: {data: Step}) {
 
 export function UnderTheHoodSection() {
   return (
-    <section id="hood" className='bg-celadon-deep text-ink py-[96px]'>
+    <section id="hood" className='bg-celadon-deep text-ink py-[96px] max-[860px]:py-[70px]'>
       <Container>
         <SectionHead
           eyebrow='Under the hood'
@@ -106,7 +106,7 @@ export function UnderTheHoodSection() {
             <StepRow key={item.num} data={item} />
           ))}
         </div>
-        <div className='grid grid-cols-[1fr_1fr_1fr] gap-[20px]'>
+        <div className='grid grid-cols-[1fr_1fr_1fr] gap-[20px] max-[860px]:grid-cols-1 max-[860px]:gap-[24px]'>
           {decisions.map((item) => (
             <div key={item.question} className='border-t-[2px] border-gold-deep pt-[16px]'>
               <div className='font-mono text-gold-deep text-[0.7rem] uppercase tracking-[0.08em] mb-[8px]'>

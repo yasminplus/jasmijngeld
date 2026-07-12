@@ -30,7 +30,7 @@ export function CurrencySection() {
     amt: '28.00'
   }]
   return (
-    <section id="currency" className='bg-ink text-cream py-[96px]'>
+    <section id="currency" className='bg-ink text-cream py-[96px] max-[860px]:py-[70px]'>
       <Container>
         <SectionHead
           eyebrow='Built for more than one currency'
@@ -40,7 +40,7 @@ export function CurrencySection() {
           descriptionClassName='text-cream-dim'
         />
         {/* grid */}
-        <div className='grid grid-cols-[1fr_1fr] gap-[56px] items-center'>
+        <div className='grid grid-cols-[1fr_1fr] gap-[56px] items-center max-[860px]:grid-cols-1 max-[860px]:gap-[40px]'>
           <ul>
             {items.map((item) => (
               <li
