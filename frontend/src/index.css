@@ -34,6 +34,16 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+  --color-chart-6: var(--chart-6);
+  --color-data: var(--data);
+  --color-bar: var(--bar);
+  --color-card-2: var(--card-2);
+  --color-well: var(--well);
+  --color-gold-accent: var(--gold-accent);
+  --color-attention: var(--attention);
+  --color-dim: var(--dim);
+  --color-faint: var(--faint);
+  --color-line-2: var(--line-2);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -46,7 +56,7 @@
   --default-font-family: Inter, sans-serif, system-ui, Helvetica, Arial;
 }
 
-/* Landing page brand palette — scoped to marketing sections, independent of the
+/* Landing page brand palette - scoped to marketing sections, independent of the
    dashboard's oklch theme above. */
 @theme {
   --font-mono: 'DM Mono', ui-monospace, monospace;
@@ -68,73 +78,109 @@
   }
 }
 
+/* LIGHT theme (app default)*/
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.141 0.005 285.823);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.141 0.005 285.823);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.141 0.005 285.823);
-  --primary: oklch(0.5053 0.0877 238.63);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.967 0.001 286.375);
-  --secondary-foreground: oklch(0.21 0.006 285.885);
-  --muted: oklch(0.967 0.001 286.375);
-  --muted-foreground: oklch(0.652 0.016 285.938);
-  --accent: oklch(0.967 0.001 286.375);
-  --accent-foreground: oklch(0.5053 0.0877 238.63);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.92 0.004 286.32);
-  --input: oklch(0.92 0.004 286.32);
-  --ring: oklch(0.705 0.015 286.067);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.141 0.005 285.823);
-  --sidebar-primary: oklch(0.5053 0.0877 238.63);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.937 0.001 286.375);
-  --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
-  --sidebar-border: oklch(0.92 0.004 286.32);
-  --sidebar-ring: oklch(0.705 0.015 286.067);
+
+  /* shadcn semantic */
+  --background: #E7EBDF;             /* canvas - celadon */
+  --foreground: #11201A;            /* text - ink */
+  --card: #FFFFFF;
+  --card-foreground: #11201A;
+  --popover: #FFFFFF;
+  --popover-foreground: #11201A;
+  --primary: #11201A;               /* ink-btn - primary buttons are ink on light */
+  --primary-foreground: #F3F0E4;    /* cream */
+  --secondary: #FFFFFF;             /* white surface + border */
+  --secondary-foreground: #11201A;
+  --muted: #F3F0E4;                 /* card-2 - cream subtle raise */
+  --muted-foreground: #556155;      /* dim */
+  --accent: #F3F0E4;                /* hover tint */
+  --accent-foreground: #916312;     /* gold-deep - links / hover icons */
+  --destructive: #7E4B58;           /* plum - required marks / attention (no literal red) */
+  --border: rgba(17,32,26,0.14);    /* line */
+  --input: rgba(17,32,26,0.14);     /* line - inputs are border-defined on light */
+  --ring: #916312;                  /* gold-deep focus ring */
+
+  --chart-1: #1B2E26;               /* pine  */
+  --chart-2: #4E7A5E;               /* sage  */
+  --chart-3: #CB9433;               /* gold  */
+  --chart-4: #7E4B58;               /* plum  */
+  --chart-5: #A8763A;               /* bronze */
+
+  /* sidebar stays DARK in the light theme (pine-ink brand surface) */
+  --sidebar: #11201A;
+  --sidebar-foreground: #F3F0E4;            /* cream */
+  --sidebar-primary: #CB9433;               /* gold - CTA */
+  --sidebar-primary-foreground: #11201A;    /* ink */
+  --sidebar-accent: #1B2E26;                /* ink-soft - nav hover */
+  --sidebar-accent-foreground: #CB9433;     /* active nav text - true gold OK on dark sidebar */
+  --sidebar-border: rgba(243,240,228,0.16); /* cream hairline on dark */
+  --sidebar-ring: #CB9433;
+
+  /* extra brand roles (no shadcn slot) */
+  --line-2: rgba(17,32,26,0.22);    /* stronger hairline */
+  --card-2: #F3F0E4;                /* cream raise/hover */
+  --well: #FFFFFF;                  /* input surface - white (border-defined) */
+  --gold: #CB9433;                  /* gold fill - light: only on the dark sidebar */
+  --gold-accent: #916312;           /* gold-deep - eyebrows, links, hover icons */
+  --attention: #7E4B58;             /* plum - required asterisk */
+  --dim: #556155;                   /* secondary text / descriptions */
+  --faint: #9AA598;                 /* placeholders, captions */
+  --chart-6: #93A98C;               /* "Others" muted */
+  --data: #4E7A5E;                  /* single-series bars - sage */
+  --bar:  #1B2E26;                  /* 12-month trend bars - pine */
 }
 
+/* DARK theme */
 .dark {
-  --background: oklch(0.191 0.005 285.823);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.21 0.006 285.885);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.21 0.006 285.885);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.5053 0.0877 238.63);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.274 0.006 286.033);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.274 0.006 286.033);
-  --muted-foreground: oklch(0.705 0.015 286.067);
-  --accent: oklch(0.284 0.006 286.033);
-  --accent-foreground: oklch(0.5053 0.0877 238.63);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.552 0.016 285.938);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.21 0.006 285.885);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.5053 0.0877 238.63);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.274 0.006 286.033);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.552 0.016 285.938);
+  /* shadcn semantic */
+  --background: #101E17;            /* canvas */
+  --foreground: #F0ECDF;           /* text - cream */
+  --card: #18271F;
+  --card-foreground: #F0ECDF;
+  --popover: #18271F;
+  --popover-foreground: #F0ECDF;
+  --primary: #CB9433;              /* gold - primary button fill */
+  --primary-foreground: #16110A;   /* dark ink text on gold */
+  --secondary: #21342A;            /* card-2 - neutral surface button */
+  --secondary-foreground: #F0ECDF;
+  --muted: #21342A;
+  --muted-foreground: #A6AE9E;     /* dim */
+  --accent: #21342A;               /* card-2 - hover/nested surface */
+  --accent-foreground: #F0ECDF;
+  --destructive: #BE8098;          /* rose - attention without alarm (no literal red) */
+  --border: rgba(240,236,225,0.10);/* line */
+  --input: rgba(240,236,225,0.16); /* line-2 - input border */
+  --ring: #E2B559;                 /* gold-br focus ring */
+
+  --chart-1: #CB9433;              /* gold  */
+  --chart-2: #6FA37F;              /* sage  */
+  --chart-3: #D8C79C;              /* sand  */
+  --chart-4: #BE8098;              /* rose  */
+  --chart-5: #5E9AA0;              /* teal  */
+
+  --sidebar: #0C1611;              /* pine chrome, darkest */
+  --sidebar-foreground: #F0ECDF;
+  --sidebar-primary: #CB9433;      /* gold CTA */
+  --sidebar-primary-foreground: #16110A;
+  --sidebar-accent: #101E17;       /* canvas-level hover */
+  --sidebar-accent-foreground: #E2B559; /* gold-br - active nav text */
+  --sidebar-border: rgba(240,236,225,0.10);
+  --sidebar-ring: #E2B559;
+
+  /* extra brand roles */
+  --line-2: rgba(240,236,225,0.16);
+  --card-2: #21342A;               /* nested / hover - elevate by lightening, not shadow */
+  --well: #0E1912;                 /* input surface - recessed below card */
+  --gold: #CB9433;                 /* gold fill (buttons, active bar, slice) */
+  --gold-accent: #E2B559;          /* gold-br - active nav text, links, eyebrows */
+  --attention: #BE8098;            /* rose - required asterisk */
+  --dim: #A6AE9E;
+  --faint: #727C6B;
+  --chart-6: #8A9585;              /* "Others" muted */
+  --data: #6FA37F;                 /* single-series bars - sage */
+  --bar:  #3F6B52;                 /* 12-month trend bars */
 }
 
 @layer base {
