@@ -88,10 +88,11 @@ const CustomXAxisTick = ({x, y, payload} : any) => {
                 <ChartTooltip
                   content={<ChartTooltipContent hideIndicator={true} indicator="dot" />} 
                 />
-                {/* fill is primary color. not using {`var(--color-primary)`} directly because 
-                darkreader extension messes with this and made the chart not visible */}
-                { globalDataContext.enabledCurrencies.map(cur => 
-                  cur == currency && <Bar dataKey={cur} fill='oklch(0.5053 0.0877 238.63)' radius={5} />
+                {/* fill is the brand gold (primary). hardcoded rather than
+                var(--color-primary) because the darkreader extension messes with
+                the var and made the chart not visible */}
+                { globalDataContext.enabledCurrencies.map(cur =>
+                  cur == currency && <Bar dataKey={cur} fill='#CB9433' radius={5} />
                 )}
               </BarChart>
             </ChartContainer>
