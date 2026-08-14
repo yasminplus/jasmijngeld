@@ -23,8 +23,8 @@ jiter==0.16.0
 Markdown==3.7
 openai==2.44.0
 packaging==25.0
-psycopg==3.2.4
-psycopg-binary==3.2.4
+psycopg==3.2.13
+psycopg-binary==3.2.13
 pydantic==2.13.4
 pydantic_core==2.46.4
 PyJWT==2.9.0
