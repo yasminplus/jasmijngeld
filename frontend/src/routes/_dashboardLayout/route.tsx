@@ -9,6 +9,7 @@ import { AppSidebar } from "@/components/app-sidebar"
 
 import { BottomTabBar } from '@/components/dashboard/BottomTabBar'
 import { Header } from '@/components/dashboard/Header'
+import { MobileTopBar } from '@/components/dashboard/mobile-top-bar'
 import { useGlobalDataContext } from '@/context/globaldata'
 
 export const Route = createFileRoute('/_dashboardLayout')({
@@ -48,6 +49,7 @@ function DashboardLayout() {
     } as React.CSSProperties}>
       <AppSidebar  />
       <div id="content" className='flex flex-col flex-grow w-screen' >
+        <MobileTopBar />
         <Header />
         <main className='px-4 pb-20 md:pb-4'>
           <Outlet>

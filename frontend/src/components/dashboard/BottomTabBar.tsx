@@ -32,7 +32,7 @@ export function BottomTabBar() {
 
   return (
     <div className='fixed h-[66px] inset-x-0 bottom-0 z-40 
-                    bg-sidebar border-t border-line flex items-center px-[6px]
+                    bg-sidebar border-t flex items-center px-[6px]
                     md:hidden'>
       <BottomTab label='Dashboard' tabIcon={Home} url='/dashboard' isActive={isLinkActive('/dashboard')} />
       <BottomTab label='Expenses' tabIcon={HandCoins} url='/expenses' isActive={isLinkActive('/expenses')} />

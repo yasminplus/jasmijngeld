@@ -10,8 +10,6 @@ import { useAuthContext } from '@/context/auth'
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router"
 import { sidebarItems } from "@/components/sidebar-items"
 import { ModeToggle } from "@/components/mode-toggle"
-import HamburgerMenu from "@/components/hamburger-component"
-import { Brand } from "@/components/Brand"
 import { useProfile } from "@/context/profile"
 
 
@@ -31,16 +29,7 @@ export function Header() {
   return (
     <header className="w-full" >
 
-      <div className="bg-primary block md:hidden">
-        <div className="absolute left-0 right-0 mx-auto size-fit pt-2">
-          <Brand size={"text-4xl"} pb={"pb-2"} />
-        </div>
-        <div className="pt-2.5 pb-2">
-          <HamburgerMenu />
-        </div>
-      </div>
-
-      <div className="p-4">
+      <div className="p-4 hidden md:block">
         <div className="flex flex-row justify-between">
           <h1 className="text-3xl font-semibold">{ currentMenu?.title }</h1>
           <div className="flex space-x-2">
