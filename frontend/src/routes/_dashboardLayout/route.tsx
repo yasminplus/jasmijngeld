@@ -7,6 +7,7 @@ import {
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
 
+import { BottomTabBar } from '@/components/dashboard/BottomTabBar'
 import { Header } from '@/components/dashboard/Header'
 import { useGlobalDataContext } from '@/context/globaldata'
 
@@ -48,11 +49,12 @@ function DashboardLayout() {
       <AppSidebar  />
       <div id="content" className='flex flex-col flex-grow w-screen' >
         <Header />
-        <main className='px-4 pb-4'>
+        <main className='px-4 pb-20 md:pb-4'>
           <Outlet>
             <SidebarTrigger />
           </Outlet>
         </main>
+        <BottomTabBar />
       </div>
     </SidebarProvider>
   )

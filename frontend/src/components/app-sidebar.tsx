@@ -41,8 +41,6 @@ export function AppSidebar() {
                     <Link 
                       to={item.url} 
                       className="sidebar-link" 
-                      activeProps={{color: "hsl(38.8, 100%, 50%)"}}
-                      activeOptions={{ exact: true }}
                     >
                       <item.icon />
                       <span>{item.title}</span>
