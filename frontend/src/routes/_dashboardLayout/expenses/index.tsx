@@ -8,6 +8,9 @@ import { Button } from '@/components/ui/button'
 import { expensesColumns } from '@/components/expenses/columns-exp'
 import { DataTable } from '@/components/expenses/data-table'
 import { AlertDelete } from "@/components/alert-delete"
+import ExpenseRow from "@/components/dashboard/expense-row"
+import ExpenseRowMenu from "@/components/dashboard/expense-row-menu"
+import { useIsMobile } from "@/hooks/use-mobile"
 
 import { 
   type Expense, 
@@ -25,6 +28,7 @@ function ListExpenses() {
   const [cols, setCols] = useState(expensesColumns)
   const [totalData, setTotalData] = useState(0)
   const [loading, setLoading] = useState(true)
+  const isMobile = useIsMobile()
 
   const fetchTableData = useCallback(() => {
     getExpenseList()
@@ -81,6 +85,23 @@ function ListExpenses() {
       ])
     }
   } , [cols, fetchTableData])
+
+  if (isMobile) {
+    return (
+      <div>
+        <h1 className="font-display text-[26px] mt-4 mb-[14px]">Expenses</h1>
+        <div className="flex flex-col">
+          {expenses.map(exp => (
+            <ExpenseRow
+              key={exp.id}
+              expense={exp}
+              actions={<ExpenseRowMenu expense={exp} onDeleted={fetchTableData} />}
+            />
+          ))}
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div>
