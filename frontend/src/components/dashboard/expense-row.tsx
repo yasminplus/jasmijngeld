@@ -4,35 +4,42 @@ import { groupDigit } from "@/services/generic-utils";
 
 interface Props {
   expense: Expense,
+  actions?: React.ReactNode,
 }
 
-export default function ExpenseRow({ expense }: Props) {
+export default function ExpenseRow({ expense, actions }: Props) {
 
   return (
-    <div className="flex flex-row gap-2 text-sm my-2">
-      <div className="basis-1/10">
-        <CategoryIcon 
+    <div className="flex items-center gap-[11px] py-[11px] px-1 border-b text-sm">
+      {/* Icon */}
+      <div className="flex-none">
+        <CategoryIcon
           category={expense.category}
-          iconSize="size-6"
-          circleDia="43px"
+          iconSize="size-4"
+          circleDia="34px"
         />
       </div>
-      <div className="flex flex-col basis-7/10">
-        <div className="font-medium">
+      <div className="flex flex-col flex-1 min-w-0">
+        <div className="font-medium truncate">
           {expense.description}
         </div>
-        <div className="text-muted-foreground">
-          {expense.date}
+        {/* Date, source */}
+        <div className="text-faint flex flex-row gap-1 font-mono text-[10.5px] mt-[2px]">
+          <span>{expense.date}</span>
+          {expense.source && (
+            <>
+              <span>·</span>
+              <span>{expense.source}</span>
+            </>
+          )}
         </div>
       </div>
-      <div className="basis-2/10 text-sm font-semibold text-right">
-        <span className="text-xs">
-          {expense.currency} 
+      {/* Amount */}
+      <div className="flex-none flex flex-col items-end font-mono text-[12.5px] gap-[3px]">
+        <span>
+          {expense.currency}&nbsp;{groupDigit(expense.amount)}
         </span>
-        &nbsp;
-        <span className="text-lg">
-          {groupDigit(expense.amount)}
-        </span>
+        {actions}
       </div>
     </div>
   )
