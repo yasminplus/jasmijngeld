@@ -14,7 +14,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from .token import default_token_generator
 from .models import User
 from .serializers import ChangePasswordSerializer, JGTokenObtainPairSerializer, UserAccountSerializer, UserSerializer
-from sources.models import *
+from sources.services import create_cash_source
 
 import logging
 
@@ -165,21 +165,11 @@ class VerifyAccountView(GenericAPIView):
                 user.is_verified = True
                 user.save()
 
-                self.create_cash_source(user)
+                create_cash_source(user)
                 return Response(status=status.HTTP_200_OK)
             else:
                 # expired or invalid
                 return Response({"message": gettext_lazy("Expired token")}, status=status.HTTP_410_GONE)
-
-    """
-    TODO: maybe we can place it in the User class, 
-    but we'll have to handle the circular imports.
-    """
-    def create_cash_source(self, user):
-        try:
-            PaymentSource.objects.create(name="Cash", source_type="CA", user=user)
-        except Exception as e:
-            logger.error(e)
 
 
 class RUDUserView(RetrieveUpdateAPIView):
