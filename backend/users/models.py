@@ -42,6 +42,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     creation_date = models.DateTimeField(auto_now_add=True)
     is_verified = models.BooleanField(default=False)
+    google_sub = models.CharField(
+                    _("Google account ID"), 
+                    max_length=255, 
+                    unique=True, 
+                    null=True, 
+                    blank=True)
 
     USERNAME_FIELD = 'email'
     EMAIL_FIELD = "email"
