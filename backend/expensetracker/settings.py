@@ -210,6 +210,10 @@ PASSWORD_RESET_TIMEOUT = 3600
 EMAIL_VERIFY_EMAIL_SUBJECT = 'Verify your email'
 EMAIL_RESET_PASSWORD_SUBJECT = 'You have requested to reset your password'
 
+# Login with Google
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
+
 # Anymail configuration
 ANYMAIL = {
     "MAILGUN_API_KEY": os.getenv("MAILGUN_API_KEY"),
