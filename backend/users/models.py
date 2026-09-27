@@ -27,6 +27,22 @@ class UserManager(BaseUserManager):
     def create_superuser(self, email, password, **extra_fields):
         return self._create_user(email, password, is_superuser=True, **extra_fields)
 
+    def create_social_user(self, email, google_sub, **extra_fields):
+        if not email:
+            raise ValueError('Supply an email address')
+        if not google_sub:
+            raise ValueError('Supply a Google account ID')
+
+        email = self.normalize_email(email)
+        user = self.model(
+            email=email,
+            google_sub=google_sub,
+            is_superuser=False,
+            **extra_fields)
+        user.set_unusable_password()
+        user.save(using=self._db)
+        return user
+
 
 class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(_("first name"), max_length=150, blank=True)
