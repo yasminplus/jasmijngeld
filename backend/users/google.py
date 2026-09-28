@@ -17,6 +17,10 @@ class GoogleAuthError(Exception):
     """Google rejected the code, or the ID token failed verification."""
 
 
+class GoogleEmailNotVerified(GoogleAuthError):
+    """Google hasn't verified the account's email, so we can't create or link by it."""
+
+
 class GoogleUnavailable(Exception):
     """Google couldn't be reached, or had a server error."""
 

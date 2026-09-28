@@ -11,9 +11,12 @@ from rest_framework.generics import CreateAPIView, GenericAPIView, RetrieveUpdat
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
-from .token import default_token_generator
+
+from .google import GoogleAuthError, GoogleEmailNotVerified, GoogleUnavailable, get_google_claims
 from .models import User
 from .serializers import ChangePasswordSerializer, JGTokenObtainPairSerializer, UserAccountSerializer, UserSerializer
+from .services import get_or_create_google_user
+from .token import default_token_generator
 from sources.services import create_cash_source
 
 import logging
@@ -271,3 +274,41 @@ class ResetPasswordView(GenericAPIView):
                 return Response({
                     "message": gettext_lazy("Link is expired")
                 }, status=status.HTTP_410_GONE)
+
+
+class GoogleLoginView(GenericAPIView):
+    authentication_classes = []
+    def post(self, request):
+        code = request.data.get("code")
+        if not code:
+            return Response({
+                "message": gettext_lazy("Missing 'code' parameter")
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            claims = get_google_claims(code)
+            user = get_or_create_google_user(claims)
+        # subclass of GoogleAuthError, so it must be caught first
+        except GoogleEmailNotVerified as e:
+            logger.warning(e)
+            return Response({
+                "message": gettext_lazy(
+                    "Your Google account's email isn't verified. "
+                    "Verify it with Google, or sign up with email and password.")
+            }, status=status.HTTP_400_BAD_REQUEST)
+        except GoogleAuthError as e:
+            logger.warning(e)
+            return Response({
+                "message": gettext_lazy("Google sign-in failed. Please try again.")
+            }, status=status.HTTP_400_BAD_REQUEST)
+        except GoogleUnavailable as e:
+            logger.error(e)
+            return Response({
+                "message": gettext_lazy("Couldn't reach Google. Please try again later.")
+            }, status=status.HTTP_502_BAD_GATEWAY)
+
+        refresh = JGTokenObtainPairSerializer.get_token(user)
+        return Response({
+            "refresh": str(refresh),
+            "access": str(refresh.access_token),
+        }, status=status.HTTP_200_OK)

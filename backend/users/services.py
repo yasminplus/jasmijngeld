@@ -1,6 +1,6 @@
 from django.db import IntegrityError, transaction
 from sources.services import create_cash_source
-from .google import GoogleAuthError
+from .google import GoogleAuthError, GoogleEmailNotVerified
 from .models import User
 
 
@@ -35,7 +35,7 @@ def _get_or_create_google_user(claims) -> User:
         return user
 
     if email_verified is not True:
-        raise GoogleAuthError("Google account email is not verified.")
+        raise GoogleEmailNotVerified(f"Google account email {email} is not verified.")
 
     # search email in the User database
     user = User.objects.filter(email__iexact=email).first()
