@@ -3,6 +3,7 @@ client for Google
 """
 
 import requests
+from functools import partial
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from google.auth.exceptions import TransportError
@@ -59,10 +60,12 @@ def get_google_claims(code) -> dict:
 
     # Checks the signature, exp, aud == our client ID and iss.
     # A little clock skew avoids "Token used too early" if our clock is behind.
+    # google-auth fetches the certs without a timeout (its default is 120s),
+    # so give the transport the same 10s as the code exchange.
     try:
         return id_token.verify_oauth2_token(
             token,
-            google_requests.Request(),
+            partial(google_requests.Request(), timeout=10),
             GOOGLE_CLIENT_ID,
             clock_skew_in_seconds=10,
         )
