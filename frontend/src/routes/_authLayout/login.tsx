@@ -17,8 +17,8 @@ function LoginFormWrapper() {
   const navigate = useNavigate()
   const router = useRouter()
 
-  function onSuccess () {
-    router.invalidate()
+  async function onSuccess () {
+    await router.invalidate()
     navigate({to: '/dashboard'})
   }
 

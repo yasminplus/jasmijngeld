@@ -2,9 +2,12 @@ import { Link } from '@tanstack/react-router'
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
+import { toast } from 'sonner'
 import type { z } from "zod"
+import GoogleButton from '@/components/auth/GoogleButton'
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
+import { Separator } from "@/components/ui/separator"
 import { InputField } from '@/components/form/input-field'
 import { postSignupData } from '@/services/signup'
 import { signupSchema } from '@/schemas/auth'
@@ -12,8 +15,10 @@ import { signupSchema } from '@/schemas/auth'
 
 type SignUpValues = z.infer<typeof signupSchema>
 
-export default function SignUpForm({ onSuccess }: {
-   onSuccess: () => void
+export default function SignUpForm({ onSuccess, onGoogleSuccess }: {
+   onSuccess: () => void,
+   // Google users are verified and logged in straight away
+   onGoogleSuccess: () => void
 }) {
   const form = useForm<SignUpValues>({
     resolver: zodResolver(signupSchema),
@@ -98,6 +103,16 @@ export default function SignUpForm({ onSuccess }: {
           <Button type="submit" className="w-full">Sign Up</Button>
         </form>
       </Form>
+      <div className="flex items-center gap-3 my-4 text-sm text-muted-foreground">
+        <Separator className="flex-1" />
+        or
+        <Separator className="flex-1" />
+      </div>
+      <GoogleButton
+        text="signup"
+        onSuccess={onGoogleSuccess}
+        onError={(message) => toast.error(message)}
+      />
       <p className="text-sm pt-2 text-center">
         Already have an account? <Link to="/login" className='font-semibold'>Log in</Link>
       </p>

@@ -1,12 +1,13 @@
+import { AxiosError } from 'axios';
 import { jwtDecode, type JwtPayload } from 'jwt-decode';
 import * as React from 'react';
 import type { z } from 'zod';
 
-import login_service, { type Token } from '@/services/login';
-import { loginSchema } from '@/schemas/auth';
-import { AxiosError } from 'axios';
-import { getUserAccountData, type UserAccount } from '@/services/users';
 import { useNavigate } from '@tanstack/react-router';
+
+import { loginSchema } from '@/schemas/auth';
+import login_service, { google_login_service, type Token } from '@/services/login';
+import { getUserAccountData, type UserAccount } from '@/services/users';
 
 type UserPayload = JwtPayload & {
   first_name: string,
@@ -25,6 +26,7 @@ export interface User {
 // export interface AuthContextI extends Partial<User> {
 export interface AuthContextI {
   login_i: (credentials: z.infer<typeof loginSchema>) => Promise<void>
+  loginWithGoogle_i: (code: string) => Promise<void>
   logout_i: () => Promise<void>
   isAuthenticated: boolean
   user: User | null
@@ -108,6 +110,21 @@ export function AuthProvider({ children}: {children: React.ReactNode}) {
     }
   }
 
+  const loginWithGoogle_i = async function(code: string): Promise<void> {
+    try {
+      const response = await google_login_service(code)
+      await setStoredUser(response)
+      const cur_user = getStoredUser()
+      setUser(cur_user)
+    } catch (error) {
+      // the backend sends a user-facing message for known failures
+      if (error instanceof AxiosError && error.response?.data?.message) {
+        throw new Error(error.response.data.message)
+      }
+      throw new Error('A problem occurred when logging in with Google')
+    }
+  }
+
   const logout_i = async function() {
     setStoredUser(null)
     setUser(null)
@@ -132,7 +149,7 @@ export function AuthProvider({ children}: {children: React.ReactNode}) {
   }, [navigate])
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, login_i, logout_i }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, login_i, loginWithGoogle_i, logout_i }}>
       {children}
     </AuthContext.Provider>
   )
