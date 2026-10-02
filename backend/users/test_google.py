@@ -162,6 +162,29 @@ class GetOrCreateGoogleUserTest(TestCase):
         self.assertFalse(user.has_usable_password())
         self.assertEqual(cash_count(user), 1)
 
+    def test_linking_fills_in_missing_names(self):
+        # e.g. an account made with createsuperuser
+        existing = User.objects.create_user(email="dewi@gmail.com", password="old-password")
+        existing.is_verified = True
+        existing.save()
+
+        user = services.get_or_create_google_user(make_claims())
+        user.refresh_from_db()
+
+        self.assertEqual(user.first_name, "Dewi")
+        self.assertEqual(user.last_name, "Pertiwi")
+
+    def test_linking_keeps_existing_names(self):
+        User.objects.create_user(
+            email="dewi@gmail.com", password="old-password", first_name="Wiwi", last_name="")
+
+        user = services.get_or_create_google_user(make_claims())
+        user.refresh_from_db()
+
+        self.assertEqual(user.first_name, "Wiwi")
+        # only the empty one is filled in
+        self.assertEqual(user.last_name, "Pertiwi")
+
     def test_email_match_is_case_insensitive(self):
         existing = User.objects.create_user(email="Dewi@gmail.com", password="old-password")
 

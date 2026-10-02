@@ -40,6 +40,8 @@ def _get_or_create_google_user(claims) -> User:
     # search email in the User database
     user = User.objects.filter(email__iexact=email).first()
     if user:
+        # accounts made via createsuperuser or the admin can have no name
+        _fill_missing_names(user, claims)
         if user.is_verified:
             # If the user exists and is verified, we can link the Google account
             user.google_sub = google_sub
@@ -63,3 +65,14 @@ def _get_or_create_google_user(claims) -> User:
     )
     create_cash_source(user)
     return user
+
+
+def _fill_missing_names(user, claims):
+    """
+    Take the names from Google only where the account has none.
+    Never overwrites a name the user chose.
+    """
+    if not user.first_name:
+        user.first_name = claims.get("given_name", "")
+    if not user.last_name:
+        user.last_name = claims.get("family_name", "")
