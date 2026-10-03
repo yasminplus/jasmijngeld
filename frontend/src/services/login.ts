@@ -15,3 +15,8 @@ export default async function login_service (credentials: LoginFormType): Promis
   axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${response.data.access}`
   return response.data
 }
+
+export async function google_login_service (code: string): Promise<Token> {
+  const response = await axiosInstance.post(`/api/auth/google/`, { code })
+  return response.data
+}

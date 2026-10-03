@@ -22,4 +22,6 @@ urlpatterns = [
     path('request-reset/', RequestResetTokenView.as_view(), name='request_reset_token'),
     path('verify-reset/<str:uidb64>/<str:token>/', VerifyResetPasswordTokenView.as_view(), name='verify_password'),
     path('resetpw/<str:uidb64>/<str:token>/', ResetPasswordView.as_view(), name='reset_pw'),
+
+    path('google/', GoogleLoginView.as_view(), name='google_login'),
 ]

@@ -7,7 +7,6 @@ import { toast } from 'sonner';
 import type { z } from "zod"
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import {
   Form,
   FormControl,
@@ -16,6 +15,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { Separator } from "@/components/ui/separator"
+import GoogleButton from "@/components/auth/GoogleButton"
 import { useAuthContext } from "@/context/auth"
 import { loginSchema } from "@/schemas/auth"
 
@@ -83,6 +85,16 @@ export default function LoginForm({ onSuccess, arrivalMessage }: {
           />
           <Button type="submit" className="w-full">Log in</Button>
         </form>
+        <div className="flex items-center gap-3 my-4 text-sm text-muted-foreground">
+          <Separator className="flex-1" />
+          or
+          <Separator className="flex-1" />
+        </div>
+        <GoogleButton
+          text="signin"
+          onSuccess={onSuccess}
+          onError={(message) => setLoginError(message)}
+        />
         {loginError && (
           <Alert className='mt-4'>
             <AlertDescription>

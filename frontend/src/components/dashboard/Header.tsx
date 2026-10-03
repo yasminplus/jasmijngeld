@@ -47,7 +47,7 @@ export function Header() {
             <ModeToggle />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="secondary">{ firstName }</Button>
+                <Button variant="secondary">{ firstName || 'Account' }</Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-48">
                 <DropdownMenuItem>

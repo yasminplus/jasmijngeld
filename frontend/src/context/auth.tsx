@@ -1,12 +1,13 @@
+import { AxiosError } from 'axios';
 import { jwtDecode, type JwtPayload } from 'jwt-decode';
 import * as React from 'react';
 import type { z } from 'zod';
 
-import login_service, { type Token } from '@/services/login';
-import { loginSchema } from '@/schemas/auth';
-import { AxiosError } from 'axios';
-import { getUserAccountData, type UserAccount } from '@/services/users';
 import { useNavigate } from '@tanstack/react-router';
+
+import { loginSchema } from '@/schemas/auth';
+import login_service, { google_login_service, type Token } from '@/services/login';
+import { getUserAccountData, type UserAccount } from '@/services/users';
 
 type UserPayload = JwtPayload & {
   first_name: string,
@@ -25,6 +26,7 @@ export interface User {
 // export interface AuthContextI extends Partial<User> {
 export interface AuthContextI {
   login_i: (credentials: z.infer<typeof loginSchema>) => Promise<void>
+  loginWithGoogle_i: (code: string) => Promise<void>
   logout_i: () => Promise<void>
   isAuthenticated: boolean
   user: User | null
@@ -35,13 +37,13 @@ const AuthContext = React.createContext<AuthContextI | null>(null)
 export const base_key = 'jasmijngeld.auth.user'
 
 function getStoredUser(): User | null {
-  const first_name = localStorage.getItem(base_key + '.first_name')
+  const first_name = localStorage.getItem(base_key + '.first_name') || ""
   const last_name = localStorage.getItem(base_key + '.last_name') || ""
   const is_verified = localStorage.getItem(base_key + '.is_verified') == "true"
   const access = localStorage.getItem(base_key + '.access')
   const refresh = localStorage.getItem(base_key + '.refresh')
 
-  if (first_name && access && refresh) {
+  if (access && refresh) {
     return {
       first_name,
       last_name,
@@ -58,28 +60,30 @@ export function getToken(type: string) {
   return localStorage.getItem(`${base_key}.${type}`)
 }
 
-export function setStoredUser(token: Token | null) {
+export async function setStoredUser(token: Token | null) {
   if (token) {
     const data = jwtDecode<UserPayload>(token.access)
-    getUserAccountData()
-    .then((response) => {
+    localStorage.setItem(base_key + '.is_verified', data.is_verified.toString())
+    localStorage.setItem(base_key + '.access', token.access)
+    localStorage.setItem(base_key + '.refresh', token.refresh)
+
+    try {
+      const response = await getUserAccountData()
       const userData: UserAccount = response.data;
       // TODO: can we compare if old names are the same as new names?
       localStorage.setItem(base_key + '.first_name', userData.first_name);
       localStorage.setItem(base_key + '.last_name', userData.last_name || '');
       window.dispatchEvent(new CustomEvent('auth:user:changed'))
-    })
-    .catch(err => {
-      console.error(err)
-    })
-
-    localStorage.setItem(base_key + '.is_verified', data.is_verified.toString())
-    localStorage.setItem(base_key + '.access', token.access)
-    localStorage.setItem(base_key + '.refresh', token.refresh)
+    } catch (error) {
+      console.error('Failed to fetch user account data:', error);
+    }
   } else {
     localStorage.removeItem(base_key + '.is_verified')
     localStorage.removeItem(base_key + '.access')
     localStorage.removeItem(base_key + '.refresh')
+    localStorage.removeItem(base_key + '.first_name')
+    localStorage.removeItem(base_key + '.last_name')
+    window.dispatchEvent(new CustomEvent('auth:user:changed'))
     console.log("removing user")
   }
 }
@@ -92,7 +96,7 @@ export function AuthProvider({ children}: {children: React.ReactNode}) {
   const login_i = async function(credentials: z.infer<typeof loginSchema>): Promise<void> {
     try {
       const response = await login_service(credentials)
-      setStoredUser(response)
+      await setStoredUser(response)
       const cur_user = getStoredUser()
       setUser(cur_user)
     } catch (error) {
@@ -103,6 +107,21 @@ export function AuthProvider({ children}: {children: React.ReactNode}) {
           throw new Error('A problem is occurred when logging in')
         }
       }
+    }
+  }
+
+  const loginWithGoogle_i = async function(code: string): Promise<void> {
+    try {
+      const response = await google_login_service(code)
+      await setStoredUser(response)
+      const cur_user = getStoredUser()
+      setUser(cur_user)
+    } catch (error) {
+      // the backend sends a user-facing message for known failures
+      if (error instanceof AxiosError && error.response?.data?.message) {
+        throw new Error(error.response.data.message)
+      }
+      throw new Error('A problem occurred when logging in with Google')
     }
   }
 
@@ -130,7 +149,7 @@ export function AuthProvider({ children}: {children: React.ReactNode}) {
   }, [navigate])
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, login_i, logout_i }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, login_i, loginWithGoogle_i, logout_i }}>
       {children}
     </AuthContext.Provider>
   )

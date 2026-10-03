@@ -8,6 +8,14 @@ vi.mock('@/services/signup', () => ({
     postSignupData: mockPostSignup,
   }))
 
+vi.mock('@/context/auth', () => ({
+  useAuthContext: () => ({
+    loginWithGoogle_i: vi.fn(),
+    isAuthenticated: false,
+    user: null,
+  }),
+}))
+
 vi.mock('@tanstack/react-router', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@tanstack/react-router')>()
   return {
@@ -21,7 +29,7 @@ describe('SignupForm', () => {
   const onSuccess = vi.fn();
 
   beforeEach(() => {
-    render (<SignUpForm onSuccess={onSuccess} />)
+    render (<SignUpForm onSuccess={onSuccess} onGoogleSuccess={vi.fn()} />)
   })
 
   afterEach(() => {
@@ -36,7 +44,7 @@ describe('SignupForm', () => {
       expect(screen.getByLabelText(/email/i)).toBeInTheDocument()
       expect(screen.getByLabelText(/^password/i)).toBeInTheDocument()
       expect(screen.getByLabelText(/confirm password/i)).toBeInTheDocument()
-      expect(screen.getByRole('button', { name: /sign up/i } )).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /^sign up$/i } )).toBeInTheDocument()
     })
   })
 
@@ -47,7 +55,7 @@ describe('SignupForm', () => {
       await user.type(screen.getByLabelText(/email/i), 'galadriel@lorien.me')
       await user.type(screen.getByLabelText(/^password/i), 'huntsauron123')
       await user.type(screen.getByLabelText(/confirm password/i), 'huntsauron123')
-      await user.click(screen.getByRole('button', { name: /sign up/i }))
+      await user.click(screen.getByRole('button', { name: /^sign up$/i }))
       expect(screen.getByText(/3 characters/i)).toBeInTheDocument()
       expect(screen.getByLabelText(/first name/i)).toHaveAttribute('aria-invalid', 'true')
     })
@@ -58,7 +66,7 @@ describe('SignupForm', () => {
       await user.type(screen.getByLabelText(/email/i), 'galadriel@lorien.me')
       await user.type(screen.getByLabelText(/^password/i), 'huntsauron123')
       await user.type(screen.getByLabelText(/confirm password/i), 'huntsauron123')
-      await user.click(screen.getByRole('button', { name: /sign up/i }))
+      await user.click(screen.getByRole('button', { name: /^sign up$/i }))
       expect(screen.getByLabelText(/last name/i)).not.toHaveAttribute('aria-invalid', 'true')
     })
 
@@ -67,7 +75,7 @@ describe('SignupForm', () => {
       await user.type(screen.getByLabelText(/first name/i), 'Galadriel')
       await user.type(screen.getByLabelText(/^password/i), 'huntsauron123')
       await user.type(screen.getByLabelText(/confirm password/i), 'huntsauron123')
-      await user.click(screen.getByRole('button', { name: /sign up/i }))
+      await user.click(screen.getByRole('button', { name: /^sign up$/i }))
       expect(screen.getByText(/invalid email/i)).toBeInTheDocument()
       expect(screen.getByLabelText(/email/i)).toHaveAttribute('aria-invalid', 'true')
     })
@@ -78,7 +86,7 @@ describe('SignupForm', () => {
       await user.type(screen.getByLabelText(/email/i), 'galadriel')
       await user.type(screen.getByLabelText(/^password/i), 'huntsauron123')
       await user.type(screen.getByLabelText(/confirm password/i), 'huntsauron123')
-      await user.click(screen.getByRole('button', { name: /sign up/i }))
+      await user.click(screen.getByRole('button', { name: /^sign up$/i }))
       expect(screen.getByText(/invalid email/i)).toBeInTheDocument()
       expect(screen.getByLabelText(/email/i)).toHaveAttribute('aria-invalid', 'true')
     })
@@ -89,7 +97,7 @@ describe('SignupForm', () => {
       await user.type(screen.getByLabelText(/email/i), 'galadriel@lorien.me')
       await user.type(screen.getByLabelText(/^password/i), 'sauron')
       await user.type(screen.getByLabelText(/confirm password/i), 'huntsauron123')
-      await user.click(screen.getByRole('button', { name: /sign up/i }))
+      await user.click(screen.getByRole('button', { name: /^sign up$/i }))
       expect(screen.getByText(/8 characters/i)).toBeInTheDocument()
       expect(screen.getByLabelText(/^password/i)).toHaveAttribute('aria-invalid', 'true')
     })
@@ -100,7 +108,7 @@ describe('SignupForm', () => {
       await user.type(screen.getByLabelText(/email/i), 'galadriel@lorien.me')
       await user.type(screen.getByLabelText(/^password/i), 'huntsauron123')
       await user.type(screen.getByLabelText(/confirm password/i), 'huntsauron')
-      await user.click(screen.getByRole('button', { name: /sign up/i }))
+      await user.click(screen.getByRole('button', { name: /^sign up$/i }))
       expect(screen.getByText(/Passwords do not match/i)).toBeInTheDocument()
       expect(screen.getByLabelText(/confirm password/i)).toHaveAttribute('aria-invalid', 'true')
     })
@@ -114,7 +122,7 @@ describe('SignupForm', () => {
       await user.type(screen.getByLabelText(/email/i), 'galadriel@lorien.me')
       await user.type(screen.getByLabelText(/^password/i), 'huntsauron123')
       await user.type(screen.getByLabelText(/confirm password/i), 'huntsauron123')
-      await user.click(screen.getByRole('button', { name: /sign up/i }))
+      await user.click(screen.getByRole('button', { name: /^sign up$/i }))
       expect(onSuccess).toHaveBeenCalledTimes(1)
       expect(mockPostSignup).toHaveBeenCalledWith({
         first_name: 'Galadriel',
@@ -137,7 +145,7 @@ describe('SignupForm', () => {
       await user.type(screen.getByLabelText(/email/i), 'galadriel@lorien.me')
       await user.type(screen.getByLabelText(/^password/i), 'huntsauron123')
       await user.type(screen.getByLabelText(/confirm password/i), 'huntsauron123')
-      await user.click(screen.getByRole('button', { name: /sign up/i }))
+      await user.click(screen.getByRole('button', { name: /^sign up$/i }))
       expect(onSuccess).not.toHaveBeenCalled()
       expect(screen.getByLabelText(/email/i)).toHaveAttribute('aria-invalid', 'true')
       expect(screen.getByText(/email already exists/i)).toBeInTheDocument()

@@ -94,7 +94,7 @@ export default function HamburgerMenu() {
         <nav className="flex flex-col space-y-4 p-4">
           <div>
             <div className="font-bold text-xl">
-              { firstName }
+              { firstName || 'Account' }
             </div>
             <Link to="/profile">
               View Profile
